@@ -7,7 +7,7 @@ import shutil
 import os
 
 clienti_json = Path(__file__).parent / 'clienti.json'
-dir_letture = Path(__file__).parent.parent / 'work/letture'
+dir_letture = Path(__file__).parent / 'work/letture'
 
 with open(clienti_json, 'r') as file:
     clienti = json.load(file)

@@ -14,8 +14,8 @@ os.system('color')
 parser = ArgumentParser()
 parser.add_argument('input_directory')
 parser.add_argument('output_file')
-parser.add_argument('-s', '--script', default=Path(__file__).resolve().parent.parent / 'layouts/controllo.bls')
-parser.add_argument('-e', '--errorlist', default=Path(__file__).resolve().parent.parent / 'layouts/errors.lst')
+parser.add_argument('-s', '--script', default=Path(__file__).resolve().parent / 'layouts/controllo.bls')
+parser.add_argument('-e', '--errorlist', default=Path(__file__).resolve().parent / 'layouts/errors.lst')
 parser.add_argument('-f', '--force-read', action='store_true')
 parser.add_argument('-c', '--cached', action='store_true')
 parser.add_argument('-r', '--recursive', action='store_true')
@@ -71,7 +71,7 @@ with open(args.errorlist, 'r') as file:
 
 def exec_reader(pdf_file):
     try:
-        proc_args = [Path(__file__).parent.parent / 'build/reader', '-p', pdf_file, args.script]
+        proc_args = [Path(__file__).parent.parent / 'out/bin/blsexec', '-p', pdf_file, args.script]
         if args.cached: proc_args.append('-c')
         if args.recursive: proc_args.append('-r')
         proc = subprocess.run(proc_args, capture_output=True, text=True, timeout=5)

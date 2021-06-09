@@ -2,8 +2,8 @@
 
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
-IN_DIR=../work/fatture
-OUT_DIR=../work/letture
+IN_DIR=work/fatture
+OUT_DIR=work/letture
 
 start=$(date +%s)
 

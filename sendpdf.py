@@ -28,7 +28,7 @@ while True:
 getFattureRes = session.post(address + '/zelda/fornitura.ws', verify=False, data={'f':'getFatture'})
 getFatture = json.loads(getFattureRes.text)['body']['getFatture']
 
-input_directory = Path(__file__).parent.parent / 'work/letture'
+input_directory = Path(__file__).parent / 'work/letture'
 
 letture = []
 for f in input_directory.rglob('*.json'):

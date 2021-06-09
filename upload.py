@@ -15,7 +15,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 session = requests.Session()
 
 address = 'https://portale.bollettaetica.com'
-in_path = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).parent.parent / 'work/letture'
+in_path = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).parent / 'work/letture'
 
 def filter_and_upload(f, do_upload = True):
     with open(f, 'r') as file:
