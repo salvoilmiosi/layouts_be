@@ -50,7 +50,7 @@ p+*next_page;
 ### End Spacers
 ### Script
 $if($sys.ate) {
-  $ifnot(*_dettaglio) {
+  $ifnot(*&_dettaglio) {
     $error(*ERRORE_DETTAGLIO_MANCANTE, "Axpo: Dettaglio Mancante");
   }
 }$elifnot($contains(@,"DATI FORNITURA") || $contains(@,"COMUNICAZIONI")) {
