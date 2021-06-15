@@ -21,6 +21,22 @@ $if($sys.ate) {
 ### End Script
 ### End Box
 
+### Box Check No Dettaglio
+### Type RECTANGLE
+### Mode DEFAULT
+### Flags TRIM 
+### Page 2
+### Rect 0.037096774193548385 0.09578107183580388 0.22741935483870968 0.026225769669327242
+### Spacers
+p+*off_allegato;
+### End Spacers
+### Script
+$if(@ == "COMUNICAZIONI") {
+  $error(*ERRORE_DETTAGLIO_MANCANTE, "Axpo: Dettaglio Mancante");
+}
+### End Script
+### End Box
+
 ### Box Lettura Dettaglio
 ### Type RECTANGLE
 ### Mode RAW
@@ -94,69 +110,6 @@ p+*off_allegato;
 numero_fattura=$search(@,/N\. fattura (\N)/);
 data_fattura=$date(@,"%d.%m.%Y",/N\. fattura \N del (\D)/);
 numero_cliente=$search(@,/CODICE CLIENTE (.+)\n/);
-codice_pod=$search(@,/CODICE POD ([0-9A-Z]+)/);
-'indirizzo_fornitura=$singleline($search(@,/FORNIAMO ENERGIA IN\n([^]+?\d{5}.+)\n/));
-
-mese_inizio=$month(@,"%d.%m.%Y",/PERIODO (\D) - \D/);
-mese_fine=$month(@,"%d.%m.%Y",/PERIODO \D - (\D)/);
-$if(mese_fine < mese_inizio) {
-  $error(*ERRORE_PERIODO_INVALIDO, "Axpo: Periodo Non Valido");
-}
-mese_fattura=$month_add(mese_inizio,*calc_mese);
-_mese=$date_format(mese_fattura,"%m\\.%Y");
-### End Script
-### End Box
-
-### Box IVA
-### Type RECTANGLE
-### Mode RAW
-### Page 1
-### Rect 0.047653962 0.6506787330316742 0.4389663 0.24293085696832573
-### Spacers
-p+*off_allegato;
-### End Spacers
-### Script
-iva=$search(@,/Importo IVA (\N%)/);
-### End Script
-### End Box
-
-### Box Dati fornitura multi POD
-### Type RECTANGLE
-### Mode RAW
-### Page 2
-### Rect 0.04193548 0.13418806 0.22741936 0.11324638
-### Spacers
-p+*off_allegato;
-p+*next_page;
-### End Spacers
-### Script
-$ifnot(codice_pod) {
-  codice_pod=$search(@,/CODICE POD ([0-9A-Z]+)/);
-  'indirizzo_fornitura=$singleline($search(@,/FORNIAMO ENERGIA IN\n([^]+?\d{5}.+)/));
-}
-### End Script
-### End Box
-
-### Box Tabella Consumi
-### Type PAGE
-### Mode LAYOUT
-### Page 2
-### Rect 0.02697592032258067 0.2542759474344356 0.9423789183870968 0.029646515507411597
-### Spacers
-p+*off_allegato;
-p+*next_page;
-### End Spacers
-### Script
-$between("CONSUMI E LETTURE","Consumi fatturati negli ultimi 12 mesi") {
-  $step($table_row($search(@,$format(/(.+ - \d\d\.$0.+)/,_mese)),
-    $table_header(@,"Periodo \\(dal - al\\)",/Consumi fatturati kWh(?: Consumi fatturati kWh)?/,"Energia Reattiva"))) {
-    ;
-    $step($captures(@,/(\N) (\N) (\N)/)) {
-      .%energia_attiva_rilevata[0]; .%energia_attiva_rilevata[1]; .%energia_attiva_rilevata[2];
-    }
-    .%energia_reattiva;
-  }
-}
 ### End Script
 ### End Box
 
@@ -168,6 +121,19 @@ $between("CONSUMI E LETTURE","Consumi fatturati negli ultimi 12 mesi") {
 ### Rect 0.21504012 0.053452756 0.04193318 0.029393759
 ### Script
 $with(*_dettaglio) {
+  codice_pod=$search(@,/CODICE POD ([0-9A-Z]+)/);
+  'indirizzo_fornitura=$singleline($search(@,/FORNIAMO ENERGIA IN\n([^]+?\d{5}.+)/));
+
+  mese_inizio=$month(@,"%d.%m.%Y",/PERIODO (\D) - \D/);
+  mese_fine=$month(@,"%d.%m.%Y",/PERIODO \D - (\D)/);
+  $if(mese_fine < mese_inizio) {
+    $error(*ERRORE_PERIODO_INVALIDO, "Axpo: Periodo Non Valido");
+  }
+  mese_fattura=$month_add(mese_inizio,*calc_mese);
+  _mese=$date_format(mese_fattura,"%m\\.%Y");
+
+  iva=$search(@,/(\d+%)\n/);
+
   %sbilanciamento=$search($search(@,/Sbilanciamento\n((dal.+\n)+)/),
     $format(/al \d\d\.$0 Euro\/kWh (\N)/,_mese));
   %pcv=$search($search(@,/Prezzo Commercializzazione Vendita\n((dal.+\n)+)/),
@@ -215,6 +181,29 @@ $with(*_dettaglio) {
 ### End Script
 ### End Box
 
+### Box Tabella Consumi
+### Type PAGE
+### Mode LAYOUT
+### Page 2
+### Rect 0.21568559774193555 0.047890542645381985 0.03915311193548382 0.03078676636259977
+### Spacers
+p+*off_allegato;
+p+*next_page;
+### End Spacers
+### Script
+$between("CONSUMI E LETTURE","Consumi fatturati negli ultimi 12 mesi") {
+  $step($table_row($search(@,$format(/(.+ - \d\d\.$0.+)/,_mese)),
+    $table_header(@,"Periodo \\(dal - al\\)",/Consumi fatturati kWh(?: Consumi fatturati kWh)?/,"Energia Reattiva"))) {
+    ;
+    $step($captures(@,/(\N) (\N) (\N)/)) {
+      .%energia_attiva_rilevata[0]; .%energia_attiva_rilevata[1]; .%energia_attiva_rilevata[2];
+    }
+    .%energia_reattiva;
+  }
+}
+### End Script
+### End Box
+
 ### Box Prossima Pagina
 ### Type RECTANGLE
 ### Mode DEFAULT
@@ -235,6 +224,7 @@ $if(mese_fattura != mese_fine) {
 }
 $if(@ == "DATI FORNITURA") {
   # Prossima tabella multipod
+  *calc_mese = 0;
   *next_page += 1 + *off_dettaglio;
   *off_dettaglio = 0;
   $nexttable;
