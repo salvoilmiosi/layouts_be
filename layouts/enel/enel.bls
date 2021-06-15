@@ -95,8 +95,8 @@ fornitore="Enel Energia";
 ### Page 1
 ### Rect 0.4918691806451613 0.17783226572405927 0.4113566258064517 0.09012668524515394
 ### Script
-$setend($indexof(@,"\n"));
-.'ragione_sociale;
+$between("","\n")
+  .'ragione_sociale;
 ### End Script
 ### End Box
 
