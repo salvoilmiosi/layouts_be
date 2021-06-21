@@ -1,14 +1,28 @@
 ### Bill Layout Script
 
-### Box Identifica Layout
-### Type WHOLEFILE
+### Box Carica Codici Errore
+### Type RECTANGLE
 ### Mode DEFAULT
+### Flags NOREAD
 ### Page 1
 ### Rect 0 0 0 0
 ### Script
 $foreach($lines($readfile($sys.layout_dir + "/errors.lst"))) {
     *["ERRORE_" + $trim(@)] = $sys.tokenidx;
 }
+### End Script
+### End Box
+
+### Box Identifica Layout
+### Type PAGE
+### Mode DEFAULT
+### Page 1
+### Rect 0 0 0 0
+### Goto Label controllo_layout
+### Spacers
+p+*page_controllo;
+### End Spacers
+### Script
 $if  ($contains(@,"Axpo Italia SpA")) $import "axpo/controllo";
 $elif($contains(@,"ITALPOWER ENERGIA")) $import "italpower/controllo";
 $elif($contains(@,"Sorgenia S.p.A")) $import "sorgenia/controllo";
@@ -23,6 +37,7 @@ $elif($contains(@,"Edison Energia SpA")) $import "misc/edison";
 $elif($contains(@,"Estra Energie S.r.l")) $import "misc/estra";
 $elif($contains(@,"HERA COMM s.r.l")) $import "misc/heracomm";
 $elif($contains(@,"AMG GAS S.R.L.")) $import "misc/amg/controllo";
+$elifnot($sys.ate) { *page_controllo++; $goto controllo_layout; }
 $else $error(*ERRORE_NON_IMPLEMENTATO, "Nessun Layout");
 ### End Script
 ### End Box
