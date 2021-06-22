@@ -2,8 +2,6 @@
 ### Set Layout
 
 ### Box Nome Fornitore
-### Type RECTANGLE
-### Mode DEFAULT
 ### Flags NOREAD
 ### Page 1
 ### Rect 0.0580645 0.018244 0.35 0.114025
@@ -13,7 +11,6 @@ fornitore="Lenergia";
 ### End Box
 
 ### Box Dati fattura
-### Type RECTANGLE
 ### Mode LAYOUT
 ### Page 1
 ### Rect 0.512487 0.0275867 0.474766 0.12414
@@ -27,8 +24,6 @@ _mese=$date_format(mese_fattura,"%m/%Y");
 ### End Box
 
 ### Box Totale fattura
-### Type RECTANGLE
-### Mode DEFAULT
 ### Page 1
 ### Rect 0.110562 0.362306 0.332986 0.0358627
 ### Script
@@ -37,8 +32,6 @@ _mese=$date_format(mese_fattura,"%m/%Y");
 ### End Box
 
 ### Box Data scadenza
-### Type RECTANGLE
-### Mode DEFAULT
 ### Page 1
 ### Rect 0.112903 0.420753 0.333871 0.0342075
 ### Script
@@ -47,8 +40,6 @@ data_scadenza=$date(@,"%d/%m/%Y");
 ### End Box
 
 ### Box Intestatario della fattura
-### Type RECTANGLE
-### Mode DEFAULT
 ### Page 1
 ### Rect 0.105359 0.220694 0.348595 0.0551734
 ### Script
@@ -58,7 +49,6 @@ data_scadenza=$date(@,"%d/%m/%Y");
 ### End Box
 
 ### Box Sintesi degli importi fatturati
-### Type RECTANGLE
 ### Mode LAYOUT
 ### Page 1
 ### Rect 0.51769 0.340236 0.469563 0.205061
@@ -70,7 +60,6 @@ data_scadenza=$date(@,"%d/%m/%Y");
 ### End Box
 
 ### Box Dettaglio fiscale/IVA
-### Type RECTANGLE
 ### Mode LAYOUT
 ### Page 1
 ### Rect 0.516389 0.570125 0.474766 0.0855188
@@ -82,7 +71,6 @@ $step($captures(@,/IVA (\N%) (\N)/)) {
 ### End Box
 
 ### Box Dati Fornitura
-### Type RECTANGLE
 ### Mode LAYOUT
 ### Page 2
 ### Rect 0.0684262 0.0233233 0.904203 0.17188616
@@ -92,7 +80,6 @@ codice_pod=$search(@,/Codice punto di erogazione \(POD\): ([a-zA-Z0-9]+)/);
 ### End Box
 
 ### Box Energia Reattiva / Potenza
-### Type RECTANGLE
 ### Mode LAYOUT
 ### Page 2
 ### Rect 0.035119668 0.2005698 0.92351717 0.6100175
@@ -110,7 +97,6 @@ $step($captures(@,$format(/\d\d\/$0 Potenza kW (\N) (\N) (\N)/,_mese))) {
 ### End Box
 
 ### Box Quadro Dettaglio
-### Type RECTANGLE
 ### Mode LAYOUT
 ### Page 5
 ### Rect 0.053763438 0.06647673 0.912485 0.8831909
@@ -137,9 +123,7 @@ $step($captures(@,$format(/Indice mese di competenza F3 .+ \d\d\/$0 \u20ac\/kWh 
 ### End Box
 
 ### Box Controllo Prossima Pagina
-### Type PAGE
-### Mode DEFAULT
-### Flags SPACER
+### Flags PAGE SPACER 
 ### Page 6
 ### Rect 0.091051 0.038599394 0.03381893 0.023894865
 ### Spacers

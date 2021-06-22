@@ -2,8 +2,6 @@
 ### Set Layout
 
 ### Box Nome fornitore
-### Type RECTANGLE
-### Mode DEFAULT
 ### Flags NOREAD
 ### Page 1
 ### Rect 0.04808817 0.0386214 0.26773414 0.08643837
@@ -13,8 +11,6 @@ fornitore="MetaEnergia";
 ### End Box
 
 ### Box Convalida Layout
-### Type RECTANGLE
-### Mode DEFAULT
 ### Page 1
 ### Rect 0.062384654 0.31081033 0.7538146 0.026667157
 ### Flags TRIM
@@ -26,7 +22,6 @@ $if(@ != "FATTURA PER LA FORNITURA DI ENERGIA ELETTRICA - MERCATO LIBERO") {
 ### End Box
 
 ### Box Dati fornitura
-### Type RECTANGLE
 ### Mode LAYOUT
 ### Page 1
 ### Rect 0.058485612 0.14988782 0.33401784 0.1416118
@@ -38,8 +33,6 @@ codice_pod = $search(@,/Codice POD: (.+)\n/);
 ### End Box
 
 ### Box Numero fattura
-### Type RECTANGLE
-### Mode DEFAULT
 ### Page 1
 ### Rect 0.06368434 0.33563837 0.87104565 0.02544105
 ### Script
@@ -55,8 +48,6 @@ _mese = $date_format(mese_fattura,"%m/%Y");
 ### End Box
 
 ### Box Data scadenza
-### Type RECTANGLE
-### Mode DEFAULT
 ### Page 1
 ### Rect 0.06368434 0.36414462 0.4483897 0.03586273
 ### Script
@@ -65,8 +56,6 @@ data_scadenza = $date(@,"%d/%m/%Y",/Totale da pagare entro il (\D)/);
 ### End Box
 
 ### Box Totale fattura
-### Type RECTANGLE
-### Mode DEFAULT
 ### Page 1
 ### Rect 0.5484651 0.3650642 0.36650985 0.03586273
 ### Script
@@ -75,7 +64,6 @@ data_scadenza = $date(@,"%d/%m/%Y",/Totale da pagare entro il (\D)/);
 ### End Box
 
 ### Box Codice cliente
-### Type RECTANGLE
 ### Mode LAYOUT
 ### Page 1
 ### Rect 0.525949 0.045455948 0.31360933 0.07011002
@@ -85,7 +73,6 @@ numero_cliente = $search(@,/Codice cliente: (.+)\n/);
 ### End Box
 
 ### Box Lettura Dettaglio
-### Type RECTANGLE
 ### Mode LAYOUT
 ### Page 2
 ### Rect 0.052041367 0.12135033 0.9031695 0.8370542
@@ -103,8 +90,6 @@ $ifnot($sys.ate || $contains(@,"Comunicazioni finali")) {
 ### End Box
 
 ### Box Parsing Dettaglio
-### Type RECTANGLE
-### Mode DEFAULT
 ### Flags NOREAD
 ### Page 2
 ### Rect 0.3080384 0.08228446 0.04617861 0.029602662
@@ -146,8 +131,6 @@ $with(_dettaglio) {
 ### End Box
 
 ### Box Imponibile
-### Type RECTANGLE
-### Mode DEFAULT
 ### Page 1
 ### Rect 0.5064516 0.53105414 0.45645162 0.18005697
 ### Script

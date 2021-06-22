@@ -2,8 +2,7 @@
 ### Set Layout
 
 ### Box Ricerca Dettaglio
-### Type PAGE
-### Mode DEFAULT
+### Flags PAGE
 ### Page 4
 ### Rect 0.01455026455026455 0.01216089803554724 0.03835978835978836 0.028999064546304958
 ### Goto Label ricerca_dettaglio
@@ -23,8 +22,8 @@ $if($sys.ate) {
 ### End Box
 
 ### Box Lettura Dettaglio
-### Type PAGE
 ### Mode LAYOUT
+### Flags PAGE
 ### Page 4
 ### Rect 0.06084656084656084 0.013096351730589336 0.03835978835978836 0.02806361085126286
 ### Goto Label lettura_dettaglio
@@ -41,8 +40,6 @@ $ifnot($sys.ate || $isempty(@)) {
 ### End Box
 
 ### Box Nome Fornitore
-### Type RECTANGLE
-### Mode DEFAULT
 ### Flags NOREAD 
 ### Page 1
 ### Rect 0.014516129032258065 0.014823261117445839 0.3193548387096774 0.08437856328392247
@@ -53,7 +50,6 @@ fornitore="AMG";
 ### End Box
 
 ### Box Dati Fornitura
-### Type RECTANGLE
 ### Mode LAYOUT
 ### Page 1
 ### Rect 0.5983870967741935 0.011402508551881421 0.382258064516129 0.10347352450596982
@@ -64,8 +60,6 @@ codice_pod=$search(@,/POD (\w+)/);
 ### End Box
 
 ### Box Ragione Sociale
-### Type RECTANGLE
-### Mode DEFAULT
 ### Page 1
 ### Rect 0.5112903225806451 0.18015963511972635 0.4580645161290323 0.09236031927023944
 ### Script
@@ -74,8 +68,6 @@ codice_pod=$search(@,/POD (\w+)/);
 ### End Box
 
 ### Box Dati Fattura
-### Type RECTANGLE
-### Mode DEFAULT
 ### Page 1
 ### Rect 0.509200879765396 0.2862029646522235 0.4612903225806452 0.231869324504403
 ### Script
@@ -88,7 +80,6 @@ iva=$search(@,/Aliquota al (\d+%)/);
 ### End Box
 
 ### Box Indirizzo Fornitura
-### Type RECTANGLE
 ### Mode RAW
 ### Page 1
 ### Rect 0.01818181818181818 0.721285140562249 0.49318181818181817 0.21204819277108433
@@ -98,7 +89,6 @@ iva=$search(@,/Aliquota al (\d+%)/);
 ### End Box
 
 ### Box Potenza Disponibile
-### Type RECTANGLE
 ### Mode LAYOUT
 ### Page 1
 ### Rect 0.5125 0.721285140562249 0.4602272727272728 0.21124497991967872
@@ -108,8 +98,6 @@ iva=$search(@,/Aliquota al (\d+%)/);
 ### End Box
 
 ### Box Periodo
-### Type RECTANGLE
-### Mode DEFAULT
 ### Flags TRIM 
 ### Page 1
 ### Rect 0.020737327188940113 0.3651181744091279 0.46889400921658986 0.030154849225753844
@@ -131,8 +119,8 @@ _mese=$date_format(mese_fattura,"%m/%Y");
 ### End Box
 
 ### Box Parsing Lettura
-### Type PAGE
 ### Mode LAYOUT
+### Flags PAGE
 ### Page 2
 ### Rect 0.035227272727272725 0.10522088353413654 0.03181818181818182 0.02570281124497993
 ### Script
@@ -149,8 +137,6 @@ $between("DETTAGLIO LETTURE","DETTAGLIO ALTRE PARTITE") {
 ### End Box
 
 ### Box Parsing Dettaglio
-### Type RECTANGLE
-### Mode DEFAULT
 ### Flags NOREAD 
 ### Page 4
 ### Rect 0.10449735449735449 0.01216089803554724 0.041005291005291 0.02806361085126286
@@ -228,8 +214,6 @@ $with(*_dettaglio) {
 ### End Box
 
 ### Box Prossima Pagina
-### Type RECTANGLE
-### Mode DEFAULT
 ### Flags NOREAD 
 ### Page 4
 ### Rect 0.15343915343915343 0.014967259120673527 0.035714285714285726 0.025257249766136577

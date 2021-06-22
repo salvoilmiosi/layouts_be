@@ -2,7 +2,6 @@
 ### Set Layout
 
 ### Box Check Numero Pagina
-### Type RECTANGLE
 ### Mode RAW
 ### Page 1
 ### Rect 0.0048387097 0.005701254 0.9919355 0.11123422987096773
@@ -23,8 +22,6 @@ $if($sys.ate) {
 ### End Box
 
 ### Box Check Nota Credito
-### Type RECTANGLE
-### Mode DEFAULT
 ### Page 1
 ### Rect 0.028506271379703536 0.23387096774193547 0.620296465222349 0.12580645161290324
 ### Spacers
@@ -37,7 +34,6 @@ rotate+*rotation;
 ### End Box
 
 ### Box Lettura Dettaglio Sinistra
-### Type RECTANGLE
 ### Mode LAYOUT
 ### Page 4
 ### Rect 0.019455252918287938 0.14619882 0.47393317008171215 0.8187134
@@ -56,7 +52,6 @@ $else {
 ### End Box
 
 ### Box Lettura Dettaglio Destra
-### Type RECTANGLE
 ### Mode LAYOUT
 ### Page 4
 ### Rect 0.4950413 0.14107715677419358 0.4842064302204928 0.8187134
@@ -73,8 +68,6 @@ $goto lettura_dettaglio;
 ### End Box
 
 ### Box Nome Fornitore
-### Type RECTANGLE
-### Mode DEFAULT
 ### Flags NOREAD
 ### Page 1
 ### Rect 0.010686489728958637 0.013723003677419354 0.15479139900142652 0.09514796406451613
@@ -85,8 +78,6 @@ fornitore="Heracomm";
 ### End Box
 
 ### Box Dati Fattura
-### Type RECTANGLE
-### Mode DEFAULT
 ### Page 3
 ### Rect 0.02892562 0.2748538 0.29008263 0.6175917825864277
 ### Spacers
@@ -106,7 +97,6 @@ codice_pod=$search(@,/POD \(Punto di prelievo\): (\w+)/);
 ### End Box
 
 ### Box Totale Fattura
-### Type RECTANGLE
 ### Mode LAYOUT
 ### Page 3
 ### Rect 0.346281 0.12982456 0.6305785 0.70058477
@@ -120,8 +110,6 @@ rotate+*rotation;
 ### End Box
 
 ### Box Parsing Dettaglio
-### Type RECTANGLE
-### Mode DEFAULT
 ### Flags NOREAD
 ### Page 4
 ### Rect 0.34734598900075014 0.06527792929611916 0.028054298642533948 0.03457106274007682
@@ -250,8 +238,6 @@ $with(*_dettaglio) {
 ### End Box
 
 ### Box Prossima Pagina
-### Type RECTANGLE
-### Mode DEFAULT
 ### Flags NOREAD
 ### Page 4
 ### Rect 0.3773412702120966 0.06426464259653104 0.027093787866044883 0.03737960254547193

@@ -1,8 +1,6 @@
 ### Bill Layout Script
 
 ### Box Carica Codici Errore
-### Type RECTANGLE
-### Mode DEFAULT
 ### Flags NOREAD
 ### Page 1
 ### Rect 0 0 0 0
@@ -14,8 +12,7 @@ $foreach($lines($readfile($sys.layout_dir + "/errors.lst"))) {
 ### End Box
 
 ### Box Identifica Layout
-### Type PAGE
-### Mode DEFAULT
+### Flags PAGE
 ### Page 1
 ### Rect 0 0 0 0
 ### Goto Label controllo_layout

@@ -1,7 +1,6 @@
 ### Bill Layout Script
 
 ### Box Numero pagina
-### Type RECTANGLE
 ### Mode LAYOUT
 ### Page 1
 ### Rect 0.87903225 0.9327252 0.08387095 0.051311314
@@ -19,8 +18,6 @@ $elifnot($contains(@,"PAG")) {
 ### End Box
 
 ### Box Controllo Gennaio 2016
-### Type RECTANGLE
-### Mode DEFAULT
 ### Page 1
 ### Rect 0.48387095 0.080957815 0.4290323 0.074116305
 ### Spacers
@@ -34,8 +31,6 @@ $if($contains(@,"servizio di fatturazione trasmessa")) {
 ### End Box
 
 ### Box Controllo Layout
-### Type RECTANGLE
-### Mode DEFAULT
 ### Page 1
 ### Rect 0.050817497 0.9309445 0.5866107 0.04451664
 ### Spacers

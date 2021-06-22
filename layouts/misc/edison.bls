@@ -2,8 +2,6 @@
 ### Set Layout
 
 ### Box Convalida Layout
-### Type RECTANGLE
-### Mode DEFAULT
 ### Flags TRIM
 ### Page 1
 ### Rect 0.7381144 0.0045636054 0.23529412 0.022818027
@@ -15,8 +13,6 @@ $if(@ != "ENERGIA ELETTRICA") {
 ### End Box
 
 ### Box Nome Fornitore
-### Type RECTANGLE
-### Mode DEFAULT
 ### Flags NOREAD
 ### Page 1
 ### Rect 0.016116036 0.036508843 0.20145044 0.07529949
@@ -27,8 +23,6 @@ fornitore="Edison";
 ### End Box
 
 ### Box Numero / Data Fattura
-### Type RECTANGLE
-### Mode DEFAULT
 ### Page 1
 ### Rect 0.33843675 0.02457326 0.31240317 0.018429944
 ### Script
@@ -38,8 +32,6 @@ data_fattura=$date(@,"%d %B %Y");
 ### End Box
 
 ### Box Ragione Sociale
-### Type RECTANGLE
-### Mode DEFAULT
 ### Page 1
 ### Rect 0.008058018 0.11409014 0.21112007 0.092413
 ### Script
@@ -48,8 +40,6 @@ data_fattura=$date(@,"%d %B %Y");
 ### End Box
 
 ### Box Dati Fornitura
-### Type RECTANGLE
-### Mode DEFAULT
 ### Page 1
 ### Rect 0.33843675 0.10610382 0.29814664 0.10952653
 ### Script
@@ -59,8 +49,6 @@ potenza[0:3]=$search(@,/Potenza impegnata: (\N) kW/);
 ### End Box
 
 ### Box N Cliente / POD
-### Type RECTANGLE
-### Mode DEFAULT
 ### Page 1
 ### Rect 0.6817083 0.100399315 0.30136988 0.057045065
 ### Script
@@ -70,8 +58,6 @@ codice_pod=$search(@,/POD (.+)/);
 ### End Box
 
 ### Box Periodo
-### Type RECTANGLE
-### Mode DEFAULT
 ### Page 1
 ### Rect 0.33843675 0.0045636054 0.3142627 0.019395322
 ### Script
@@ -88,8 +74,6 @@ _mese=$date_format(mese_fattura,"%m/%Y");
 ### End Box
 
 ### Box Totale / Scadenza
-### Type RECTANGLE
-### Mode DEFAULT
 ### Page 1
 ### Rect 0.031412613 0.35290596 0.24993515 0.14338613
 ### Script
@@ -99,7 +83,6 @@ data_scadenza=$date(@,"%d %B %Y");
 ### End Box
 
 ### Box Consumi Rilevati
-### Type RECTANGLE
 ### Mode LAYOUT
 ### Page 1
 ### Rect 0.32505226 0.58302 0.6542018 0.22527969
@@ -113,7 +96,6 @@ $step($captures($replace(@,"\u2212","-"),
 ### End Box
 
 ### Box Dettaglio Spese
-### Type RECTANGLE
 ### Mode LAYOUT
 ### Page 4
 ### Rect 0.013715775 0.0849123 0.96867657 0.8248623
@@ -151,8 +133,6 @@ $with($replace(@,"\u2212","-")) {
 ### End Box
 
 ### Box Prossima Pagina
-### Type RECTANGLE
-### Mode DEFAULT
 ### Page 4
 ### Rect 0.2610798 0.046750285 0.0467365 0.030786773
 ### Script

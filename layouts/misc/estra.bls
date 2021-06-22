@@ -2,8 +2,6 @@
 ### Set Layout
 
 ### Box Ricerca Dettaglio
-### Type RECTANGLE
-### Mode DEFAULT
 ### Page 3
 ### Rect 0.05483871 0.08095781 0.2629032 0.028506272
 ### Goto Label ricerca_dettaglio
@@ -22,7 +20,6 @@ $if($sys.ate) {
 ### End Box
 
 ### Box Lettura Dettaglio
-### Type RECTANGLE
 ### Mode LAYOUT
 ### Page 3
 ### Rect 0.04032258 0.114025086 0.9370968 0.8540479
@@ -40,8 +37,6 @@ $ifnot($sys.ate) {
 ### End Box
 
 ### Box Nome Fornitore
-### Type RECTANGLE
-### Mode DEFAULT
 ### Flags NOREAD
 ### Page 1
 ### Rect 0.051612902 0.018244013 0.2516129 0.06841505
@@ -52,7 +47,6 @@ fornitore="Estra";
 ### End Box
 
 ### Box Numero Fattura / Periodo
-### Type RECTANGLE
 ### Mode LAYOUT
 ### Page 1
 ### Rect 0.5483871 0.02736602 0.4080645 0.0672748
@@ -70,8 +64,6 @@ _periodo = $format(/\d\d\.\d\d.\d\d\d\d - \d\d\.$0/,$date_format(mese_fattura,"%
 ### End Box
 
 ### Box Intestatario
-### Type RECTANGLE
-### Mode DEFAULT
 ### Page 1
 ### Rect 0.05 0.12656784 0.46129033 0.19156215
 ### Script
@@ -81,8 +73,6 @@ numero_cliente=$search(@,/CODICE CLIENTE (\d+)/);
 ### End Box
 
 ### Box Totale / Scadenza
-### Type RECTANGLE
-### Mode DEFAULT
 ### Page 1
 ### Rect 0.05 0.32155073 0.92419356 0.05359179
 ### Script
@@ -92,8 +82,6 @@ data_scadenza=$date(@,"%d.%m.%Y",/entro il (\D)/);
 ### End Box
 
 ### Box Dati Fornitura
-### Type RECTANGLE
-### Mode DEFAULT
 ### Page 2
 ### Rect 0.045161292 0.11516534 0.45806453 0.15507412
 ### Script
@@ -104,7 +92,6 @@ codice_pod=$search(@,/POD \(Punto di prelievo\) (\w+)/);
 ### End Box
 
 ### Box Consumi Rilevati
-### Type RECTANGLE
 ### Mode LAYOUT
 ### Page 2
 ### Rect 0.053225808 0.31470925 0.92419356 0.64766246
@@ -118,8 +105,6 @@ $between("CONSUMI FATTURATI","RIEPILOGO IMPOSTE E IVA") {
 ### End Box
 
 ### Box Parsing Dettaglio
-### Type RECTANGLE
-### Mode DEFAULT
 ### Flags NOREAD
 ### Page 3
 ### Rect 0.32258067 0.079041496 0.048387095 0.028506272
@@ -161,8 +146,6 @@ $with(*_dettaglio) {
 ### End Box
 
 ### Box Prossima pagina
-### Type RECTANGLE
-### Mode DEFAULT
 ### Flags NOREAD
 ### Page 3
 ### Rect 0.3844086 0.07889734 0.043010753 0.02756654

@@ -2,8 +2,6 @@
 ### Set Layout
 
 ### Box Convalida Layout
-### Type RECTANGLE
-### Mode DEFAULT
 ### Flags TRIM 
 ### Page 1
 ### Rect 0.78485096 0.023945268 0.20306204 0.07639681
@@ -22,8 +20,6 @@ $if($sys.ate) {
 ### End Box
 
 ### Box Check No Dettaglio
-### Type RECTANGLE
-### Mode DEFAULT
 ### Flags TRIM 
 ### Page 2
 ### Rect 0.037096774193548385 0.09578107183580388 0.22741935483870968 0.026225769669327242
@@ -38,7 +34,6 @@ $if(@ == "COMUNICAZIONI") {
 ### End Box
 
 ### Box Lettura Dettaglio
-### Type RECTANGLE
 ### Mode RAW
 ### Page 3
 ### Rect 0.032258064 0.090079814 0.95483875 0.8556215434660633
@@ -62,8 +57,6 @@ $if($sys.ate) {
 ### End Box
 
 ### Box Nome Fornitore
-### Type RECTANGLE
-### Mode DEFAULT
 ### Flags NOREAD 
 ### Page 1
 ### Rect 0.020967742 0.021664767 0.23548387 0.069555305
@@ -74,8 +67,6 @@ fornitore="Axpo";
 ### End Box
 
 ### Box Ragione sociale
-### Type RECTANGLE
-### Mode DEFAULT
 ### Page 1
 ### Rect 0.51044726 0.16909401 0.4719575 0.11482845294184721
 ### Script
@@ -85,8 +76,6 @@ $between("","\n")
 ### End Box
 
 ### Box Totale / scadenza
-### Type RECTANGLE
-### Mode DEFAULT
 ### Page 1
 ### Rect 0.5112903225806451 0.3080678 0.459281297419355 0.2258688515837104
 ### Spacers
@@ -99,8 +88,6 @@ data_scadenza=$date(@,"%d.%m.%Y",/entro il (\D)/);
 ### End Box
 
 ### Box Dati bolletta
-### Type RECTANGLE
-### Mode DEFAULT
 ### Page 1
 ### Rect 0.0315568 0.09791284 0.22615707 0.31941897
 ### Spacers
@@ -114,8 +101,6 @@ numero_cliente=$search(@,/CODICE CLIENTE (.+)\n/);
 ### End Box
 
 ### Box Parsing Dettaglio
-### Type RECTANGLE
-### Mode DEFAULT
 ### Flags NOREAD 
 ### Page 3
 ### Rect 0.21504012 0.053452756 0.04193318 0.029393759
@@ -182,8 +167,8 @@ $with(*_dettaglio) {
 ### End Box
 
 ### Box Tabella Consumi
-### Type PAGE
 ### Mode LAYOUT
+### Flags PAGE
 ### Page 2
 ### Rect 0.21568559774193555 0.047890542645381985 0.03915311193548382 0.03078676636259977
 ### Spacers
@@ -205,8 +190,6 @@ $between("CONSUMI E LETTURE","Consumi fatturati negli ultimi 12 mesi") {
 ### End Box
 
 ### Box Prossima Pagina
-### Type RECTANGLE
-### Mode DEFAULT
 ### Flags TRIM 
 ### Page 3
 ### Rect 0.03840065 0.0989254 0.22611547 0.032341655

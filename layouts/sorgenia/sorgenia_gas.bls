@@ -2,7 +2,6 @@
 ### Set Layout
 
 ### Box Lettura Dettaglio
-### Type RECTANGLE
 ### Mode LAYOUT
 ### Page 2
 ### Rect 0.040290102 0.080957815 0.91055596 0.86431015
@@ -20,8 +19,6 @@ $ifnot($sys.ate || $contains(@,"INFORMAZIONI PER I CLIENTI SORGENIA")) {
 ### End Box
 
 ### Box Nome Fornitore
-### Type RECTANGLE
-### Mode DEFAULT
 ### Flags NOREAD 
 ### Page 1
 ### Rect 0.061290324 0.04104903 0.36129034 0.08323831
@@ -32,7 +29,6 @@ fornitore="Sorgenia";
 ### End Box
 
 ### Box Numero cliente
-### Type RECTANGLE
 ### Mode LAYOUT
 ### Page 1
 ### Rect 0.48481974 0.010436194 0.46489564 0.104729146
@@ -42,8 +38,6 @@ numero_cliente=$search(@,/CODICE CLIENTE (.+)\n/);
 ### End Box
 
 ### Box Ragione sociale
-### Type RECTANGLE
-### Mode DEFAULT
 ### Flags TRIM 
 ### Page 1
 ### Rect 0.076612905 0.15037057 0.38810483 0.02850627
@@ -53,7 +47,6 @@ numero_cliente=$search(@,/CODICE CLIENTE (.+)\n/);
 ### End Box
 
 ### Box Numero / Data Fattura
-### Type RECTANGLE
 ### Mode LAYOUT
 ### Page 1
 ### Rect 0.078366615 0.33640674 0.38614953 0.039876044
@@ -64,7 +57,6 @@ data_fattura=$date(@,"%d/%m/%Y",/Emessa il (\D)/);
 ### End Box
 
 ### Box PDR / Indirizzo
-### Type RECTANGLE
 ### Mode LAYOUT
 ### Page 1
 ### Rect 0.47096774 0.33537194 0.46042183 0.05117309
@@ -75,8 +67,6 @@ codice_pdr=$search(@,/per il punto di riconsegna \(PDR\) (\d+)/);
 ### End Box
 
 ### Box Periodo
-### Type RECTANGLE
-### Mode DEFAULT
 ### Page 1
 ### Rect 0.07358871 0.4846066 0.31149194 0.023517672
 ### Script
@@ -93,8 +83,6 @@ $ifnot(mese_fattura) {
 ### End Box
 
 ### Box Data scadenza
-### Type RECTANGLE
-### Mode DEFAULT
 ### Page 1
 ### Rect 0.7051532 0.43586698 0.23481973 0.04943812
 ### Script
@@ -103,8 +91,6 @@ data_scadenza=$date(@,"%d/%m/%Y",/DA SALDARE ENTRO (\D)/);
 ### End Box
 
 ### Box Totale spesa
-### Type RECTANGLE
-### Mode DEFAULT
 ### Page 1
 ### Rect 0.31451613 0.43543327 0.36794356 0.033494867
 ### Script
@@ -113,8 +99,6 @@ data_scadenza=$date(@,"%d/%m/%Y",/DA SALDARE ENTRO (\D)/);
 ### End Box
 
 ### Box Parsing Dettaglio
-### Type RECTANGLE
-### Mode DEFAULT
 ### Flags NOREAD 
 ### Page 2
 ### Rect 0.26032954 0.030786771 0.057603687 0.04479557

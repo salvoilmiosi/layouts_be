@@ -2,8 +2,6 @@
 ### Set Layout
 
 ### Box Cerca Dettaglio
-### Type RECTANGLE
-### Mode DEFAULT
 ### Flags TRIM 
 ### Page 4
 ### Rect 0.04516129032258064 0.08893956670467502 0.2596774193548387 0.037628278221208664
@@ -24,7 +22,6 @@ $if($sys.ate) {
 ### End Box
 
 ### Box Lettura Dettaglio
-### Type RECTANGLE
 ### Mode RAW
 ### Page 4
 ### Rect 0.024193548387096774 0.08323831242873432 0.9258064516129032 0.8289623717217788
@@ -44,8 +41,6 @@ $if($sys.ate || $contains(@,"AGGIORNAMENTI CORRISPETTIVI")) {
 ### End Box
 
 ### Box Nome Fornitore
-### Type RECTANGLE
-### Mode DEFAULT
 ### Flags NOREAD 
 ### Page 1
 ### Rect 0.038709678 0.050171036 0.33225808 0.07639681
@@ -56,7 +51,6 @@ fornitore="Italpower";
 ### End Box
 
 ### Box Dati Cliente
-### Type RECTANGLE
 ### Mode LAYOUT
 ### Page 1
 ### Rect 0.045161292 0.16647662 0.42580646 0.13568985
@@ -69,8 +63,6 @@ $step($captures(@,/CODICE CLIENTE: (\w+) Intestatario del contratto: (.+)\n/)) {
 ### End Box
 
 ### Box Numero / Data Fattura
-### Type RECTANGLE
-### Mode DEFAULT
 ### Page 1
 ### Rect 0.043548387 0.30216646 0.43387097 0.076950006
 ### Script
@@ -80,7 +72,6 @@ data_fattura=$date(@,"%d/%m/%Y");
 ### End Box
 
 ### Box Totale Fattura / Scadenza
-### Type RECTANGLE
 ### Mode LAYOUT
 ### Page 1
 ### Rect 0.5302594 0.44806516 0.4034582 0.10997964
@@ -91,7 +82,6 @@ data_scadenza=$date(@,"%d %B %Y");
 ### End Box
 
 ### Box Indirizzo Fornitura
-### Type RECTANGLE
 ### Mode LAYOUT
 ### Page 3
 ### Rect 0.044354837 0.1378327 0.43145162 0.23479088
@@ -101,7 +91,6 @@ data_scadenza=$date(@,"%d %B %Y");
 ### End Box
 
 ### Box POD / Potenza Impegnata
-### Type RECTANGLE
 ### Mode LAYOUT
 ### Page 3
 ### Rect 0.5039354178097982 0.08221476510067115 0.4408602 0.2961122348993288
@@ -112,8 +101,6 @@ codice_pod=$search(@,/NUMERO POD: (\w+)/);
 ### End Box
 
 ### Box Periodo
-### Type RECTANGLE
-### Mode DEFAULT
 ### Page 1
 ### Rect 0.04886364 0.37911648 0.4227273 0.025702812
 ### Script
@@ -141,8 +128,8 @@ $with($search(@,/Periodo fatturato (.+)/)) {
 ### End Box
 
 ### Box Energia Attiva Rilevata / Reattiva
-### Type PAGE
 ### Mode LAYOUT
+### Flags PAGE
 ### Page 3
 ### Rect 0.048387095 0.6624857 0.89870286 0.055942718
 ### Script
@@ -160,8 +147,6 @@ $between("RIEPILOGO LETTURE E CONSUMI","CONSUMI FATTURATI") {
 ### End Box
 
 ### Box Parsing Dettaglio
-### Type RECTANGLE
-### Mode DEFAULT
 ### Flags NOREAD 
 ### Page 4
 ### Rect 0.22715053909677418 0.027588217240592926 0.04543010606451612 0.03170482722919042
@@ -257,8 +242,6 @@ $with(*_dettaglio) {
 ### End Box
 
 ### Box Prossima Pagina
-### Type RECTANGLE
-### Mode DEFAULT
 ### Flags NOREAD 
 ### Page 4
 ### Rect 0.2806451612903226 0.027366020524515394 0.04999999999999999 0.030786773090079815
