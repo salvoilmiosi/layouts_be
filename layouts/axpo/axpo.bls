@@ -83,7 +83,7 @@ p+*off_allegato;
 ### End Spacers
 ### Script
 %totale_fattura=$search(@,/TOTALE BOLLETTA: (\N)/);
-data_scadenza=$date(@,"%d.%m.%Y",/entro il (\D)/);
+data_scadenza=$search_date(@,"%d.%m.%Y",/entro il (\D)/);
 ### End Script
 ### End Box
 
@@ -95,7 +95,7 @@ p+*off_allegato;
 ### End Spacers
 ### Script
 numero_fattura=$search(@,/N\. fattura (\N)/);
-data_fattura=$date(@,"%d.%m.%Y",/N\. fattura \N del (\D)/);
+data_fattura=$search_date(@,"%d.%m.%Y",/N\. fattura \N del (\D)/);
 numero_cliente=$search(@,/CODICE CLIENTE (.+)\n/);
 ### End Script
 ### End Box
@@ -109,8 +109,8 @@ $with(*_dettaglio) {
   codice_pod=$search(@,/CODICE POD ([0-9A-Z]+)/);
   'indirizzo_fornitura=$singleline($search(@,/FORNIAMO ENERGIA IN\n([^]+?\d{5}.+)/));
 
-  mese_inizio=$month(@,"%d.%m.%Y",/PERIODO (\D) - \D/);
-  mese_fine=$month(@,"%d.%m.%Y",/PERIODO \D - (\D)/);
+  mese_inizio=$first_day($search_date(@,"%d.%m.%Y",/PERIODO (\D) - \D/));
+  mese_fine=$first_day($search_date(@,"%d.%m.%Y",/PERIODO \D - (\D)/));
   $if(mese_fine < mese_inizio) {
     $error(*ERRORE_PERIODO_INVALIDO, "Axpo: Periodo Non Valido");
   }

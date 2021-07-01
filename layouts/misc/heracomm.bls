@@ -86,8 +86,8 @@ rotate+*rotation;
 ### End Spacers
 ### Script
 numero_fattura=$search(@,/(?:Bolletta|Fattura elettronica) n\. (\d+)/);
-data_fattura=$date(@,"%d.%m.%Y",/Data emissione (\D)/);
-data_scadenza=$date(@,"%d.%m.%Y",/Scadenza (\D)/);
+data_fattura=$search_date(@,"%d.%m.%Y",/Data emissione (\D)/);
+data_scadenza=$search_date(@,"%d.%m.%Y",/Scadenza (\D)/);
 'ragione_sociale=$search(@,/Intestata a (.+)/);
 numero_cliente=$search(@,/Codice cliente (\d+)/);
 'indirizzo_fornitura=$singleline($search(@,/Servizio fornito in ([^]+?)\.+/));
@@ -118,8 +118,8 @@ $with(*_dettaglio) {
   $newview {
     $setbegin($min($indexofend(@,"Quadro di dettaglio"),$indexofend(@,"Elementi di dettaglio")));
     $setend($indexof(@,"\n"));
-    mese_inizio=$month(@,"%d.%m.%Y",/dal (\D) al \D/);
-    mese_fine=$month(@,"%d.%m.%Y",/dal \D al (\D)/);
+    mese_inizio=$first_day($search_date(@,"%d.%m.%Y",/dal (\D) al \D/));
+    mese_fine=$first_day($search_date(@,"%d.%m.%Y",/dal \D al (\D)/));
     $if(mese_fine < mese_inizio) {
       $error(*ERRORE_PERIODO_INVALIDO, "Heracomm: Periodo Non Valido");
     }
@@ -178,7 +178,7 @@ $with(*_dettaglio) {
     }
     $between("Sbilanciamento") {
       $foreach($search_all(@,/Sbilanciamento ((?:Importo.+\n)+)/)) {
-        $if($date_between(mese_fattura,$date(@,"%d.%m.%Y",/dal (\D) al \D/),$date(@,"%d.%m.%Y",/dal \D al (\D)/))) {
+        $if($date_between(mese_fattura,$search_date(@,"%d.%m.%Y",/dal (\D) al \D/),$search_date(@,"%d.%m.%Y",/dal \D al (\D)/))) {
           %sbilanciamento=$search(@,/\u20ac\/kWh (\N)/);
           $break;
         }
@@ -188,7 +188,7 @@ $with(*_dettaglio) {
       ^spesa_materia_energia+=$search_all(@,/.+ (\N)/);
     }
     $foreach($search_all(@,/Importo (dal \d\d\.\d\d\.\d\d\d\d al \d\d\.\d\d\.\d\d\d\d \u20ac.+)/)) {
-      $if($date_between(mese_fattura,$date(@,"%d.%m.%Y",/dal (\D) al \D/),$date(@,"%d.%m.%Y",/dal \D al (\D)/))) {
+      $if($date_between(mese_fattura,$search_date(@,"%d.%m.%Y",/dal (\D) al \D/),$search_date(@,"%d.%m.%Y",/dal \D al (\D)/))) {
         spesa_materia_energia+=$trunc($num($search(@,/\u20ac\/kWh (\N)/))*_totale_consumi,2);
         spesa_materia_energia+=$trunc($num($search(@,/\u20ac\/cliente\/mese (\N)/)),2);
       }
@@ -197,7 +197,7 @@ $with(*_dettaglio) {
   $between("Totale servizi di Rete","...........") {
     $between("QUOTA FISSA", "QUOTA POTENZA") {
       $foreach($search_all(@,/Importo (dal \d\d\.\d\d\.\d\d\d\d al \d\d\.\d\d\.\d\d\d\d .+)/)) {
-        $if($date_between(mese_fattura,$date(@,"%d.%m.%Y",/dal (\D) al \D/),$date(@,"%d.%m.%Y",/dal \D al (\D)/))) {
+        $if($date_between(mese_fattura,$search_date(@,"%d.%m.%Y",/dal (\D) al \D/),$search_date(@,"%d.%m.%Y",/dal \D al (\D)/))) {
           trasporto_gestione+=$trunc($abs($num($search(@,/\u20ac\/cliente\/mese (\N)/)))**mul_nota_credito, 2);
           $break;
         }
@@ -208,7 +208,7 @@ $with(*_dettaglio) {
     }
     $between("QUOTA VARIABILE") {
       $foreach($search_all(@,/Importo (dal \d\d\.\d\d\.\d\d\d\d al \d\d\.\d\d\.\d\d\d\d\n.+)/)) {
-        $if($date_between(mese_fattura,$date(@,"%d.%m.%Y",/dal (\D) al \D/),$date(@,"%d.%m.%Y",/dal \D al (\D)/))) {
+        $if($date_between(mese_fattura,$search_date(@,"%d.%m.%Y",/dal (\D) al \D/),$search_date(@,"%d.%m.%Y",/dal \D al (\D)/))) {
           trasporto_gestione+=$trunc($num($search(@,/\u20ac\/kWh (\N)/)) * _totale_consumi, 2);
           %prezzo_inf75=$search(@,/Corrispettivi energia reattiva entro 75% \u20ac\/kVARh (\N)/);
           $if(prezzo_inf75) {

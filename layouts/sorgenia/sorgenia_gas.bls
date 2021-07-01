@@ -52,7 +52,7 @@ numero_cliente=$search(@,/CODICE CLIENTE (.+)\n/);
 ### Rect 0.078366615 0.33640674 0.38614953 0.039876044
 ### Script
 numero_fattura=$search(@,/N\. fattura (.+)/);
-data_fattura=$date(@,"%d/%m/%Y",/Emessa il (\D)/);
+data_fattura=$search_date(@,"%d/%m/%Y",/Emessa il (\D)/);
 ### End Script
 ### End Box
 
@@ -70,8 +70,8 @@ codice_pdr=$search(@,/per il punto di riconsegna \(PDR\) (\d+)/);
 ### Page 1
 ### Rect 0.07358871 0.4846066 0.31149194 0.023517672
 ### Script
-mese_fattura=$month(@,"%B %Y");
-mese_fine=$month(@,"%B %Y",/\D\/(\D)/);
+mese_fattura=$search_date(@,"%B %Y");
+mese_fine=$search_date(@,"%B %Y",/\D\/(\D)/);
 $if(mese_fine < mese_fattura) {
   $error(*ERRORE_PERIODO_INVALIDO, "Sorgenia: Periodo Non Valido");
 }
@@ -86,7 +86,7 @@ $ifnot(mese_fattura) {
 ### Page 1
 ### Rect 0.7051532 0.43586698 0.23481973 0.04943812
 ### Script
-data_scadenza=$date(@,"%d/%m/%Y",/DA SALDARE ENTRO (\D)/);
+data_scadenza=$search_date(@,"%d/%m/%Y",/DA SALDARE ENTRO (\D)/);
 ### End Script
 ### End Box
 

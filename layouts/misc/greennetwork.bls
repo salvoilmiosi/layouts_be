@@ -34,7 +34,7 @@ p+*off_allegati;
 ### End Spacers
 ### Script
 numero_fattura=$search(@,/Fattura n\. ([0-9a-zA-Z\-]+)/);
-data_fattura=$date(@,"%d/%m/%Y");
+data_fattura=$search_date(@,"%d/%m/%Y");
 ### End Script
 ### End Box
 
@@ -45,8 +45,8 @@ data_fattura=$date(@,"%d/%m/%Y");
 p+*off_allegati;
 ### End Spacers
 ### Script
-mese_fattura=$month(@,"%B %Y",/Fattura di (\D)/);
-data_scadenza=$date(@,"%d %B %Y",/scadenza (\D)/);
+mese_fattura=$search_date(@,"%B %Y",/Fattura di (\D)/);
+data_scadenza=$search_date(@,"%d %B %Y",/scadenza (\D)/);
 ### End Script
 ### End Box
 

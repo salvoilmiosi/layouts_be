@@ -67,7 +67,7 @@ $step($captures(@,/CODICE CLIENTE: (\w+) Intestatario del contratto: (.+)\n/)) {
 ### Rect 0.043548387 0.30216646 0.43387097 0.076950006
 ### Script
 numero_fattura=$search(@,/N\u00b0 (\w+)/);
-data_fattura=$date(@,"%d/%m/%Y");
+data_fattura=$search_date(@,"%d/%m/%Y");
 ### End Script
 ### End Box
 
@@ -77,7 +77,7 @@ data_fattura=$date(@,"%d/%m/%Y");
 ### Rect 0.5302594 0.44806516 0.4034582 0.10997964
 ### Script
 %totale_fattura=$search(@,/IMPORTO DA PAGARE \u20ac (\N)/);
-data_scadenza=$date(@,"%d %B %Y");
+data_scadenza=$search_date(@,"%d %B %Y");
 ### End Script
 ### End Box
 
@@ -106,16 +106,16 @@ codice_pod=$search(@,/NUMERO POD: (\w+)/);
 ### Script
 $with($search(@,/Periodo fatturato (.+)/)) {
   $if($matches(@,/\d+\s*-\s*\d+ \w+\. \d+/)) { # es. 01-31 gen 2021
-    mese_fattura=$month(@,"%b. %Y");
+    mese_fattura=$search_date(@,"%b. %Y");
   } $elif($matches(@,/\d+ \w+\.\s*-\s*\d+ \w+\. \d+/)) { # es. 01 gen.-31 mar. 2021
     $with($captures(@,/\d+ (\w+)\.\s*-\s*\d+ (\w+)\. (\d+)/)) {
-      mese_inizio=$month($format("$0 $1", $subitem(@,0), $subitem(@,2)),"%b %Y");
-      mese_fine=$month($format("$0 $1", $subitem(@,1), $subitem(@,2)),"%b %Y");
+      mese_inizio=$search_date($format("$0 $1", $subitem(@,0), $subitem(@,2)),"%b %Y");
+      mese_fine=$search_date($format("$0 $1", $subitem(@,1), $subitem(@,2)),"%b %Y");
       mese_fattura=$month_add(mese_inizio,*calc_mese);
     }
   } $elif($matches(@,/\d+ \w+\. \d+\s*-\s*\d+ \w+ \d+/)) { # es. 01 dic. 2020-31 gen. 2021
-    mese_inizio=$month(@,"%d %b. %Y",/(\D)\s*-\s*\D/);
-    mese_fine=$month(@,"%d %b. %Y",/\D\s*-\s*(\D)/);
+    mese_inizio=$first_day($search_date(@,"%d %b. %Y",/(\D)\s*-\s*\D/));
+    mese_fine=$first_day($search_date(@,"%d %b. %Y",/\D\s*-\s*(\D)/));
     mese_fattura=$month_add(mese_inizio,*calc_mese);
   } $else {
     $error(*ERRORE_PERIODO_INVALIDO, "Axpo: Periodo Non Valido");
@@ -153,8 +153,8 @@ $between("RIEPILOGO LETTURE E CONSUMI","CONSUMI FATTURATI") {
 ### Script
 $function check_periodo(@) {
   $return $date_between(mese_fattura,
-    $date(@,"%d/%m/%Y",/(\D)\s*-\s*\D/),
-    $date(@,"%d/%m/%Y",/\D\s*-\s*(\D)/));
+    $search_date(@,"%d/%m/%Y",/(\D)\s*-\s*\D/),
+    $search_date(@,"%d/%m/%Y",/\D\s*-\s*(\D)/));
 }
 $function calc_totale_parziale(@) {
   $clear _ret;

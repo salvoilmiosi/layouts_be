@@ -54,15 +54,15 @@ codice_pod=$search(@,/POD \(Punto di prelievo\): (.+)/);
 ### Page 1
 ### Rect 0.26176625 0.5822756 0.23662084 0.025235059
 ### Script
-mese_fattura=$month(@,"%B %Y");
+mese_fattura=$search_date(@,"%B %Y");
 $ifnot(mese_fattura) {
-  mese_fattura=$month(@,"%b %Y",/(\D) - \D/);
-  mese_fine=$month(@,"%b %Y",/\D - (\D)/);
+  mese_fattura=$search_date(@,"%b %Y",/(\D) - \D/);
+  mese_fine=$search_date(@,"%b %Y",/\D - (\D)/);
 }
 $ifnot(mese_fattura) {
   _anno=$search(@,/(\d\d\d\d)/);
-  mese_fattura=$month($format("$0 $1",_anno,$search(@,/(\w\w\w) - \w\w\w/)),"%Y %b");
-  mese_fine=$month($format("$0 $1",_anno,$search(@,/\w\w\w - (\w\w\w)/)),"%Y %b");
+  mese_fattura=$search_date($format("$0 $1",_anno,$search(@,/(\w\w\w) - \w\w\w/)),"%Y %b");
+  mese_fine=$search_date($format("$0 $1",_anno,$search(@,/\w\w\w - (\w\w\w)/)),"%Y %b");
 }
 $if(mese_fine) {
   $if(mese_fine < mese_fattura) {
@@ -77,9 +77,9 @@ $if(mese_fine) {
 ### Page 1
 ### Rect 0.50898993 0.55890983 0.39132738 0.09159392
 ### Script
-data_scadenza=$date(@,"%d/%m/%Y");
+data_scadenza=$search_date(@,"%d/%m/%Y");
 numero_fattura=$search(@,/Fattura n\u00b0 (.+)/);
-data_fattura=$date(@,"%d/%m/%Y",/Del: (\D)/);
+data_fattura=$search_date(@,"%d/%m/%Y",/Del: (\D)/);
 ### End Script
 ### End Box
 

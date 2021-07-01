@@ -93,7 +93,7 @@ codice_pod=$search(@,/CODICE POD (.+)/);
 ### Rect 0.3004861 0.36238107 0.19774635 0.04373565
 ### Script
 numero_fattura=$search(@,/N\. Fattura (.+)/);
-data_fattura=$date(@,"%d.%m.%Y",/Del (\D)/);
+data_fattura=$search_date(@,"%d.%m.%Y",/Del (\D)/);
 ### End Script
 ### End Box
 
@@ -101,8 +101,8 @@ data_fattura=$date(@,"%d.%m.%Y",/Del (\D)/);
 ### Page 1
 ### Rect 0.29827663 0.4100217 0.20267215 0.040712774
 ### Script
-mese_fattura=$month(@,"%b.%Y");
-mese_fine=$month(@,"%b.%Y",/\D - (\D)/);
+mese_fattura=$search_date(@,"%b.%Y");
+mese_fine=$search_date(@,"%b.%Y",/\D - (\D)/);
 $if(mese_fine) {
   $if(mese_fine < mese_fattura) {
     $error(*ERRORE_PERIODO_INVALIDO, "SEN: Periodo Non Valido");
@@ -128,7 +128,7 @@ iva=$search(@,/IVA.* (\N%)/);
 ### Rect 0.51906633 0.36861986 0.21763146 0.035925712
 ### Script
 %totale_fattura=$search(@,/(\N)/);
-data_scadenza=$date(@,"%d.%m.%Y",/Entro il (\D)/);
+data_scadenza=$search_date(@,"%d.%m.%Y",/Entro il (\D)/);
 ### End Script
 ### End Box
 

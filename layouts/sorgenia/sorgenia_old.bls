@@ -80,7 +80,7 @@ p+*off_allegati;
 ### End Spacers
 ### Script
 numero_fattura=$search(@,/N. fattura: (.+)/);
-data_fattura=$date(@,"%d/%m/%Y",/Emessa il (\D)/);
+data_fattura=$search_date(@,"%d/%m/%Y",/Emessa il (\D)/);
 ### End Script
 ### End Box
 
@@ -104,8 +104,8 @@ codice_pod=$search(@,/per il punto di fornitura \(POD\) ([0-9A-Z]+)/);
 p+*off_allegati;
 ### End Spacers
 ### Script
-mese_fattura=$month(@,"%B %Y");
-mese_fine=$month(@,"%B %Y",/\D\/(\D)/);
+mese_fattura=$search_date(@,"%B %Y");
+mese_fine=$search_date(@,"%B %Y",/\D\/(\D)/);
 $if(mese_fine < mese_fattura) {
   $error(*ERRORE_PERIODO_INVALIDO, "Sorgenia: Periodo Non Valido");
 }
@@ -123,7 +123,7 @@ $ifnot(mese_fattura) {
 p+*off_allegati;
 ### End Spacers
 ### Script
-data_scadenza=$date(@,"%d/%m/%Y",/DA SALDARE ENTRO (\D)/);
+data_scadenza=$search_date(@,"%d/%m/%Y",/DA SALDARE ENTRO (\D)/);
 ### End Script
 ### End Box
 

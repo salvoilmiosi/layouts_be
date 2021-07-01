@@ -35,8 +35,8 @@ p+*off_allegato;
 ### End Spacers
 ### Script
 numero_fattura=$search(@,/Fattura Numero: (.+)\n/);
-data_fattura=$date(@,"%d/%m/%Y",/Data Fattura: (\D)/);
-data_scadenza=$date(@,"%d/%m/%Y",/Scadenza Fattura: (\D)/);
+data_fattura=$search_date(@,"%d/%m/%Y",/Data Fattura: (\D)/);
+data_scadenza=$search_date(@,"%d/%m/%Y",/Scadenza Fattura: (\D)/);
 ### End Script
 ### End Box
 
@@ -74,7 +74,7 @@ p+*off_allegato;
 p+*page_offset;
 ### End Spacers
 ### Script
-mese_fattura=$month(@,"%B %Y",/Dettaglio consumi mese di (\D)/);
+mese_fattura=$search_date(@,"%B %Y",/Dettaglio consumi mese di (\D)/);
 ### End Script
 ### End Box
 

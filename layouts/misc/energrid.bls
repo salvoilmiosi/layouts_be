@@ -36,7 +36,7 @@ numero_cliente=$search(@,/CODICE CLIENTE: (.+)/);
 ### Rect 0.13343109 0.30683112 0.6979472 0.04353685
 ### Script
 numero_fattura=$search(@,/Fattura Energia n\u00b0 ([0-9]+)/);
-data_fattura=$date(@,"%d/%m/%Y",/del (\D)/);
+data_fattura=$search_date(@,"%d/%m/%Y",/del (\D)/);
 ### End Script
 ### End Box
 
@@ -45,9 +45,9 @@ data_fattura=$date(@,"%d/%m/%Y",/del (\D)/);
 ### Page 1
 ### Rect 0.035190612 0.34902042 0.23020528 0.45257592
 ### Script
-data_scadenza=$date(@,"%d/%m/%Y",/Scadenza fattura: (\D)/);
+data_scadenza=$search_date(@,"%d/%m/%Y",/Scadenza fattura: (\D)/);
 
-mese_fattura=$month(@,"%d/%m/%Y",/\D - (\D)/);
+mese_fattura=$first_day($search_date(@,"%d/%m/%Y",/\D - (\D)/));
 $ifnot(mese_fattura) {
   $error(*ERRORE_PERIODO_INVALIDO, "EnerGrid: Mese Fattura Mancante");
 }

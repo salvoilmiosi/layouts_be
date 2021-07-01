@@ -27,7 +27,7 @@ fornitore="Edison";
 ### Rect 0.33843675 0.02457326 0.31240317 0.018429944
 ### Script
 numero_fattura=$search(@,/Fattura N\u00b0 (\N)/);
-data_fattura=$date(@,"%d %B %Y");
+data_fattura=$search_date(@,"%d %B %Y");
 ### End Script
 ### End Box
 
@@ -61,8 +61,8 @@ codice_pod=$search(@,/POD (.+)/);
 ### Page 1
 ### Rect 0.33843675 0.0045636054 0.3142627 0.019395322
 ### Script
-mese_fattura=$month(@,"%B %Y");
-mese_fine=$month(@,"%B %Y",/\D - (\D)/);
+mese_fattura=$search_date(@,"%B %Y");
+mese_fine=$search_date(@,"%B %Y",/\D - (\D)/);
 $if(mese_fine) {
   $if(mese_fine < mese_fattura) {
     $error(*ERRORE_PERIODO_INVALIDO, "Edison: Periodo Non Valido");
@@ -78,7 +78,7 @@ _mese=$date_format(mese_fattura,"%m/%Y");
 ### Rect 0.031412613 0.35290596 0.24993515 0.14338613
 ### Script
 %totale_fattura=$search(@,/(\N)/);
-data_scadenza=$date(@,"%d %B %Y");
+data_scadenza=$search_date(@,"%d %B %Y");
 ### End Script
 ### End Box
 

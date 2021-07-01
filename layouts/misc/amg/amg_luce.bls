@@ -72,9 +72,9 @@ codice_pod=$search(@,/POD (\w+)/);
 ### Rect 0.509200879765396 0.2862029646522235 0.4612903225806452 0.231869324504403
 ### Script
 %totale_fattura=$search(@,/Importo Fattura \u20ac (\N)/);
-data_scadenza=$date(@,"%d/%m/%Y",/Da pagare entro il (\D)/);
+data_scadenza=$search_date(@,"%d/%m/%Y",/Da pagare entro il (\D)/);
 numero_fattura=$search(@,/Fattura nr\. (\d+)/);
-data_fattura=$date(@,"%d/%m/%Y",/Fattura nr\. \d+ del (\D)/);
+data_fattura=$search_date(@,"%d/%m/%Y",/Fattura nr\. \d+ del (\D)/);
 iva=$search(@,/Aliquota al (\d+%)/);
 ### End Script
 ### End Box
@@ -104,8 +104,8 @@ iva=$search(@,/Aliquota al (\d+%)/);
 ### Script
 $if($matches(@,/\w+\. - \w+\. \d{4}/)) {
   $with($captures(@,/(\w+)\. - (\w+)\. (\d{4})/)) {
-    mese_inizio=$month($format("$0 $1", $subitem(@,0), $subitem(@,2)),"%b %Y");
-    mese_fine=$month($format("$0 $1", $subitem(@,1), $subitem(@,2)),"%b %Y");
+    mese_inizio=$search_date($format("$0 $1", $subitem(@,0), $subitem(@,2)),"%b %Y");
+    mese_fine=$search_date($format("$0 $1", $subitem(@,1), $subitem(@,2)),"%b %Y");
     mese_fattura=$month_add(mese_inizio,*calc_mese);
   }
 } $else {
@@ -143,8 +143,8 @@ $between("DETTAGLIO LETTURE","DETTAGLIO ALTRE PARTITE") {
 ### Script
 $function check_periodo(@) {
   $return $date_between(mese_fattura,
-    $month(@,"%d/%m/%Y",/(\D) - \D/),
-    $month(@,"%d/%m/%Y",/\D - (\D)/));
+    $search_date(@,"%d/%m/%Y",/(\D) - \D/),
+    $search_date(@,"%d/%m/%Y",/\D - (\D)/));
 }
 $function calc_parziale(@) {
   $clear _tot;

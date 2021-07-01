@@ -37,8 +37,8 @@ codice_pod = $search(@,/Codice POD: (.+)\n/);
 ### Rect 0.06368434 0.33563837 0.87104565 0.02544105
 ### Script
 numero_fattura = $search(@,/Fattura N\. (\w+)/);
-data_fattura = $date(@,"%d/%m/%Y",/Emessa il (\D)/);
-mese_fattura = $month(@,"%d/%m/%Y",/Periodo di riferimento \D - (\D)/);
+data_fattura = $search_date(@,"%d/%m/%Y",/Emessa il (\D)/);
+mese_fattura = $first_day($search_date(@,"%d/%m/%Y",/Periodo di riferimento \D - (\D)/));
 $ifnot(mese_fattura) {
   $error(*ERRORE_PERIODO_INVALIDO, "MetaEnergia: Mese Fattura Mancante");
 }
@@ -51,7 +51,7 @@ _mese = $date_format(mese_fattura,"%m/%Y");
 ### Page 1
 ### Rect 0.06368434 0.36414462 0.4483897 0.03586273
 ### Script
-data_scadenza = $date(@,"%d/%m/%Y",/Totale da pagare entro il (\D)/);
+data_scadenza = $search_date(@,"%d/%m/%Y",/Totale da pagare entro il (\D)/);
 ### End Script
 ### End Box
 

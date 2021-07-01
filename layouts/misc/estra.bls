@@ -52,9 +52,9 @@ fornitore="Estra";
 ### Rect 0.5483871 0.02736602 0.4080645 0.0672748
 ### Script
 numero_fattura=$search(@,/Fattura N\u00b0 (\d+)/);
-data_fattura=$date(@,"%d.%m.%Y",/del (\D)/);
-mese_inizio=$month(@,"%d.%m.%Y",/(\D) - \D/);
-mese_fine=$month(@,"%d.%m.%Y",/\D - (\D)/);
+data_fattura=$search_date(@,"%d.%m.%Y",/del (\D)/);
+mese_inizio=$first_day($search_date(@,"%d.%m.%Y",/(\D) - \D/));
+mese_fine=$first_day($search_date(@,"%d.%m.%Y",/\D - (\D)/));
 $if(mese_fine < mese_inizio) {
   $error(*ERRORE_PERIODO_INVALIDO, "Estra: Periodo Non Valido");
 }
@@ -77,7 +77,7 @@ numero_cliente=$search(@,/CODICE CLIENTE (\d+)/);
 ### Rect 0.05 0.32155073 0.92419356 0.05359179
 ### Script
 %totale_fattura=$search(@,/euro (\N)/);
-data_scadenza=$date(@,"%d.%m.%Y",/entro il (\D)/);
+data_scadenza=$search_date(@,"%d.%m.%Y",/entro il (\D)/);
 ### End Script
 ### End Box
 

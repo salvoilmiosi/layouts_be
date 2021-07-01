@@ -102,7 +102,7 @@ codice_pod=$search(@,/CODICE POD (\w+)/);
 ### Rect 0.27857563 0.38391757 0.21629238 0.030719101
 ### Script
 numero_fattura=$search(@,/N\. Fattura (\N)/);
-data_fattura=$date(@,"%d/%m/%Y",/Del (\D)/);
+data_fattura=$search_date(@,"%d/%m/%Y",/Del (\D)/);
 ### End Script
 ### End Box
 
@@ -111,7 +111,7 @@ data_fattura=$date(@,"%d/%m/%Y",/Del (\D)/);
 ### Rect 0.51906633 0.36861986 0.21763146 0.046880633
 ### Script
 %totale_fattura=$search(@,/(\N)/);
-data_scadenza=$date(@,"%d/%m/%Y",/Entro il (\D)/);
+data_scadenza=$search_date(@,"%d/%m/%Y",/Entro il (\D)/);
 ### End Script
 ### End Box
 
@@ -119,8 +119,8 @@ data_scadenza=$date(@,"%d/%m/%Y",/Entro il (\D)/);
 ### Page 1
 ### Rect 0.27988616 0.4306124 0.22106262 0.020122074
 ### Script
-mese_fattura=$month(@,"%b. %Y");
-mese_fine=$month(@,"%b. %Y",/\D - (\D)/);
+mese_fattura=$search_date(@,"%b. %Y");
+mese_fine=$search_date(@,"%b. %Y",/\D - (\D)/);
 $if(mese_fine) {
   $if(mese_fine < mese_fattura) {
     $error(*ERRORE_PERIODO_INVALIDO, "Enel: Periodo Non Valido");
