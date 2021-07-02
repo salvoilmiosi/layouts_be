@@ -5,9 +5,10 @@ from pathlib import Path
 from datetime import date, datetime
 from argparse import ArgumentParser
 from termcolor import cprint
-import subprocess
 import json
 import os
+
+import pyreader_imported
 
 os.system('color')
 
@@ -69,20 +70,8 @@ required_data = ('fornitore', 'numero_fattura', 'mese_fattura', 'data_fattura', 
 with open(args.errorlist, 'r') as file:
     errcodes = [line.strip() for line in file.readlines()]
 
-def exec_reader(pdf_file):
-    try:
-        proc_args = [Path(__file__).parent.parent / 'out/bin/blsexec', '-p', pdf_file, args.script]
-        if args.cached: proc_args.append('-c')
-        if args.recursive: proc_args.append('-r')
-        proc = subprocess.run(proc_args, capture_output=True, text=True, timeout=5)
-        return json.loads(proc.stdout)
-    except subprocess.TimeoutExpired:
-        return {'errcode': -2, 'error': 'Timeout Scaduto'}
-    except json.JSONDecodeError:
-        return {'errcode': -3, 'error': 'Errore Fatale'}
-
 def read_pdf(pdf_file):
-    ret = exec_reader(pdf_file)
+    ret = pyreader_imported.readpdf(pdf_file, args.script, '')
     ret['filename'] = str(pdf_file)
 
     if 'values' in ret and not all(all(i in v for i in required_data) for v in ret['values']):
