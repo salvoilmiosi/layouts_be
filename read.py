@@ -71,7 +71,11 @@ with open(args.errorlist, 'r') as file:
     errcodes = [line.strip() for line in file.readlines()]
 
 def read_pdf(pdf_file):
-    ret = pyreader_imported.readpdf(pdf_file, args.script, '')
+    try:
+        ret = pyreader_imported.readpdf(pdf_file, args.script, '')
+    except:
+        ret = {'errcode': -6, 'error': 'Errore di Sistema'}
+
     ret['filename'] = str(pdf_file)
 
     if 'values' in ret and not all(all(i in v for i in required_data) for v in ret['values']):
