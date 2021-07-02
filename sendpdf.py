@@ -1,31 +1,16 @@
 #!/usr/bin/env python
 
-import requests
-import urllib3
+import login_be
 import json
 import os
 from pathlib import Path
-from getpass import getpass
 from datetime import date
 
 os.system('color')
 
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-session = requests.Session()
+session = login_be.login_be()
 
-address = 'https://portale.bollettaetica.com'
-
-while True:
-    login = {'f':'login'}
-    login['login'] = input('Nome utente: ')
-    login['password'] = getpass('Password: ')
-
-    loginr = json.loads(session.post(address + '/login.ws', verify=False, data=login).text)
-    print('Login:', loginr['head']['status']['type'])
-    if loginr['head']['status']['code'] == 1:
-        break
-
-getFattureRes = session.post(address + '/zelda/fornitura.ws', verify=False, data={'f':'getFatture'})
+getFattureRes = session.post(login_be.address + '/zelda/fornitura.ws', verify=False, data={'f':'getFatture'})
 getFatture = json.loads(getFattureRes.text)['body']['getFatture']
 
 input_directory = Path(__file__).parent / 'work/letture'
@@ -64,8 +49,8 @@ for id_fattura, fattura in getFatture['fatture'].items():
     if filename is None: continue
 
     with open(filename, 'rb') as file:
-        saveres = json.loads(session.put(address + '/file.ws?f=save', file.read(), headers={'X-File-Name': Path(filename).name, 'Content-Type':'application/pdf'}).text)
+        saveres = json.loads(session.put(login_be.address + '/file.ws?f=save', file.read(), headers={'X-File-Name': Path(filename).name, 'Content-Type':'application/pdf'}).text)
         id_file = saveres['body']['save']['file']['id']
 
-        json.loads(session.post(address + '/zelda/fornitura.ws', verify=False, data={'f':'associaFileFattura','id_fattura':id_fattura,'id_file':id_file}).text)
+        json.loads(session.post(login_be.address + '/zelda/fornitura.ws', verify=False, data={'f':'associaFileFattura','id_fattura':id_fattura,'id_file':id_file}).text)
         print('\033[32m{0}\033[0m'.format(filename))
