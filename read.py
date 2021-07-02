@@ -7,8 +7,13 @@ from argparse import ArgumentParser
 from termcolor import cprint
 import json
 import os
+import sys
 
-import pyreader_imported
+pyreader_path = str(Path(__file__).resolve().parent.parent / 'out/bin')
+os.environ['PATH'] = pyreader_path + os.pathsep + os.environ['PATH']
+sys.path.insert(0, pyreader_path)
+
+import pyreader
 
 os.system('color')
 
@@ -72,7 +77,7 @@ with open(args.errorlist, 'r') as file:
 
 def read_pdf(pdf_file):
     try:
-        ret = pyreader_imported.readpdf(pdf_file, args.script, '')
+        ret = pyreader.readpdf(pdf_file, args.script)
     except:
         ret = {'errcode': -6, 'error': 'Errore di Sistema'}
 
