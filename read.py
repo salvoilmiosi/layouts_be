@@ -77,7 +77,7 @@ with open(args.errorlist, 'r') as file:
 
 def read_pdf(pdf_file):
     try:
-        ret = pyreader.readpdf(pdf_file, args.script)
+        ret = pyreader.readpdf(args.script, input_pdf=pdf_file, use_cache=args.cached, parse_recursive=args.recursive)
     except:
         ret = {'errcode': -6, 'error': 'Errore di Sistema'}
 
