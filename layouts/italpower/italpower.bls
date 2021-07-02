@@ -8,6 +8,7 @@
 ### Goto Label cerca_dettaglio
 ### Spacers
 p+*off_dettaglio;
+p+*next_page;
 ### End Spacers
 ### Script
 $if($sys.ate) {
@@ -28,14 +29,17 @@ $if($sys.ate) {
 ### Goto Label lettura_dettaglio
 ### Spacers
 p+*off_dettaglio;
+p+*next_page;
 ### End Spacers
 ### Script
-$if($sys.ate || $contains(@,"AGGIORNAMENTI CORRISPETTIVI")) {
-  $goto nome_fornitore;
-} $else {
+$if($sys.ate) {
+  $error(*ERRORE_DETTAGLIO_MANCANTE, "Italpower: Dettaglio Mancante");
+} $elifnot($contains(@,"AGGIORNAMENTI CORRISPETTIVI") || $contains(@,"DATI FORNITURA")) {
   *_dettaglio+=@;
   *off_dettaglio++;
   $goto lettura_dettaglio;
+} $else {
+  $goto nome_fornitore;
 }
 ### End Script
 ### End Box
@@ -71,35 +75,6 @@ data_fattura=$search_date(@,"%d/%m/%Y");
 ### End Script
 ### End Box
 
-### Box Totale Fattura / Scadenza
-### Mode LAYOUT
-### Page 1
-### Rect 0.5302594 0.44806516 0.4034582 0.10997964
-### Script
-%totale_fattura=$search(@,/IMPORTO DA PAGARE \u20ac (\N)/);
-data_scadenza=$search_date(@,"%d %B %Y");
-### End Script
-### End Box
-
-### Box Indirizzo Fornitura
-### Mode LAYOUT
-### Page 3
-### Rect 0.044354837 0.1378327 0.43145162 0.23479088
-### Script
-'indirizzo_fornitura=$singleline($search(@,/Le stiamo fornendo energia elettrica in \u2022 ([^]+?\d{5}.+)\n/));
-### End Script
-### End Box
-
-### Box POD / Potenza Impegnata
-### Mode LAYOUT
-### Page 3
-### Rect 0.5039354178097982 0.08221476510067115 0.4408602 0.2961122348993288
-### Script
-codice_pod=$search(@,/NUMERO POD: (\w+)/);
-%potenza[0:3]=$search(@,/Potenza impegnata: (\N) kW/);
-### End Script
-### End Box
-
 ### Box Periodo
 ### Page 1
 ### Rect 0.04886364 0.37911648 0.4227273 0.025702812
@@ -127,11 +102,49 @@ $with($search(@,/Periodo fatturato (.+)/)) {
 ### End Script
 ### End Box
 
+### Box Totale Fattura / Scadenza
+### Mode LAYOUT
+### Page 1
+### Rect 0.5302594 0.44806516 0.4034582 0.10997964
+### Script
+%totale_fattura=$search(@,/IMPORTO DA PAGARE \u20ac (\N)/);
+data_scadenza=$search_date(@,"%d %B %Y");
+### End Script
+### End Box
+
+### Box Indirizzo Fornitura
+### Mode LAYOUT
+### Page 3
+### Rect 0.044354837 0.1378327 0.43145162 0.23479088
+### Spacers
+p+*next_page;
+### End Spacers
+### Script
+'indirizzo_fornitura=$singleline($search(@,/Le stiamo fornendo energia elettrica in \u2022 ([^]+?\d{5}.+)\n/));
+### End Script
+### End Box
+
+### Box POD / Potenza Impegnata
+### Mode LAYOUT
+### Page 3
+### Rect 0.5039354178097982 0.08221476510067115 0.4408602 0.2961122348993288
+### Spacers
+p+*next_page;
+### End Spacers
+### Script
+codice_pod=$search(@,/NUMERO POD: (\w+)/);
+%potenza[0:3]=$search(@,/Potenza impegnata: (\N) kW/);
+### End Script
+### End Box
+
 ### Box Energia Attiva Rilevata / Reattiva
 ### Mode LAYOUT
-### Flags PAGE
+### Flags PAGE 
 ### Page 3
 ### Rect 0.048387095 0.6624857 0.89870286 0.055942718
+### Spacers
+p+*next_page;
+### End Spacers
 ### Script
 $between("RIEPILOGO LETTURE E CONSUMI","CONSUMI FATTURATI") {
   _header=$table_header(@,/Dal Al/,/Consumi/,/Consumi/);
@@ -242,9 +255,13 @@ $with(*_dettaglio) {
 ### End Box
 
 ### Box Prossima Pagina
-### Flags NOREAD 
+### Flags TRIM 
 ### Page 4
-### Rect 0.2806451612903226 0.027366020524515394 0.04999999999999999 0.030786773090079815
+### Rect 0.05161290322580646 0.14481185860889398 0.18870967741935485 0.030786773090079815
+### Spacers
+p+*next_page;
+p+*off_dettaglio;
+### End Spacers
 ### Script
 $if(mese_fine) {
   $if(mese_fattura != mese_fine) {
@@ -252,6 +269,14 @@ $if(mese_fine) {
     $nexttable;
     $goto nome_fornitore;
   }
+}
+$if(@ == "DATI FORNITURA") {
+  *calc_mese = 0;
+  *next_page += 1 + *off_dettaglio;
+  *off_dettaglio = 0;
+  $nexttable;
+  $clear *_dettaglio;
+  $goto cerca_dettaglio;
 }
 ### End Script
 ### End Box
