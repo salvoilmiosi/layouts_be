@@ -9,11 +9,11 @@ import json
 import os
 import sys
 
-pyreader_path = str(Path(__file__).resolve().parent.parent / 'out/bin')
-os.environ['PATH'] = pyreader_path + os.pathsep + os.environ['PATH']
-sys.path.insert(0, pyreader_path)
+pybls_path = str(Path(__file__).resolve().parent.parent / 'out/bin')
+os.environ['PATH'] = pybls_path + os.pathsep + os.environ['PATH']
+sys.path.insert(0, pybls_path)
 
-import pyreader
+import pybls
 
 os.system('color')
 
@@ -27,6 +27,7 @@ parser.add_argument('-c', '--cached', action='store_true')
 parser.add_argument('-r', '--recursive', action='store_true')
 parser.add_argument('-y', '--filter-year', type=int, default=0)
 parser.add_argument('-j', '--nthreads', type=int, default=cpu_count())
+parser.add_argument('-t', '--timeout', type=float, default=10.0)
 args = parser.parse_args()
 
 input_directory = Path(args.input_directory).resolve()
@@ -77,7 +78,7 @@ with open(args.errorlist, 'r') as file:
 
 def read_pdf(pdf_file):
     try:
-        ret = pyreader.readpdf(args.script, input_pdf=pdf_file, use_cache=args.cached, parse_recursive=args.recursive)
+        ret = pybls.execbls(args.script, input_pdf=pdf_file, timeout=args.timeout, use_cache=args.cached, parse_recursive=args.recursive)
     except:
         ret = {'errcode': -6, 'error': 'Errore di Sistema'}
 
