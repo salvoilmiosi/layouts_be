@@ -27,7 +27,6 @@ parser.add_argument('-c', '--cached', action='store_true')
 parser.add_argument('-y', '--filter-year', type=int, default=0)
 parser.add_argument('-j', '--nthreads', type=int, default=cpu_count())
 parser.add_argument('-t', '--timeout', type=float, default=10.0)
-parser.add_argument('-l', '--language', default='')
 args = parser.parse_args()
 
 input_directory = Path(args.input_directory).resolve()
@@ -78,7 +77,7 @@ with open(args.errorlist, 'r') as file:
 
 def read_pdf(pdf_file):
     try:
-        ret = pybls.execbls(args.script, input_pdf=pdf_file, timeout=args.timeout, language=args.language, use_cache=args.cached)
+        ret = pybls.execbls(args.script, input_pdf=pdf_file, timeout=args.timeout, use_cache=args.cached)
     except:
         ret = {'errcode': -6, 'error': 'Errore di Sistema'}
 
