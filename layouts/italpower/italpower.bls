@@ -78,28 +78,37 @@ data_fattura=$search_date(@,"%d/%m/%Y");
 
 ### Box Periodo
 ### Page 1
-### Rect 0.04886364 0.37911648 0.4227273 0.025702812
+### Rect 0.048863639999999986 0.37829003371900827 0.4227273 0.05476781752066118
 ### Script
-$with($search(@,/Periodo fatturato (.+)/)) {
-  $if($matches(@,/\d+\s*-\s*\d+ \w+\. \d+/)) { # es. 01-31 gen 2021
-    mese_fattura=$search_date(@,"%b. %Y");
-  } $elif($matches(@,/\d+ \w+\.\s*-\s*\d+ \w+\. \d+/)) { # es. 01 gen.-31 mar. 2021
-    $with($captures(@,/\d+ (\w+)\.\s*-\s*\d+ (\w+)\. (\d+)/)) {
-      mese_inizio=$search_date($format("$0 $1", $subitem(@,0), $subitem(@,2)),"%b %Y");
-      mese_fine=$search_date($format("$0 $1", $subitem(@,1), $subitem(@,2)),"%b %Y");
-      mese_fattura=$month_add(mese_inizio,*calc_mese);
+$function parse_periodo(str_periodo) {
+  $clear _ret[:];
+  $if($matches(str_periodo,/\d+\s*-\s*\d+ \w+\. \d+/)) { # es. 01-31 gen 2021
+    _ret[0] = $search_date(str_periodo, "%b. %Y");
+    _ret[1] = $search_date(str_periodo, "%b. %Y");
+  } $elif($matches(str_periodo,/\d+ \w+\.\s*-\s*\d+ \w+\. \d+/)) { # es. 01 gen.-31 mar. 2021
+    $with($captures(str_periodo,/\d+ (\w+)\.\s*-\s*\d+ (\w+)\. (\d+)/)) {
+      _ret[0] = $search_date($format("$0 $1", $subitem(@,0), $subitem(@,2)),"%b %Y");
+      _ret[1] = $search_date($format("$0 $1", $subitem(@,1), $subitem(@,2)),"%b %Y");
     }
-  } $elif($matches(@,/\d+ \w+\. \d+\s*-\s*\d+ \w+ \d+/)) { # es. 01 dic. 2020-31 gen. 2021
-    mese_inizio=$first_day($search_date(@,"%d %b. %Y",/(\D)\s*-\s*\D/));
-    mese_fine=$first_day($search_date(@,"%d %b. %Y",/\D\s*-\s*(\D)/));
-    mese_fattura=$month_add(mese_inizio,*calc_mese);
-  } $else {
-    $error(*ERRORE_PERIODO_INVALIDO, "Axpo: Periodo Non Valido");
+  } $elif($matches(str_periodo,/\d+ \w+\. \d+\s*-\s*\d+ \w+ \d+/)) { # es. 01 dic. 2020-31 gen. 2021
+    _ret[0] = $first_day($search_date(str_periodo,"%d %b. %Y",/(\D)\s*-\s*\D/));
+    _ret[1] = $first_day($search_date(str_periodo,"%d %b. %Y",/\D\s*-\s*(\D)/));
+  } $elif(str_periodo) {
+    $error(*ERRORE_PERIODO_INVALIDO, "Italpower: Formato Periodo Non Valido");
   }
-  $if(mese_fine < mese_inizio) {
-    $error(*ERRORE_PERIODO_INVALIDO, "Axpo: Periodo Non Valido");
+  $if(_ret[1] < _ret[0]) {
+    $error(*ERRORE_PERIODO_INVALIDO, "Italpower: Periodo Non Valido");
   }
 }
+$parse_periodo($search(@,/Periodo fatturato (.+)/));
+mese_inizio=_ret[0];
+mese_fine=_ret[1];
+
+$parse_periodo($search(@,/Periodo conguagliato (.+)/));
+mese_inizio_conguaglio=_ret[0];
+mese_fine_conguaglio=_ret[1];
+
+mese_fattura=$month_add($if(*calc_conguaglio, mese_inizio_conguaglio, mese_inizio), *calc_mese);
 ### End Script
 ### End Box
 
@@ -171,7 +180,7 @@ $function check_periodo(@) {
     $search_date(@,"%d/%m/%Y",/\D\s*-\s*(\D)/));
 }
 $function calc_totale_parziale(@) {
-  $clear _ret;
+  $clear _ret[:];
   $foreach($search_all(@,$format(/Periodo ($0 Euro\/POD\/mese \N)/,_periodo_generic))) {
     $if($check_periodo()) {
       _ret+=$trunc($num($search(@,/Euro\/POD\/mese (\N)/)),2);
@@ -186,7 +195,7 @@ $function calc_totale_parziale(@) {
   $return _ret;
 }
 $function calc_penale_reattiva(@, percent_reattiva, format_str) {
-  $clear _ret;
+  $clear _ret[:];
   $for(_i=0; _i<3; _i++) {
     $foreach($search_all(@,$format(/Energia Reattiva \($2\) - F$1 - Periodo ($0 Euro\/kVarh \N)/,_periodo_generic,_i+1, format_str))) {
       $if($check_periodo()) {
@@ -201,6 +210,11 @@ $with(*_dettaglio) {
   _periodo=$format(/\d\d\/\d\d\/\d\d\d\d-\s*\d\d\/$0/,$date_format(mese_fattura,"%m/%Y"));
   _periodo_generic=/\d{2}\/\d{2}\/\d{4}\s*-\s*\d{2}\/\d{2}\/\d{4}/;
   $between("","Totale materia energia") {
+    $foreach($search_all(@,/Acconti fatture precedenti per servizi di vendita su kWh \N - Periodo (.+ \N)/)) {
+      $if($check_periodo()) {
+        %spesa_materia_energia+=$search(@,/(\N)$/);
+      }
+    }
     $foreach($search_all(@,$format(/Commercializzazione e vendita \(PCV1\) - Periodo ($0 Euro\/POD\/mese \N)/,_periodo_generic))) {
       $if($check_periodo()) {
         pcv=$trunc($num($search(@,/Euro\/POD\/mese (\N)/)),2);
@@ -233,7 +247,12 @@ $with(*_dettaglio) {
     }
   }
   $between("Totale materia energia","Totale Trasporto e gestione del contatore") {
-    trasporto_gestione=$calc_totale_parziale();
+    $foreach($search_all(@,/Acconti fatture precedenti per oneri di trasporto e gestione del contatore su kWh \N - Periodo (.+ \N)/)) {
+      $if($check_periodo()) {
+        %trasporto_gestione+=$search(@,/(\N)$/);
+      }
+    }
+    trasporto_gestione+=$calc_totale_parziale();
     %potenza[0:3]=$search(@,$format(/Quota Potenza - trasporto - Periodo $0 Euro\/kW\/mese \N (\N)/,_periodo));
 
     penale_reattiva_inf75=$calc_penale_reattiva(0.33,"Tra il 33 % ed il 75 %");
@@ -242,11 +261,21 @@ $with(*_dettaglio) {
     trasporto_gestione+=penale_reattiva_inf75 + penale_reattiva_sup75;
   }
   $between("Totale Trasporto e gestione del contatore","Totale oneri di sistema") {
-    oneri=$calc_totale_parziale();
+    $foreach($search_all(@,/Acconti fatture precedenti per oneri di sistema su kWh \N - Periodo (.+ \N)/)) {
+      $if($check_periodo()) {
+        %oneri+=$search(@,/(\N)$/);
+      }
+    }
+    oneri+=$calc_totale_parziale();
   }
   $between("Totale oneri di sistema","Totale imposte") {
+    $foreach($search_all(@,/Acconti fatture precedenti per Imposte su kWh \N - Periodo (.+ \N)/)) {
+      $if($check_periodo()) {
+        %accise+=$search(@,/(\N)$/);
+      }
+    }
     $if($contains(@,"Accisa sull'energia elettrica")) {
-      accise=$trunc(_tot_consumi * 0.0125,2);
+      accise+=$trunc(_tot_consumi * 0.0125,2);
     }
   }
   imponibile=$sum(spesa_materia_energia,trasporto_gestione,oneri,accise);
@@ -264,14 +293,24 @@ p+*next_page;
 p+*off_dettaglio;
 ### End Spacers
 ### Script
-$if(mese_fine) {
+$ifnot(*calc_conguaglio) {
   $if(mese_fattura != mese_fine) {
     *calc_mese++;
     $nexttable;
     $goto nome_fornitore;
+  } $elif(mese_inizio_conguaglio) {
+    *calc_conguaglio = 1;
+    *calc_mese = 0;
+    $nexttable;
+    $goto nome_fornitore;
   }
+} $elif(mese_fattura != mese_fine_conguaglio) {
+  *calc_mese++;
+  $nexttable;
+  $goto nome_fornitore;
 }
 $if(@ == "DATI FORNITURA") {
+  *calc_conguaglio = 0;
   *calc_mese = 0;
   *next_page += 1 + *off_dettaglio;
   *off_dettaglio = 0;
