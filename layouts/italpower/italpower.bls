@@ -81,32 +81,31 @@ data_fattura=$search_date(@,"%d/%m/%Y");
 ### Rect 0.048863639999999986 0.37829003371900827 0.4227273 0.05476781752066118
 ### Script
 $function parse_periodo(str_periodo) {
-  $clear _ret[:];
   $if($matches(str_periodo,/\d+\s*-\s*\d+ \w+\. \d+/)) { # es. 01-31 gen 2021
-    _ret[0] = $search_date(str_periodo, "%b. %Y");
-    _ret[1] = $search_date(str_periodo, "%b. %Y");
+    $return $list(
+      $search_date(str_periodo, "%b. %Y"),
+      $search_date(str_periodo, "%b. %Y"));
   } $elif($matches(str_periodo,/\d+ \w+\.\s*-\s*\d+ \w+\. \d+/)) { # es. 01 gen.-31 mar. 2021
-    $with($captures(str_periodo,/\d+ (\w+)\.\s*-\s*\d+ (\w+)\. (\d+)/)) {
-      _ret[0] = $search_date($format("$0 $1", $subitem(@,0), $subitem(@,2)),"%b %Y");
-      _ret[1] = $search_date($format("$0 $1", $subitem(@,1), $subitem(@,2)),"%b %Y");
-    }
+    _items = $captures(str_periodo,/\d+ (\w+)\.\s*-\s*\d+ (\w+)\. (\d+)/);
+    $return $list(
+      $search_date($format("$0 $1", $subitem(_items,0), $subitem(_items,2)),"%b %Y"),
+      $search_date($format("$0 $1", $subitem(_items,1), $subitem(_items,2)),"%b %Y"));
   } $elif($matches(str_periodo,/\d+ \w+\. \d+\s*-\s*\d+ \w+ \d+/)) { # es. 01 dic. 2020-31 gen. 2021
-    _ret[0] = $first_day($search_date(str_periodo,"%d %b. %Y",/(\D)\s*-\s*\D/));
-    _ret[1] = $first_day($search_date(str_periodo,"%d %b. %Y",/\D\s*-\s*(\D)/));
+    $return $list(
+      $first_day($search_date(str_periodo,"%d %b. %Y",/(\D)\s*-\s*\D/)),
+      $first_day($search_date(str_periodo,"%d %b. %Y",/\D\s*-\s*(\D)/)));
   } $elif(str_periodo) {
     $error(*ERRORE_PERIODO_INVALIDO, "Italpower: Formato Periodo Non Valido");
   }
-  $if(_ret[1] < _ret[0]) {
-    $error(*ERRORE_PERIODO_INVALIDO, "Italpower: Periodo Non Valido");
-  }
 }
-$parse_periodo($search(@,/Periodo fatturato (.+)/));
-mese_inizio=_ret[0];
-mese_fine=_ret[1];
 
-$parse_periodo($search(@,/Periodo conguagliato (.+)/));
-mese_inizio_conguaglio=_ret[0];
-mese_fine_conguaglio=_ret[1];
+$step($parse_periodo($search(@,/Periodo fatturato (.+)/))) {
+  .mese_inizio; .mese_fine;
+}
+
+$step($parse_periodo($search(@,/Periodo conguagliato (.+)/))) {
+  .mese_inizio_conguaglio; .mese_fine_conguaglio;
+}
 
 mese_fattura=$month_add($if(*calc_conguaglio, mese_inizio_conguaglio, mese_inizio), *calc_mese);
 ### End Script
@@ -180,7 +179,7 @@ $function check_periodo(@) {
     $search_date(@,"%d/%m/%Y",/\D\s*-\s*(\D)/));
 }
 $function calc_totale_parziale(@) {
-  $clear _ret[:];
+  $clear _ret;
   $foreach($search_all(@,$format(/Periodo ($0 Euro\/POD\/mese \N)/,_periodo_generic))) {
     $if($check_periodo()) {
       _ret+=$trunc($num($search(@,/Euro\/POD\/mese (\N)/)),2);
@@ -195,7 +194,7 @@ $function calc_totale_parziale(@) {
   $return _ret;
 }
 $function calc_penale_reattiva(@, percent_reattiva, format_str) {
-  $clear _ret[:];
+  $clear _ret;
   $for(_i=0; _i<3; _i++) {
     $foreach($search_all(@,$format(/Energia Reattiva \($2\) - F$1 - Periodo ($0 Euro\/kVarh \N)/,_periodo_generic,_i+1, format_str))) {
       $if($check_periodo()) {

@@ -104,11 +104,10 @@ iva=$search(@,/Aliquota al (\d+%)/);
 ### Rect 0.020737327188940113 0.3651181744091279 0.46889400921658986 0.030154849225753844
 ### Script
 $if($matches(@,/\w+\. - \w+\. \d{4}/)) {
-  $with($captures(@,/(\w+)\. - (\w+)\. (\d{4})/)) {
-    mese_inizio=$search_date($format("$0 $1", $subitem(@,0), $subitem(@,2)),"%b %Y");
-    mese_fine=$search_date($format("$0 $1", $subitem(@,1), $subitem(@,2)),"%b %Y");
-    mese_fattura=$month_add(mese_inizio,*calc_mese);
-  }
+  _items = $captures(@,/(\w+)\. - (\w+)\. (\d{4})/);
+  mese_inizio=$search_date($format("$0 $1", $subitem(_items,0), $subitem(_items,2)),"%b %Y");
+  mese_fine=$search_date($format("$0 $1", $subitem(_items,1), $subitem(_items,2)),"%b %Y");
+  mese_fattura=$month_add(mese_inizio,*calc_mese);
 } $else {
   $error(*ERRORE_PERIODO_INVALIDO, "AMG: Formato Periodo Errato");
 }
