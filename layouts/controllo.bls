@@ -38,3 +38,19 @@ $elifnot($sys.ate) { *page_controllo++; $goto controllo_layout; }
 $else $error(*ERRORE_NON_IMPLEMENTATO, "Nessun Layout");
 ### End Script
 ### End Box
+
+### Box Controllo Dati Mancanti
+### Flags NOREAD
+### Page 1
+### Rect 0 0 0 0
+### Script
+$foreach($lines($readfile($sys.layout_dir + "/required.lst"))) {
+    $firsttable;
+    $for(;;) {
+        $ifnot([$trim(@)]) $error(*ERRORE_DATI_MANCANTI, $format("Dati Mancanti: $0", $trim(@)));
+        $if ($sys.curtable + 1 >= $sys.numtables) $break;
+        $nexttable;
+    }
+}
+### End Script
+### End Box

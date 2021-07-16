@@ -70,8 +70,6 @@ def check_conguagli(results):
 
     return sorted_data + error_data
 
-required_data = ('fornitore', 'numero_fattura', 'mese_fattura', 'data_fattura', 'codice_pod')
-
 with open(args.errorlist, 'r') as file:
     errcodes = [line.strip() for line in file.readlines()]
 
@@ -82,11 +80,6 @@ def read_pdf(pdf_file):
         ret = {'errcode': -6, 'error': 'Errore di Sistema'}
 
     ret['filename'] = str(pdf_file)
-
-    if 'values' in ret and not all(all(i in v for i in required_data) for v in ret['values']):
-        ret.pop('values')
-        ret['errcode'] = -1
-        ret['error'] = 'Dati Mancanti'
     
     rel_path = pdf_file.relative_to(input_directory)
     if ret['errcode'] == 0:
