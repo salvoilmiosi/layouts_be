@@ -3,7 +3,7 @@
 ### Language it_IT
 
 ### Box Convalida Layout
-### Flags TRIM
+### Flags TRIM 
 ### Page 1
 ### Rect 0.037950665 0.5240123 0.4743833 0.03269837
 ### Script
@@ -14,7 +14,7 @@ $if(@ != "Servizio di fornitura energia elettrica") {
 ### End Box
 
 ### Box Nome Fornitore
-### Flags NOREAD
+### Flags NOREAD 
 ### Page 1
 ### Rect 0.043548387 0.034207527 0.3548387 0.08437856
 ### Goto Label nome_fornitore
@@ -52,25 +52,24 @@ codice_pod=$search(@,/POD \(Punto di prelievo\): (.+)/);
 ### End Box
 
 ### Box Periodo
+### Flags TRIM 
 ### Page 1
 ### Rect 0.26176625 0.5822756 0.23662084 0.025235059
 ### Script
-mese_fattura=$search_date(@,"%B %Y");
-$ifnot(mese_fattura) {
-  mese_fattura=$search_date(@,"%b %Y",/(\D) - \D/);
+$if($matches(@,/\w+ - \w+ \d{4}/)) {
+  _items=$captures(@,/(\w+) - (\w+) (\d{4})/);
+  mese_inizio=$date($format("$0 $1",$subitem(_items,0),$subitem(_items,2)),"%b %Y");
+  mese_fine=$date($format("$0 $1",$subitem(_items,1),$subitem(_items,2)),"%b %Y");
+}$elif($matches(@,/\w+ \d{4} - \w+ \d{4}/)) {
+  mese_inizio=$search_date(@,"%b %Y",/(\D) - \D/);
   mese_fine=$search_date(@,"%b %Y",/\D - (\D)/);
+}$elif($matches(@,/\w+ \d{4}/)) {
+  mese_inizio=$date(@,"%B %Y");
+  mese_fine=$date(@,"%B %Y");
+}$else{
+  $error(*ERRORE_PERIODO_INVALIDO,"Sorgenia: Formato Periodo Non Valido");
 }
-$ifnot(mese_fattura) {
-  _anno=$search(@,/(\d\d\d\d)/);
-  mese_fattura=$search_date($format("$0 $1",_anno,$search(@,/(\w\w\w) - \w\w\w/)),"%Y %b");
-  mese_fine=$search_date($format("$0 $1",_anno,$search(@,/\w\w\w - (\w\w\w)/)),"%Y %b");
-}
-$if(mese_fine) {
-  $if(mese_fine < mese_fattura) {
-    $error(*ERRORE_PERIODO_INVALIDO, "Sorgenia: Periodo Non Valido");
-  }
-  mese_fattura=$month_add(mese_fattura,*calc_mese);
-}
+mese_fattura=$month_add(mese_inizio,*calc_mese);
 ### End Script
 ### End Box
 
@@ -97,27 +96,26 @@ data_fattura=$search_date(@,"%d/%m/%Y",/Del: (\D)/);
 ### Page 2
 ### Rect 0.0315568 0.02850627 0.9274193 0.91467947
 ### Script
-$setbegin($indexofend(@,$date_format(mese_fattura,"%B %Y")));
-$setend($indexof(@,"\n",$indexof(@,"FORNITURA DI")));
-
-$step($captures(@,/CONSUMI EFFETTIVI \(kWh\) (\N) (\N) (\N)/)) {
-  .%energia_attiva_rilevata[0]; .%energia_attiva_rilevata[1]; .%energia_attiva_rilevata[2];
+$rbetween($date_format(mese_fattura,"%B %Y"),/FORNITURA DI .+/) {
+  $step($captures(@,/CONSUMI EFFETTIVI \(kWh\) (\N) (\N) (\N)/)) {
+    .%energia_attiva_rilevata[0]; .%energia_attiva_rilevata[1]; .%energia_attiva_rilevata[2];
+  }
+  %spesa_materia_energia=$search(@,/SERVIZI DI VENDITA (\N)/);
+  %pcv=$search(@,/PCV euro\/cliente\/mese \N \N (\N)/);
+  $step($captures(@,/Prezzo F1 euro\/kWh (\N) (\N)/)) {
+    .%prezzo_energia[0]; .%energia_attiva[0];
+  }
+  $step($captures(@,/Prezzo F2 euro\/kWh (\N) (\N)/)) {
+    .%prezzo_energia[1]; .%energia_attiva[1];
+  }
+  $step($captures(@,/Prezzo F3 euro\/kWh (\N) (\N)/)) {
+    .%prezzo_energia[2]; .%energia_attiva[2];
+  }
+  %trasporto_gestione=$search(@,/SERVIZI DI RETE (\N)/);
+  %potenza[0:3]=$search(@,/Quota Potenza euro\/kW\/mese \N (\N)/);
+  %accise=$search(@,/Imposta erariale \(fino a .+ kWh\) euro\/kWh \N \N (\N)/);
+  %imponibile=$search(@,/(\N)$/);
 }
-%spesa_materia_energia=$search(@,/SERVIZI DI VENDITA (\N)/);
-%pcv=$search(@,/PCV euro\/cliente\/mese \N \N (\N)/);
-$step($captures(@,/Prezzo F1 euro\/kWh (\N) (\N)/)) {
-  .%prezzo_energia[0]; .%energia_attiva[0];
-}
-$step($captures(@,/Prezzo F2 euro\/kWh (\N) (\N)/)) {
-  .%prezzo_energia[1]; .%energia_attiva[1];
-}
-$step($captures(@,/Prezzo F3 euro\/kWh (\N) (\N)/)) {
-  .%prezzo_energia[2]; .%energia_attiva[2];
-}
-%trasporto_gestione=$search(@,/SERVIZI DI RETE (\N)/);
-%potenza[0:3]=$search(@,/Quota Potenza euro\/kW\/mese \N (\N)/);
-%accise=$search(@,/Imposta erariale \(fino a .+ kWh\) euro\/kWh \N \N (\N)/);
-%imponibile=$search(@,/(\N)$/);
 ### End Script
 ### End Box
 
@@ -125,12 +123,10 @@ $step($captures(@,/Prezzo F3 euro\/kWh (\N) (\N)/)) {
 ### Page 2
 ### Rect 0.036764704 0.0058689383 0.030834913 0.017606815
 ### Script
-$if(mese_fine) {
-  $if(mese_fattura != mese_fine) {
-    *calc_mese++;
-    $nexttable;
-    $goto nome_fornitore;
-  }
+$if(mese_fattura != mese_fine) {
+  *calc_mese++;
+  $nexttable;
+  $goto nome_fornitore;
 }
 ### End Script
 ### End Box

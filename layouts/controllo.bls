@@ -5,9 +5,12 @@
 ### Page 1
 ### Rect 0 0 0 0
 ### Script
+_i=0;
 $foreach($lines($readfile($sys.layout_dir + "/errors.lst"))) {
-    *["ERRORE_" + $trim(@)] = $sys.tokenidx;
+    *["ERRORE_" + $trim(@)] = _i;
+    _i++;
 }
+$clear _i;
 ### End Script
 ### End Box
 

@@ -116,9 +116,7 @@ rotate+*rotation;
 ### Rect 0.34734598900075014 0.06527792929611916 0.028054298642533948 0.03457106274007682
 ### Script
 $with(*_dettaglio) {
-  $with {
-    $setbegin($min($indexofend(@,"Quadro di dettaglio"),$indexofend(@,"Elementi di dettaglio")));
-    $setend($indexof(@,"\n"));
+  $between($if($contains(@,"Quadro di dettaglio"),"Quadro di dettaglio","Elementi di dettaglio"),"\n") {
     mese_inizio=$first_day($search_date(@,"%d.%m.%Y",/dal (\D) al \D/));
     mese_fine=$first_day($search_date(@,"%d.%m.%Y",/dal \D al (\D)/));
     $if(mese_fine < mese_inizio) {
@@ -153,9 +151,7 @@ $with(*_dettaglio) {
     }
   }
   $between("Totale servizi di Vendita","...........") {
-    $with {
-      $setbegin($min($indexofend(@,"Prezzo Netto"),$indexofend(@,"Prezzo dell'energia")));
-      $setend($indexof(@,"Perdite di Rete"));
+    $between($if($contains(@,"Prezzo Netto"),"Prezzo Netto","Prezzo dell'energia"),"Perdite di Rete") {
       $with($search(@,$format(/Importo $0\n((?:\s+.+\n)+)/,_periodo))) {
         $step($captures(@,/fascia F1 \u20ac\/kWh (\N) (\N) kWh/)) {
           .%prezzo_energia[0]; .%energia_attiva[0];

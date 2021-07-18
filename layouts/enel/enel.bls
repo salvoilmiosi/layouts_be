@@ -205,9 +205,7 @@ $with(*_dettaglio) {
       }
     }
   }
-  $with {
-    $setbegin($searchposend(@,/SPESA (?:PER IL )?TRASPORTO/));
-    $setend($indexof(@,"Totale spesa"));
+  $between(/SPESA (?:PER IL )?TRASPORTO/,"Totale spesa") {
     $foreach($search_all(@,_regex_periodo)) {
       ^trasporto_gestione+=$search_all(@,/mesi.?1 (\N)/);
       ^trasporto_gestione+=$search_all(@,/\/kWh \N \N (\N)/);
