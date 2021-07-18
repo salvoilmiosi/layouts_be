@@ -116,7 +116,7 @@ rotate+*rotation;
 ### Rect 0.34734598900075014 0.06527792929611916 0.028054298642533948 0.03457106274007682
 ### Script
 $with(*_dettaglio) {
-  $newview {
+  $with {
     $setbegin($min($indexofend(@,"Quadro di dettaglio"),$indexofend(@,"Elementi di dettaglio")));
     $setend($indexof(@,"\n"));
     mese_inizio=$first_day($search_date(@,"%d.%m.%Y",/dal (\D) al \D/));
@@ -153,7 +153,7 @@ $with(*_dettaglio) {
     }
   }
   $between("Totale servizi di Vendita","...........") {
-    $newview {
+    $with {
       $setbegin($min($indexofend(@,"Prezzo Netto"),$indexofend(@,"Prezzo dell'energia")));
       $setend($indexof(@,"Perdite di Rete"));
       $with($search(@,$format(/Importo $0\n((?:\s+.+\n)+)/,_periodo))) {
