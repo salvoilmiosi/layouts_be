@@ -88,8 +88,8 @@ $function parse_periodo(str_periodo) {
   } $elif($matches(str_periodo,/\d+ \w+\.\s*-\s*\d+ \w+\. \d+/)) { # es. 01 gen.-31 mar. 2021
     _items = $captures(str_periodo,/\d+ (\w+)\.\s*-\s*\d+ (\w+)\. (\d+)/);
     $return $list(
-      $search_date($format("$0 $1", $subitem(_items,0), $subitem(_items,2)),"%b %Y"),
-      $search_date($format("$0 $1", $subitem(_items,1), $subitem(_items,2)),"%b %Y"));
+      $date($format("$0 $1", $subitem(_items,0), $subitem(_items,2)),"%b %Y"),
+      $date($format("$0 $1", $subitem(_items,1), $subitem(_items,2)),"%b %Y"));
   } $elif($matches(str_periodo,/\d+ \w+\. \d+\s*-\s*\d+ \w+ \d+/)) { # es. 01 dic. 2020-31 gen. 2021
     $return $list(
       $first_day($search_date(str_periodo,"%d %b. %Y",/(\D)\s*-\s*\D/)),
