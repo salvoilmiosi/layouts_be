@@ -116,7 +116,7 @@ rotate+*rotation;
 ### Rect 0.34734598900075014 0.06527792929611916 0.028054298642533948 0.03457106274007682
 ### Script
 $with(*_dettaglio) {
-  $between($if($contains(@,"Quadro di dettaglio"),"Quadro di dettaglio","Elementi di dettaglio"),"\n") {
+  $with($between(@,$if($contains(@,"Quadro di dettaglio"),"Quadro di dettaglio","Elementi di dettaglio"),"\n")) {
     mese_inizio=$first_day($search_date(@,"%d.%m.%Y",/dal (\D) al \D/));
     mese_fine=$first_day($search_date(@,"%d.%m.%Y",/dal \D al (\D)/));
     $if(mese_fine < mese_inizio) {
@@ -129,7 +129,7 @@ $with(*_dettaglio) {
   _lettura_inizio=$format(/(?:$0|$1)/,
     $date_format($last_day($month_add(mese_fattura,-1)),"%d\\.%m\\.%Y"),
     $date_format(mese_fattura,"01\\.%m\\.%Y"));
-  $between("energia attiva (kWh)","consumo rilevato energia") {
+  $with($between(@,"energia attiva (kWh)","consumo rilevato energia")) {
     $step($captures(@,$format(/$0 (\N) (\N) (\N) Lettura Rilevata/,_lettura_fine))) {
       .%energia_attiva_rilevata[0]; .%energia_attiva_rilevata[1]; .%energia_attiva_rilevata[2];
     }
@@ -137,7 +137,7 @@ $with(*_dettaglio) {
       %energia_attiva_rilevata[0]-=@; %energia_attiva_rilevata[1]-=@; %energia_attiva_rilevata[2]-=@;
     }
   }
-  $between("energia reattiva (kVARh)","consumo rilevato energia") {
+  $with($between(@,"energia reattiva (kVARh)","consumo rilevato energia")) {
     $step($captures(@,$format(/$0 (\N) (\N) (\N) Lettura Rilevata/,_lettura_fine))) {
       .%energia_reattiva[0]; .%energia_reattiva[1]; .%energia_reattiva[2];
     }
@@ -145,13 +145,13 @@ $with(*_dettaglio) {
       %energia_reattiva[0]-=@; %energia_reattiva[1]-=@; %energia_reattiva[2]-=@;
     }
   }
-  $between("potenza (kW)","..........."){
+  $with($between(@,"potenza (kW)","...........")) {
     $step($captures(@,$format(/$0 (\N) (\N) (\N) Lettura Rilevata/,_lettura_fine))) {
       .%potenza[0]; .%potenza[1]; .%potenza[2];
     }
   }
-  $between("Totale servizi di Vendita","...........") {
-    $between($if($contains(@,"Prezzo Netto"),"Prezzo Netto","Prezzo dell'energia"),"Perdite di Rete") {
+  $with($between(@,"Totale servizi di Vendita","...........")) {
+    $with($between(@,$if($contains(@,"Prezzo Netto"),"Prezzo Netto","Prezzo dell'energia"),"Perdite di Rete")) {
       $with($search(@,$format(/Importo $0\n((?:\s+.+\n)+)/,_periodo))) {
         $step($captures(@,/fascia F1 \u20ac\/kWh (\N) (\N) kWh/)) {
           .%prezzo_energia[0]; .%energia_attiva[0];
@@ -165,7 +165,7 @@ $with(*_dettaglio) {
       }
     }
     _totale_consumi=$sum(energia_attiva[0],energia_attiva[1],energia_attiva[2]);
-    $between("Dispacciamento") {
+    $with($between(@,"Dispacciamento")) {
       $with($search(@,$format(/Importo $0\n((?:\s+.+\n)+)/,_periodo))) {
         dispacciamento += $num($search(@,/fascia F1 \u20ac\/kWh (\N)/)) * energia_attiva[0];
         dispacciamento += $num($search(@,/fascia F2 \u20ac\/kWh (\N)/)) * energia_attiva[1];
@@ -173,7 +173,7 @@ $with(*_dettaglio) {
         dispacciamento = dispacciamento / _totale_consumi;
       }
     }
-    $between("Sbilanciamento") {
+    $with($between(@,"Sbilanciamento")) {
       $foreach($search_all(@,/Sbilanciamento ((?:Importo.+\n)+)/)) {
         $if($date_between(mese_fattura,$search_date(@,"%d.%m.%Y",/dal (\D) al \D/),$search_date(@,"%d.%m.%Y",/dal \D al (\D)/))) {
           %sbilanciamento=$search(@,/\u20ac\/kWh (\N)/);
@@ -191,8 +191,8 @@ $with(*_dettaglio) {
       }
     }
   }
-  $between("Totale servizi di Rete","...........") {
-    $between("QUOTA FISSA", "QUOTA POTENZA") {
+  $with($between(@,"Totale servizi di Rete","...........")) {
+    $with($between(@,"QUOTA FISSA", "QUOTA POTENZA")) {
       $foreach($search_all(@,/Importo (dal \d\d\.\d\d\.\d\d\d\d al \d\d\.\d\d\.\d\d\d\d .+)/)) {
         $if($date_between(mese_fattura,$search_date(@,"%d.%m.%Y",/dal (\D) al \D/),$search_date(@,"%d.%m.%Y",/dal \D al (\D)/))) {
           trasporto_gestione+=$trunc($abs($num($search(@,/\u20ac\/cliente\/mese (\N)/)))**mul_nota_credito, 2);
@@ -200,10 +200,10 @@ $with(*_dettaglio) {
         }
       }
     }
-    $between("QUOTA POTENZA","QUOTA VARIABILE") {
+    $with($between(@,"QUOTA POTENZA","QUOTA VARIABILE")) {
       %trasporto_gestione+=$search(@,$format(/Importo $0 \u20ac\/kW di potenza \N \N kW (\N)/,_periodo));
     }
-    $between("QUOTA VARIABILE") {
+    $with($between(@,"QUOTA VARIABILE")) {
       $foreach($search_all(@,/Importo (dal \d\d\.\d\d\.\d\d\d\d al \d\d\.\d\d\.\d\d\d\d\n.+)/)) {
         $if($date_between(mese_fattura,$search_date(@,"%d.%m.%Y",/dal (\D) al \D/),$search_date(@,"%d.%m.%Y",/dal \D al (\D)/))) {
           trasporto_gestione+=$trunc($num($search(@,/\u20ac\/kWh (\N)/)) * _totale_consumi, 2);
@@ -225,7 +225,7 @@ $with(*_dettaglio) {
       }
     }
   }
-  $between("Totale Imposte") {
+  $with($between(@,"Totale Imposte")) {
     accise=$trunc(0.0125 * _totale_consumi * *mul_nota_credito, 2);
     iva=$search(@,/IVA (\d+%)/);
     imponibile=$sum(spesa_materia_energia,trasporto_gestione,accise);

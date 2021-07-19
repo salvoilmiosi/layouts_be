@@ -146,7 +146,7 @@ data_scadenza=$search_date(@,"%d.%m.%Y",/Entro il (\D)/);
 ### Page 2
 ### Rect 0.03711486845965273 0.038112792295081965 0.68683654 0.9167617
 ### Script
-$between(/(?:Consumi rilevati|Dettaglio dei consumi)/,"INFORMAZIONI PER I CLIENTI") {
+$with($between(@,/(?:Consumi rilevati|Dettaglio dei consumi)/,"INFORMAZIONI PER I CLIENTI")) {
   _table_fmt=$table_header(@,/F1/,/F2/,/F3/,/F1/,/F2/,/F3/,/F1 F2 F3/,/F1/,/F2/,/F3/);
   $step($table_row(
     $search(@,$format(/dal \d\d\.\d\d\.\d\d\d\d\n(.+) al \d\d\.$0/,
@@ -168,7 +168,7 @@ $between(/(?:Consumi rilevati|Dettaglio dei consumi)/,"INFORMAZIONI PER I CLIENT
 _mese_full=$date_format(mese_fattura,"%B %Y");
 _mese_abbr=$date_format(mese_fattura,"%m/%Y");
 $with(*_dettaglio) {
-  $between("SPESA PER LA MATERIA ENERGIA","TOTALE SPESA PER LA MATERIA ENERGIA") {
+  $with($between(@,"SPESA PER LA MATERIA ENERGIA","TOTALE SPESA PER LA MATERIA ENERGIA")) {
     ^spesa_materia_energia+=$search_all(@,$format(/$0[^]+?mesi \N (\N)/,_mese_full));
     ^spesa_materia_energia+=$search_all($search_all(@,
       $format(/dal \d\d\/\d\d\/\d\d\d\d al \d\d\/$0([^]+?)(dal|Totale|$)/,_mese_abbr)),/(\N)(?:\n|$)/);
@@ -184,20 +184,20 @@ $with(*_dettaglio) {
       }
     }
   }
-  $between("SPESA PER IL TRASPORTO","TOTALE SPESA PER IL TRASPORTO") {
+  $with($between(@,"SPESA PER IL TRASPORTO","TOTALE SPESA PER IL TRASPORTO")) {
     ^trasporto_gestione=$search_all(@,$format(/$0[^]+?mesi \N (\N)/,_mese_full));
     $with($search_all(@,$format(/dal \d\d\/\d\d\/\d\d\d\d al \d\d\/$0([^]+?)(dal|Totale|$)/,_mese_abbr))) {
       ^trasporto_gestione+=$search_all(@,/(\N)(?:\n|$)/);
     }
     %potenza[0:3]=$search(@,$format(/QUOTA POTENZA\n$0.+ kW (\N) mesi \N/,_mese_full));
   }
-  $between("SPESA PER ONERI DI SISTEMA","TOTALE SPESA PER ONERI") {
+  $with($between(@,"SPESA PER ONERI DI SISTEMA","TOTALE SPESA PER ONERI")) {
     ^oneri=$search_all(@,$format(/$0[^]+?mesi \N (\N)/,_mese_full));
     $with($search_all(@,$format(/dal \d\d\/\d\d\/\d\d\d\d al \d\d\/$0([^]+?)(?:dal|Totale|$)/,_mese_abbr))) {
       ^oneri+=$search_all(@,/.+ (\N)/);
     }
   }
-  $between("IMPOSTE ED IVA","TOTALE IMPOSTE ED IVA") {
+  $with($between(@,"IMPOSTE ED IVA","TOTALE IMPOSTE ED IVA")) {
     iva=$search(@,/IVA (\N%)/);
     %accise=$search($search(@,/ACCISA SULL'ENERGIA ELETTRICA\n((dal.+\n)+)/),
       $format(/al \d\d\/$0.+ (\N)/,_mese_abbr));

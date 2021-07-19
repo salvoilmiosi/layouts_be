@@ -7,13 +7,13 @@
 ### Rect 0 0 0 0
 ### Script
 $with(*_dettaglio) {
-  $between("CONSUMI e RICALCOLI","CONSUMI ULTIMI 13 MESI") {
-    $between("ENERGIA ATTIVA","ENERGIA REATTIVA") {
+  $with($between(@,"CONSUMI e RICALCOLI","CONSUMI ULTIMI 13 MESI")) {
+    $with($between(@,"ENERGIA ATTIVA","ENERGIA REATTIVA")) {
       $step($captures(@,$format(/$0 \w+\*? (\N) (\N) (\N)/,$date_format(mese_fattura,"%b - %y")))) {
         .%energia_attiva_rilevata[0]; .%energia_attiva_rilevata[1]; .%energia_attiva_rilevata[2];
       }
     }
-    $between("ENERGIA REATTIVA") {
+    $with($between(@,"ENERGIA REATTIVA")) {
       $step($captures(@,$format(/$0 (\N) (\N) (\N)/,$date_format(mese_fattura,"%b - %y")))) {
         .%energia_reattiva[0]; .%energia_reattiva[1]; .%energia_reattiva[2];
       }
@@ -23,7 +23,7 @@ $with(*_dettaglio) {
   ^cts=$search_all(@,/Corrispettivo Tariffario Specifico dal \d\d\/\d\d\/\d\d\d\d al \d\d\/\d\d\/\d\d\d\d (\N)/);
   iva=$search(@,/Iva (\N%)/);
 
-  $rbetween($date_format(mese_fattura,"%B %Y"),/FORNITURA DI .+\n/) {
+  $with($rbetween(@,$date_format(mese_fattura,"%B %Y"),/FORNITURA DI .+\n/)) {
     %pcv=$search(@,/PCV euro\/cliente\/mese \N \N (\N)/);
     %spesa_materia_energia=$search(@,/DETTAGLIO DELLA SPESA PER (?:L\u2019ENERGIA ELETTRICA|LA MATERIA ENERGIA)[^]+?(\N) DETTAGLIO/);
     %trasporto_gestione=$search(@,/DETTAGLIO DELLA SPESA PER (?:IL TRASPORTO, GESTIONE DEL CONTATORE|TRASPORTO ENERGIA, GESTIONE CONTATORE) E ONERI DI SISTEMA[^]+?(\N) IMPOSTE/);

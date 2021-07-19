@@ -136,7 +136,7 @@ $with(*_dettaglio) {
 
   iva=$search(@,/(\d+%)\n/);
 
-  $between("SPESA PER LA MATERIA ENERGIA","Subtotale") {
+  $with($between(@,"SPESA PER LA MATERIA ENERGIA","Subtotale")) {
     ^spesa_materia_energia=$search_all(@,$format(/dal \d\d\.\d\d\.\d\d\d\d al \d\d\.$0.+ (\N) \d+%/,_mese));
     ^sbilanciamento=$search_all($search(@,/Sbilanciamento\n((dal.+\n)+)/),
       $format(/al \d\d\.$0 Euro\/kWh (\N)/,_mese));
@@ -157,12 +157,12 @@ $with(*_dettaglio) {
       }
     }
   }
-  $between("SCONTI","Subtotale") {
+  $with($between(@,"SCONTI","Subtotale")) {
     ^sconti=$search_all(@,$format(/dal \d\d\.\d\d\.\d\d\d\d al \d\d\.$0.+ (\N) \d+%/,_mese));
   }
-  $between("SPESA PER IL TRASPORTO","Subtotale") {
+  $with($between(@,"SPESA PER IL TRASPORTO","Subtotale")) {
     ^trasporto_gestione=$search_all(@,$format(/dal \d\d\.\d\d\.\d\d\d\d al \d\d\.$0.+ (\N) \d+%/,_mese));
-    $between("QUOTA POTENZA","QUOTA ENERGIA") {
+    $with($between(@,"QUOTA POTENZA","QUOTA ENERGIA")) {
       ^potenza[0:3]=$search_all(@,$format(/al \d\d\.$0 Euro\/kW \N (\N)/,_mese));
     }
 
@@ -171,10 +171,10 @@ $with(*_dettaglio) {
     ^penale_reattiva_sup75=$search_all($search(@,/Energia Reattiva oltre 75%\n((dal.+\n)+)/),
       $format(/al \d\d\.$0 F[1-3] Euro\/kVarh \N \N (\N)/,_mese));
   }
-  $between("ONERI DI SISTEMA","Subtotale") {
+  $with($between(@,"ONERI DI SISTEMA","Subtotale")) {
     ^oneri=$search_all(@,$format(/dal \d\d\.\d\d\.\d\d\d\d al \d\d\.$0.+ (\N) \d+%/,_mese));
   }
-  $between(/IMPOSTE IMPORTO/,"Subtotale") {
+  $with($between(@,/IMPOSTE IMPORTO/,"Subtotale")) {
     ^accise=$search_all($search_all(@,/Imposta erariale.*\n((dal.+\n)+)/),
       $format(/al \d\d\.$0 Euro\/kWh \N \N (\N)/,_mese));
   }
@@ -194,7 +194,7 @@ p+*off_allegato;
 p+*next_page;
 ### End Spacers
 ### Script
-$between("CONSUMI E LETTURE","Consumi fatturati negli ultimi 12 mesi") {
+$with($between(@,"CONSUMI E LETTURE","Consumi fatturati negli ultimi 12 mesi")) {
   $foreach($search_all(@,/(.*Periodo \(dal - al\).+\n.+(?:\n.*\d{2}.\d{2}.\d{4}.+)+)/)) {
     _header=$table_header(@,/Consumi fatturati kWh(?: Consumi fatturati kWh)?/,"Energia Reattiva");
     $foreach($search_all(@,$format(/(.+ - \d\d\.$0.+)/,_mese))) {

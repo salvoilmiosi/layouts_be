@@ -95,7 +95,7 @@ data_fattura=$search_date(@,"%d/%m/%Y",/Del: (\D)/);
 ### Page 2
 ### Rect 0.0315568 0.02850627 0.9274193 0.91467947
 ### Script
-$rbetween($date_format(mese_fattura,"%B %Y"),/FORNITURA DI .+/) {
+$with($rbetween(@,$date_format(mese_fattura,"%B %Y"),/FORNITURA DI .+/)) {
   $step($captures(@,/CONSUMI EFFETTIVI \(kWh\) (\N) (\N) (\N)/)) {
     .%energia_attiva_rilevata[0]; .%energia_attiva_rilevata[1]; .%energia_attiva_rilevata[2];
   }

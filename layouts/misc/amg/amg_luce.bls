@@ -124,7 +124,7 @@ _mese=$date_format(mese_fattura,"%m/%Y");
 ### Page 2
 ### Rect 0.035227272727272725 0.10522088353413654 0.03181818181818182 0.02570281124497993
 ### Script
-$between("DETTAGLIO LETTURE","DETTAGLIO ALTRE PARTITE") {
+$with($between(@,"DETTAGLIO LETTURE","DETTAGLIO ALTRE PARTITE")) {
   $foreach($search_all(@,$format(/\d\d\/$0 (.+)/,_mese))) {
     $step($captures(@,/(\N) (\N) (\N) Effettivi/)) {
       %energia_attiva_rilevata[0]+=@;
@@ -167,7 +167,7 @@ $function calc_parziale(@) {
 }
 _regex_periodo=/\d\d\/\d\d\/\d\d\d\d - \d\d\/\d\d\/\d\d\d\d/;
 $with(*_dettaglio) {
-  $between("Spesa per la Materia Prima Energia","Spesa per il trasporto") {
+  $with($between(@,"Spesa per la Materia Prima Energia","Spesa per il trasporto")) {
     $foreach($search_all(@,$format(/Comp\. PCV ($0 \N) \u20ac\/cliente\/mese/,_regex_periodo))) {
       $if($check_periodo()) {
         %pcv=$search(@,/(\N)$/);
@@ -183,7 +183,7 @@ $with(*_dettaglio) {
     }
     spesa_materia_energia+=$calc_parziale();
   }
-  $between("Spesa per il trasporto","Spesa per Oneri") {
+  $with($between(@,"Spesa per il trasporto","Spesa per Oneri")) {
     $foreach($search_all(@,$format(/($0 \N \u20ac\/kW\/mese \N kW)/,_regex_periodo))) {
       $if($check_periodo()) {
         %potenza[0:3] = $search(@,/(\N) kW/);
@@ -198,10 +198,10 @@ $with(*_dettaglio) {
     }
     trasporto_gestione+=$calc_parziale();
   }
-  $between("Spesa per Oneri","Imposte") {
+  $with($between(@,"Spesa per Oneri","Imposte")) {
     oneri=$calc_parziale();
   }
-  $between("Imposte","ALTRI IMPORTI") {
+  $with($between(@,"Imposte","ALTRI IMPORTI")) {
     $foreach($search_all(@,$format(/Imposta Erariale ($0 \N \u20ac\/kWh \N kWh \N)/,_regex_periodo))) {
       $if($check_periodo()) {
         %accise=$search(@,/(\N)$/);

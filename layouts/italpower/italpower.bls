@@ -155,7 +155,7 @@ codice_pod=$search(@,/NUMERO POD: (\w+)/);
 p+*next_page;
 ### End Spacers
 ### Script
-$between("RIEPILOGO LETTURE E CONSUMI","CONSUMI FATTURATI") {
+$with($between(@,"RIEPILOGO LETTURE E CONSUMI","CONSUMI FATTURATI")) {
   _header=$table_header(@,/Dal Al/,/Consumi/,/Consumi/);
   $foreach($captures(@,$format(/(.+\d\d\/$0 F1.+)\n(.+F2.+)\n(.+F3.+)/,$date_format(mese_fattura,"%m/%Y")))) {
     $step($table_row(@,_header)) {
@@ -208,7 +208,7 @@ $function calc_penale_reattiva(@, percent_reattiva, format_str) {
 $with(*_dettaglio) {
   _periodo=$format(/\d\d\/\d\d\/\d\d\d\d-\s*\d\d\/$0/,$date_format(mese_fattura,"%m/%Y"));
   _periodo_generic=/\d{2}\/\d{2}\/\d{4}\s*-\s*\d{2}\/\d{2}\/\d{4}/;
-  $between("","Totale materia energia") {
+  $with($between(@,"","Totale materia energia")) {
     $foreach($search_all(@,/Acconti fatture precedenti per servizi di vendita su kWh \N - Periodo (.+ \N)/)) {
       $if($check_periodo()) {
         %spesa_materia_energia+=$search(@,/(\N)$/);
@@ -245,7 +245,7 @@ $with(*_dettaglio) {
       }
     }
   }
-  $between("Totale materia energia","Totale Trasporto e gestione del contatore") {
+  $with($between(@,"Totale materia energia","Totale Trasporto e gestione del contatore")) {
     $foreach($search_all(@,/Acconti fatture precedenti per oneri di trasporto e gestione del contatore su kWh \N - Periodo (.+ \N)/)) {
       $if($check_periodo()) {
         %trasporto_gestione+=$search(@,/(\N)$/);
@@ -259,7 +259,7 @@ $with(*_dettaglio) {
 
     trasporto_gestione+=penale_reattiva_inf75 + penale_reattiva_sup75;
   }
-  $between("Totale Trasporto e gestione del contatore","Totale oneri di sistema") {
+  $with($between(@,"Totale Trasporto e gestione del contatore","Totale oneri di sistema")) {
     $foreach($search_all(@,/Acconti fatture precedenti per oneri di sistema su kWh \N - Periodo (.+ \N)/)) {
       $if($check_periodo()) {
         %oneri+=$search(@,/(\N)$/);
@@ -267,7 +267,7 @@ $with(*_dettaglio) {
     }
     oneri+=$calc_totale_parziale();
   }
-  $between("Totale oneri di sistema","Totale imposte") {
+  $with($between(@,"Totale oneri di sistema","Totale imposte")) {
     $foreach($search_all(@,/Acconti fatture precedenti per Imposte su kWh \N - Periodo (.+ \N)/)) {
       $if($check_periodo()) {
         %accise+=$search(@,/(\N)$/);

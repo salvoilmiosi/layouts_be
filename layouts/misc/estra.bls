@@ -97,7 +97,7 @@ codice_pod=$search(@,/POD \(Punto di prelievo\) (\w+)/);
 ### Page 2
 ### Rect 0.053225808 0.31470925 0.92419356 0.64766246
 ### Script
-$between("CONSUMI FATTURATI","RIEPILOGO IMPOSTE E IVA") {
+$with($between(@,"CONSUMI FATTURATI","RIEPILOGO IMPOSTE E IVA")) {
   $step($captures(@,$format(/Effettivi $0 \N (\N) (\N) (\N)/,_periodo))) {
     .%energia_attiva_rilevata[0]; .%energia_attiva_rilevata[1]; .%energia_attiva_rilevata[2];
   }
@@ -111,7 +111,7 @@ $between("CONSUMI FATTURATI","RIEPILOGO IMPOSTE E IVA") {
 ### Rect 0.32258067 0.079041496 0.048387095 0.028506272
 ### Script
 $with(*_dettaglio) {
-  $between("TOTALE MATERIA ENERGIA","TOTALE TRASPORTO E GESTIONE CONTATORE") {
+  $with($between(@,"TOTALE MATERIA ENERGIA","TOTALE TRASPORTO E GESTIONE CONTATORE")) {
     ^spesa_materia_energia=$search_all(@,$format(/$0 .+ (\N) \N/,_periodo));
     %pcv=$search(@,$format(/Commercializzazione vendita $0 \u20ac\/POD\/mese \N \N (\N)/,_periodo));
     $step($captures(@,$format(/Energia F1 $0 \u20ac\/kWh (\N) (\N)/,_periodo))) {
@@ -125,20 +125,20 @@ $with(*_dettaglio) {
     }
     %sbilanciamento=$search(@,$format(/Sbilanciamento $0 \u20ac\/kWh (\N)/,_periodo));
   }
-  $between("TOTALE TRASPORTO E GESTIONE CONTATORE","TOTALE ONERI DI SISTEMA") {
+  $with($between(@,"TOTALE TRASPORTO E GESTIONE CONTATORE","TOTALE ONERI DI SISTEMA")) {
     ^trasporto_gestione=$search_all(@,$format(/$0 .+ (\N) \N/,_periodo));
     %potenza[0:3]=$search(@,$format(/Quota potenza $0 \u20ac\/kW \N (\N)/,_periodo));
   }
-  $between("TOTALE ONERI DI SISTEMA","TOTALE ALTRE IMPOSTE") {
+  $with($between(@,"TOTALE ONERI DI SISTEMA","TOTALE ALTRE IMPOSTE")) {
     ^oneri=$search_all(@,$format(/$0 .+ (\N) \N/,_periodo));
   }
-  $between("TOTALE ALTRE IMPOSTE","TOTALE FORNITURA") {
+  $with($between(@,"TOTALE ALTRE IMPOSTE","TOTALE FORNITURA")) {
     %accise=$search(@,$format(/Imposta erariale di consumo $0 \d+\u00b0 \u20ac\/kWh \N \N (\N)/,_periodo));
   }
-  $between("TOTALE ALTRE PARTITE","TOTALE FORNITURA") {
+  $with($between(@,"TOTALE ALTRE PARTITE","TOTALE FORNITURA")) {
     ^altre_partite=$search_all(@,$format(/$0 .+ (\N) \N/,_periodo));
   }
-  $between("TOTALE FORNITURA","TOTALE DA PAGARE") {
+  $with($between(@,"TOTALE FORNITURA","TOTALE DA PAGARE")) {
     iva=$search(@,/IVA (\d+%)/);
   }
   imponibile=$sum(spesa_materia_energia, trasporto_gestione, oneri, accise, altre_partite);

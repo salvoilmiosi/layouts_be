@@ -7,7 +7,7 @@
 ### Script
 $error(*ERRORE_NON_IMPLEMENTATO, "Sorgenia: Fattura Gas Non Implementata");
 $with(*_dettaglio) {
-  $between("IMPORTI\n","ALTRE PARTITE\n") {
+  $with($between(@,"IMPORTI\n","ALTRE PARTITE\n")) {
     
   }
 }
