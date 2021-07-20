@@ -34,6 +34,26 @@ $if(@ == "COMUNICAZIONI") {
 ### End Script
 ### End Box
 
+### Box Prima Pagina Dettaglio
+### Flags TRIM 
+### Page 3
+### Rect 0.0379746835443038 0.0894854586129754 0.3069620253164557 0.03131991051454139
+### Goto Label cerca_dettaglio
+### Spacers
+p+*off_allegato;
+p+*off_dettaglio;
+p+*next_page;
+### End Spacers
+### Script
+$if($sys.ate) {
+  $error(*ERRORE_DETTAGLIO_MANCANTE, "Axpo: Dettaglio Mancante");
+}$elif(@ != "QUADRO DI DETTAGLIO") {
+  *off_dettaglio++;
+  $goto cerca_dettaglio;
+}
+### End Script
+### End Box
+
 ### Box Lettura Dettaglio
 ### Mode RAW
 ### Page 3
@@ -174,7 +194,7 @@ $with(*_dettaglio) {
   $with($between(@,"ONERI DI SISTEMA","Subtotale")) {
     ^oneri=$search_all(@,$format(/dal \d\d\.\d\d\.\d\d\d\d al \d\d\.$0.+ (\N) \d+%/,_mese));
   }
-  $with($between(@,/IMPOSTE IMPORTO/,"Subtotale")) {
+  $with($between(@,"IMPOSTE","Subtotale")) {
     ^accise=$search_all($search_all(@,/Imposta erariale.*\n((dal.+\n)+)/),
       $format(/al \d\d\.$0 Euro\/kWh \N \N (\N)/,_mese));
   }
@@ -235,7 +255,7 @@ $if(@ == "DATI FORNITURA") {
   *off_dettaglio = 0;
   $nexttable;
   $clear *_dettaglio;
-  $goto lettura_dettaglio;
+  $goto cerca_dettaglio;
 }
 ### End Script
 ### End Box
