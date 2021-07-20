@@ -14,8 +14,11 @@ with open(clienti_json, 'r') as file:
 
 root_dir = Path(clienti['dir'])
 for k,v in clienti['clients'].items():
-    with open(dir_letture / (k + ".json"), 'r') as file:
-        in_lettura = json.load(file)
+    try:
+        with open(dir_letture / (k + ".json"), 'r') as file:
+            in_lettura = json.load(file)
+    except FileNotFoundError:
+        continue
 
     for f in in_lettura:
         filename = root_dir

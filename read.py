@@ -4,22 +4,17 @@ from multiprocessing import Pool, cpu_count
 from pathlib import Path
 from datetime import date, datetime
 from argparse import ArgumentParser
-from termcolor import cprint
 import json
 import os
 import sys
 
-pybls_path = str(Path(__file__).resolve().parent.parent / 'out/bin')
-os.environ['PATH'] = pybls_path + os.pathsep + os.environ['PATH']
-sys.path.insert(0, pybls_path)
-
-import pybls
-
-os.system('color')
+if sys.platform == 'win32':
+    os.system('color')
 
 parser = ArgumentParser()
 parser.add_argument('input_directory')
 parser.add_argument('output_file')
+parser.add_argument('--pybls', default=Path(__file__).resolve().parent.parent / 'out/bin')
 parser.add_argument('-s', '--script', default=Path(__file__).resolve().parent / 'layouts/controllo.bls')
 parser.add_argument('-e', '--errorlist', default=Path(__file__).resolve().parent / 'layouts/errors.lst')
 parser.add_argument('-f', '--force-read', action='store_true')
@@ -28,6 +23,11 @@ parser.add_argument('-y', '--filter-year', type=int, default=0)
 parser.add_argument('-j', '--nthreads', type=int, default=cpu_count())
 parser.add_argument('-t', '--timeout', type=float, default=10.0)
 args = parser.parse_args()
+
+os.environ['PATH'] = str(args.pybls) + os.pathsep + os.environ['PATH']
+sys.path.insert(0, str(args.pybls))
+
+import pybls
 
 input_directory = Path(args.input_directory).resolve()
 output_file = Path(args.output_file)
@@ -84,13 +84,13 @@ def read_pdf(pdf_file):
     rel_path = pdf_file.relative_to(input_directory)
     if ret['errcode'] == 0:
         if 'notes' in ret:
-            cprint('{0} ### {1}'.format(rel_path, ', '.join(ret['notes'])), 'yellow')
+            print('\033[33m{0} ### {1}'.format(rel_path, ', '.join(ret['notes'])))
         else:
             print(rel_path)
     elif ret['errcode'] > 0:
-        cprint('{0} ### {1}: {2}'.format(rel_path, errcodes[ret['errcode']], ret['error']), 'red')
+        print('\033[30m{0} ### {1}: {2}'.format(rel_path, errcodes[ret['errcode']], ret['error']))
     else:
-        cprint('{0} ### {1}'.format(rel_path, ret['error']), 'magenta')
+        print('\033[35m{0} ### {1}'.format(rel_path, ret['error']))
 
     return ret
 
