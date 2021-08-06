@@ -11,11 +11,11 @@
 p+*off_allegati;
 ### End Spacers
 ### Script
-$if($sys.ate) {
-  $error(*ERRORE_LAYOUT_INVALIDO, "Sorgenia (old): Stringa di Convalida Errata");
-} $elif(@ != "BOLLETTA PER LA FORNITURA DI ENERGIA ELETTRICA NEL MERCATO LIBERO") {
+if(sys.ate) {
+  error(*ERRORE_LAYOUT_INVALIDO, "Sorgenia (old): Stringa di Convalida Errata");
+} else if(@ != "BOLLETTA PER LA FORNITURA DI ENERGIA ELETTRICA NEL MERCATO LIBERO") {
   *off_allegati++;
-  $goto convalida;
+  goto convalida;
 }
 ### End Script
 ### End Box
@@ -30,10 +30,10 @@ p+*off_allegati;
 p+*next_page;
 ### End Spacers
 ### Script
-$ifnot($sys.ate || $contains(@,"INFORMAZIONI PER I CLIENTI SORGENIA")) {
+if(!sys.ate && !contains(@,"INFORMAZIONI PER I CLIENTI SORGENIA")) {
   *_dettaglio+=@;
   *next_page++;
-  $goto lettura_dati;
+  goto lettura_dati;
 }
 ### End Script
 ### End Box
@@ -56,7 +56,7 @@ fornitore="Sorgenia";
 p+*off_allegati;
 ### End Spacers
 ### Script
-numero_cliente=$search(@,/(\N)/);
+numero_cliente=search(@,/(\N)/);
 ### End Script
 ### End Box
 
@@ -68,7 +68,7 @@ numero_cliente=$search(@,/(\N)/);
 p+*off_allegati;
 ### End Spacers
 ### Script
-.'ragione_sociale;
+$'ragione_sociale;
 ### End Script
 ### End Box
 
@@ -80,8 +80,8 @@ p+*off_allegati;
 p+*off_allegati;
 ### End Spacers
 ### Script
-numero_fattura=$search(@,/N. fattura: (.+)/);
-data_fattura=$search_date(@,"%d/%m/%Y",/Emessa il (\D)/);
+numero_fattura=search(@,/N. fattura: (.+)/);
+data_fattura=search_date(@,"%d/%m/%Y",/Emessa il (\D)/);
 ### End Script
 ### End Box
 
@@ -93,8 +93,8 @@ data_fattura=$search_date(@,"%d/%m/%Y",/Emessa il (\D)/);
 p+*off_allegati;
 ### End Spacers
 ### Script
-codice_pod=$search(@,/per il punto di fornitura \(POD\) ([0-9A-Z]+)/);
-'indirizzo_fornitura=$singleline($search(@,/\ndi ([^]+?\d{5}.+)/));
+codice_pod=search(@,/per il punto di fornitura \(POD\) ([0-9A-Z]+)/);
+'indirizzo_fornitura=singleline(search(@,/\ndi ([^]+?\d{5}.+)/));
 ### End Script
 ### End Box
 
@@ -105,14 +105,14 @@ codice_pod=$search(@,/per il punto di fornitura \(POD\) ([0-9A-Z]+)/);
 p+*off_allegati;
 ### End Spacers
 ### Script
-mese_fattura=$search_date(@,"%B %Y");
-mese_fine=$search_date(@,"%B %Y",/\D\/(\D)/);
-$if(mese_fine < mese_fattura) {
-  $error(*ERRORE_PERIODO_INVALIDO, "Sorgenia: Periodo Non Valido");
+mese_fattura=search_date(@,"%B %Y");
+mese_fine=search_date(@,"%B %Y",/\D\/(\D)/);
+if(mese_fine < mese_fattura) {
+  error(*ERRORE_PERIODO_INVALIDO, "Sorgenia: Periodo Non Valido");
 }
-mese_fattura=$month_add(mese_fattura,*calc_mese);
-$ifnot(mese_fattura) {
-  $error(*ERRORE_PERIODO_INVALIDO, "Sorgenia (old): Mese Fattura Mancante");
+mese_fattura=month_add(mese_fattura,*calc_mese);
+if(!mese_fattura) {
+  error(*ERRORE_PERIODO_INVALIDO, "Sorgenia (old): Mese Fattura Mancante");
 }
 ### End Script
 ### End Box
@@ -124,7 +124,7 @@ $ifnot(mese_fattura) {
 p+*off_allegati;
 ### End Spacers
 ### Script
-data_scadenza=$search_date(@,"%d/%m/%Y",/DA SALDARE ENTRO (\D)/);
+data_scadenza=search_date(@,"%d/%m/%Y",/DA SALDARE ENTRO (\D)/);
 ### End Script
 ### End Box
 
@@ -135,7 +135,7 @@ data_scadenza=$search_date(@,"%d/%m/%Y",/DA SALDARE ENTRO (\D)/);
 p+*off_allegati;
 ### End Spacers
 ### Script
-%totale_fattura=$search(@,/(\N) \u20ac/);
+%totale_fattura=search(@,/(\N) \u20ac/);
 ### End Script
 ### End Box
 
@@ -147,7 +147,7 @@ p+*off_allegati;
 p+*off_allegati;
 ### End Spacers
 ### Script
-%potenza[0:3]=$search(@,/Potenza impegnata: (\N)/);
+%potenza[0:3]=search(@,/Potenza impegnata: (\N)/);
 ### End Script
 ### End Box
 
@@ -159,12 +159,12 @@ p+*off_allegati;
 p+*off_allegati;
 ### End Spacers
 ### Script
-$import "parsing_dettaglio";
-$if(mese_fine) {
-  $if(mese_fattura != mese_fine) {
+import "parsing_dettaglio";
+if(mese_fine) {
+  if(mese_fattura != mese_fine) {
     *calc_mese++;
-    $nexttable;
-    $goto nome_fornitore;
+    nexttable;
+    goto nome_fornitore;
   }
 }
 ### End Script

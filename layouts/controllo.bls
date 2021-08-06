@@ -6,11 +6,11 @@
 ### Rect 0 0 0 0
 ### Script
 _i=0;
-$foreach($lines($readfile($sys.layout_dir + "/errors.lst"))) {
-    *["ERRORE_" + $trim(@)] = _i;
+foreach(lines(readfile(sys.layout_dir + "/errors.lst"))) {
+    *["ERRORE_" + trim(@)] = _i;
     _i++;
 }
-$clear _i;
+clear _i;
 ### End Script
 ### End Box
 
@@ -23,22 +23,22 @@ $clear _i;
 p+*page_controllo;
 ### End Spacers
 ### Script
-$if  ($contains(@,"Axpo Italia SpA")) $import "axpo/controllo";
-$elif($contains(@,"ITALPOWER ENERGIA")) $import "italpower/controllo";
-$elif($contains(@,"Sorgenia S.p.A")) $import "sorgenia/controllo";
-$elif($contains(@,"Servizio Elettrico Nazionale SpA")) $import "enel/sen";
-$elif($contains(@,"Enel Energia")) $import "enel/controllo";
-$elif($contains(@,"Enel Servizio Elettrico")) $import "enel/controllo";
-$elif($contains(@,"www.lenergia.eu")) $import "misc/lenergia";
-$elif($contains(@,"www.energrid.it")) $import "misc/energrid";
-$elif($contains(@,"GREEN NETWORK S.p.A")) $import "misc/greennetwork";
-$elif($contains(@,"MetaEnergia S.p.A")) $import "misc/metaenergia";
-$elif($contains(@,"Edison Energia SpA")) $import "misc/edison";
-$elif($contains(@,"Estra Energie S.r.l")) $import "misc/estra";
-$elif($contains(@,"HERA COMM s.r.l")) $import "misc/heracomm";
-$elif($contains(@,"AMG GAS S.R.L.")) $import "misc/amg/controllo";
-$elifnot($sys.ate) { *page_controllo++; $goto controllo_layout; }
-$else $error(*ERRORE_NON_IMPLEMENTATO, "Nessun Layout");
+     if(contains(@,"Axpo Italia SpA")) import "axpo/controllo";
+else if(contains(@,"ITALPOWER ENERGIA")) import "italpower/controllo";
+else if(contains(@,"Sorgenia S.p.A")) import "sorgenia/controllo";
+else if(contains(@,"Servizio Elettrico Nazionale SpA")) import "enel/sen";
+else if(contains(@,"Enel Energia")) import "enel/controllo";
+else if(contains(@,"Enel Servizio Elettrico")) import "enel/controllo";
+else if(contains(@,"www.lenergia.eu")) import "misc/lenergia";
+else if(contains(@,"www.energrid.it")) import "misc/energrid";
+else if(contains(@,"GREEN NETWORK S.p.A")) import "misc/greennetwork";
+else if(contains(@,"MetaEnergia S.p.A")) import "misc/metaenergia";
+else if(contains(@,"Edison Energia SpA")) import "misc/edison";
+else if(contains(@,"Estra Energie S.r.l")) import "misc/estra";
+else if(contains(@,"HERA COMM s.r.l")) import "misc/heracomm";
+else if(contains(@,"AMG GAS S.R.L.")) import "misc/amg/controllo";
+else if(!sys.ate) { *page_controllo++; goto controllo_layout; }
+else error(*ERRORE_NON_IMPLEMENTATO, "Nessun Layout");
 ### End Script
 ### End Box
 
@@ -47,12 +47,12 @@ $else $error(*ERRORE_NON_IMPLEMENTATO, "Nessun Layout");
 ### Page 1
 ### Rect 0 0 0 0
 ### Script
-$foreach($lines($readfile($sys.layout_dir + "/required.lst"))) {
-    $firsttable;
-    $for(;;) {
-        $ifnot([$trim(@)]) $error(*ERRORE_DATI_MANCANTI, $format("Dati Mancanti: $0", $trim(@)));
-        $if ($sys.curtable + 1 >= $sys.numtables) $break;
-        $nexttable;
+foreach(lines(readfile(sys.layout_dir + "/required.lst"))) {
+    firsttable;
+    for(;;) {
+        if(![trim(@)]) error(*ERRORE_DATI_MANCANTI, format("Dati Mancanti: $0", trim(@)));
+        if (sys.curtable + 1 >= sys.numtables) break;
+        nexttable;
     }
 }
 ### End Script

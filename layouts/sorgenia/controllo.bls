@@ -9,10 +9,10 @@
 p+*off_allegati;
 ### End Spacers
 ### Script
-$if($sys.ate) $error(*ERRORE_LAYOUT_INVALIDO, "Sorgenia: Impossibile determinare il layout");
-$elifnot($contains(@,"PAG")) {
+if(sys.ate) error(*ERRORE_LAYOUT_INVALIDO, "Sorgenia: Impossibile determinare il layout");
+else if(!contains(@,"PAG")) {
   *off_allegati++;
-  $goto convalida;
+  goto convalida;
 }
 ### End Script
 ### End Box
@@ -24,9 +24,9 @@ $elifnot($contains(@,"PAG")) {
 p+*off_allegati;
 ### End Spacers
 ### Script
-$if($contains(@,"servizio di fatturazione trasmessa")) {
-  $import "sorgenia_gen16";
-  $goto fine_layout;
+if(contains(@,"servizio di fatturazione trasmessa")) {
+  import "sorgenia_gen16";
+  goto fine_layout;
 }
 ### End Script
 ### End Box
@@ -38,10 +38,10 @@ $if($contains(@,"servizio di fatturazione trasmessa")) {
 p+*off_allegati;
 ### End Spacers
 ### Script
-$if($contains(@,"Sorgenia S.p.A")) {
-  $import "sorgenia_old";
-} $else {
-  $import "sorgenia";
+if(contains(@,"Sorgenia S.p.A")) {
+  import "sorgenia_old";
+} else {
+  import "sorgenia";
 }
 ### End Script
 ### End Box

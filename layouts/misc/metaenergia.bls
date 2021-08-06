@@ -16,8 +16,8 @@ fornitore="MetaEnergia";
 ### Rect 0.062384654 0.31081033 0.7538146 0.026667157
 ### Flags TRIM
 ### Script
-$if(@ != "FATTURA PER LA FORNITURA DI ENERGIA ELETTRICA - MERCATO LIBERO") {
-  $error(*ERRORE_LAYOUT_INVALIDO, "MetaEnergia: Stringa di Convalida Errata");
+if(@ != "FATTURA PER LA FORNITURA DI ENERGIA ELETTRICA - MERCATO LIBERO") {
+  error(*ERRORE_LAYOUT_INVALIDO, "MetaEnergia: Stringa di Convalida Errata");
 }
 ### End Script
 ### End Box
@@ -27,9 +27,9 @@ $if(@ != "FATTURA PER LA FORNITURA DI ENERGIA ELETTRICA - MERCATO LIBERO") {
 ### Page 1
 ### Rect 0.058485612 0.14988782 0.33401784 0.1416118
 ### Script
-'ragione_sociale = $search(@,/INTESTATARIO\n(.+)\n/);
-'indirizzo_fornitura = $search(@,/Le stiamo fornendo energia elettrica in:\n(.+)\n/);
-codice_pod = $search(@,/Codice POD: (.+)\n/);
+'ragione_sociale = search(@,/INTESTATARIO\n(.+)\n/);
+'indirizzo_fornitura = search(@,/Le stiamo fornendo energia elettrica in:\n(.+)\n/);
+codice_pod = search(@,/Codice POD: (.+)\n/);
 ### End Script
 ### End Box
 
@@ -37,14 +37,14 @@ codice_pod = $search(@,/Codice POD: (.+)\n/);
 ### Page 1
 ### Rect 0.06368434 0.33563837 0.87104565 0.02544105
 ### Script
-numero_fattura = $search(@,/Fattura N\. (\w+)/);
-data_fattura = $search_date(@,"%d/%m/%Y",/Emessa il (\D)/);
-mese_fattura = $first_day($search_date(@,"%d/%m/%Y",/Periodo di riferimento \D - (\D)/));
-$ifnot(mese_fattura) {
-  $error(*ERRORE_PERIODO_INVALIDO, "MetaEnergia: Mese Fattura Mancante");
+numero_fattura = search(@,/Fattura N\. (\w+)/);
+data_fattura = search_date(@,"%d/%m/%Y",/Emessa il (\D)/);
+mese_fattura = first_day(search_date(@,"%d/%m/%Y",/Periodo di riferimento \D - (\D)/));
+if (!mese_fattura) {
+  error(*ERRORE_PERIODO_INVALIDO, "MetaEnergia: Mese Fattura Mancante");
 }
 
-_mese = $date_format(mese_fattura,"%m/%Y");
+_mese = date_format(mese_fattura,"%m/%Y");
 ### End Script
 ### End Box
 
@@ -52,7 +52,7 @@ _mese = $date_format(mese_fattura,"%m/%Y");
 ### Page 1
 ### Rect 0.06368434 0.36414462 0.4483897 0.03586273
 ### Script
-data_scadenza = $search_date(@,"%d/%m/%Y",/Totale da pagare entro il (\D)/);
+data_scadenza = search_date(@,"%d/%m/%Y",/Totale da pagare entro il (\D)/);
 ### End Script
 ### End Box
 
@@ -60,7 +60,7 @@ data_scadenza = $search_date(@,"%d/%m/%Y",/Totale da pagare entro il (\D)/);
 ### Page 1
 ### Rect 0.5484651 0.3650642 0.36650985 0.03586273
 ### Script
-.%totale_fattura;
+$%totale_fattura;
 ### End Script
 ### End Box
 
@@ -69,7 +69,7 @@ data_scadenza = $search_date(@,"%d/%m/%Y",/Totale da pagare entro il (\D)/);
 ### Page 1
 ### Rect 0.525949 0.045455948 0.31360933 0.07011002
 ### Script
-numero_cliente = $search(@,/Codice cliente: (.+)\n/);
+numero_cliente = search(@,/Codice cliente: (.+)\n/);
 ### End Script
 ### End Box
 
@@ -82,10 +82,10 @@ numero_cliente = $search(@,/Codice cliente: (.+)\n/);
 p+*next_page;
 ### End Spacers
 ### Script
-$ifnot($sys.ate || $contains(@,"Comunicazioni finali")) {
+if (!sys.ate && !contains(@,"Comunicazioni finali")) {
   _dettaglio+=@;
   *next_page++;
-  $goto lettura_dettaglio;
+  goto lettura_dettaglio;
 }
 ### End Script
 ### End Box
@@ -95,38 +95,38 @@ $ifnot($sys.ate || $contains(@,"Comunicazioni finali")) {
 ### Page 2
 ### Rect 0.3080384 0.08228446 0.04617861 0.029602662
 ### Script
-$with(_dettaglio) {
-  $step($captures($search(@,/Energia attiva \(kWh\)\n((Dal.+\n)+)/),
-    $format(/al \d\d\/$0 \w+ (\N) (\N) (\N)/,_mese))) {
-    .%energia_attiva_rilevata[0]; .%energia_attiva_rilevata[1]; .%energia_attiva_rilevata[2];
+with(_dettaglio) {
+  step(captures(search(@,/Energia attiva \(kWh\)\n((Dal.+\n)+)/),
+    format(/al \d\d\/$0 \w+ (\N) (\N) (\N)/,_mese))) {
+    $%energia_attiva_rilevata[0]; $%energia_attiva_rilevata[1]; $%energia_attiva_rilevata[2];
   }
-  $step($captures($search(@,/Energia reattiva \(kVARh\)\n((Dal.+\n)+)/),
-    $format(/al \d\d\/$0 \w+ (\N) (\N) (\N)/,_mese))) {
-    .%energia_reattiva[0]; .%energia_reattiva[1]; .%energia_reattiva[2];
-  }
-
-  %spesa_materia_energia = $search(@,/TOTALE SERVIZI DI VENDITA (\N)/);
-  $step($captures($search(@,/Energia in Peak\n((Dal.+\n)+)/),
-    $format(/al \d\d\/$0 \u20ac\/kWh (\N) (\N)/,_mese))) {
-    .%prezzo_energia[0]; .%energia_attiva[0];
-  }
-  $step($captures($search(@,/Energia in Off-Peak\n((Dal.+\n)+)/),
-    $format(/al \d\d\/$0 \u20ac\/kWh (\N) (\N)/,_mese))) {
-    .%prezzo_energia[1]; .%energia_attiva[1];
+  step(captures(search(@,/Energia reattiva \(kVARh\)\n((Dal.+\n)+)/),
+    format(/al \d\d\/$0 \w+ (\N) (\N) (\N)/,_mese))) {
+    $%energia_reattiva[0]; $%energia_reattiva[1]; $%energia_reattiva[2];
   }
 
-  %trasporto_gestione = $search(@,/TOTALE SERVIZI DI RETE (\N)/);
-  %potenza[0:3] = $search($search(@,/Quota Potenza\n((Dal.+\n)+)/),
-    $format(/al \d\d\/$0 \u20ac\/kW \N (\N)/,_mese));
-  $foreach($search_all(@,/Energia Reattiva F[1-3] 75%-100%\n((Dal.+\n)+)/)) {
-    %penale_reattiva_inf75+=$search(@,$format(/al \d\d\/$0 \u20ac\/kVARh \N \N (\N)/,_mese));
+  %spesa_materia_energia = search(@,/TOTALE SERVIZI DI VENDITA (\N)/);
+  step(captures(search(@,/Energia in Peak\n((Dal.+\n)+)/),
+    format(/al \d\d\/$0 \u20ac\/kWh (\N) (\N)/,_mese))) {
+    $%prezzo_energia[0]; $%energia_attiva[0];
   }
-  $foreach($search_all(@,/Energia Reattiva F[1-3] 33%-75%\n((Dal.+\n)+)/)) {
-    %penale_reattiva_sup75+=$search(@,$format(/al \d\d\/$0 \u20ac\/kVARh \N \N (\N)/,_mese));
+  step(captures(search(@,/Energia in Off-Peak\n((Dal.+\n)+)/),
+    format(/al \d\d\/$0 \u20ac\/kWh (\N) (\N)/,_mese))) {
+    $%prezzo_energia[1]; $%energia_attiva[1];
   }
-  %accise=$search($search(@,/IMPOSTE SUI CONSUMI\nAccisa\n((Dal.+\n)+)/),
-    $format(/al \d\d\/$0 \u20ac\/kWh \N \N (\N)/,_mese));
-  ^cts=$search_all($search(@,/Corrispettivo Tariffario Specifico.+\n((Dal.+\n)+)/),/\u20ac \N \N (\N)/);
+
+  %trasporto_gestione = search(@,/TOTALE SERVIZI DI RETE (\N)/);
+  %potenza[0:3] = search(search(@,/Quota Potenza\n((Dal.+\n)+)/),
+    format(/al \d\d\/$0 \u20ac\/kW \N (\N)/,_mese));
+  foreach(search_all(@,/Energia Reattiva F[1-3] 75%-100%\n((Dal.+\n)+)/)) {
+    %penale_reattiva_inf75+=search(@,format(/al \d\d\/$0 \u20ac\/kVARh \N \N (\N)/,_mese));
+  }
+  foreach(search_all(@,/Energia Reattiva F[1-3] 33%-75%\n((Dal.+\n)+)/)) {
+    %penale_reattiva_sup75+=search(@,format(/al \d\d\/$0 \u20ac\/kVARh \N \N (\N)/,_mese));
+  }
+  %accise=search(search(@,/IMPOSTE SUI CONSUMI\nAccisa\n((Dal.+\n)+)/),
+    format(/al \d\d\/$0 \u20ac\/kWh \N \N (\N)/,_mese));
+  ^cts=search_all(search(@,/Corrispettivo Tariffario Specifico.+\n((Dal.+\n)+)/),/\u20ac \N \N (\N)/);
 }
 ### End Script
 ### End Box
@@ -135,11 +135,11 @@ $with(_dettaglio) {
 ### Page 1
 ### Rect 0.5064516 0.53105414 0.45645162 0.18005697
 ### Script
-$foreach($search_all(@,/(IVA \N% su imponibile di \u20ac \N)/)) {
-  %_imp=$search(@,/imponibile di \u20ac (\N)/);
-  $if(_imp > $coalesce(imponibile,0)) {
+foreach(search_all(@,/(IVA \N% su imponibile di \u20ac \N)/)) {
+  %_imp=search(@,/imponibile di \u20ac (\N)/);
+  if(_imp > coalesce(imponibile,0)) {
     imponibile=_imp;
-    iva=$search(@,/IVA (\d\d%)/);
+    iva=search(@,/IVA (\d\d%)/);
   }
 }
 ### End Script

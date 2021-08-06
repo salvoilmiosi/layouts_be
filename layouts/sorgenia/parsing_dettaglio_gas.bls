@@ -5,9 +5,9 @@
 ### Page 1
 ### Rect 0 0 0 0
 ### Script
-$error(*ERRORE_NON_IMPLEMENTATO, "Sorgenia: Fattura Gas Non Implementata");
-$with(*_dettaglio) {
-  $with($between(@,"IMPORTI\n","ALTRE PARTITE\n")) {
+error(*ERRORE_NON_IMPLEMENTATO, "Sorgenia: Fattura Gas Non Implementata");
+with(*_dettaglio) {
+  with(between(@,"IMPORTI\n","ALTRE PARTITE\n")) {
     
   }
 }

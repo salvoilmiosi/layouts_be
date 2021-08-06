@@ -10,10 +10,10 @@
 p+*off_allegato;
 ### End Spacers
 ### Script
-$if($sys.ate) $error(*ERRORE_LAYOUT_INVALIDO, "Italpower: Stringa di Convalida Errata");
-$elifnot($contains(@,"FATTURA PER LA FORNITURA DI ENERGIA ELETTRICA")) {
+if(sys.ate) error(*ERRORE_LAYOUT_INVALIDO, "Italpower: Stringa di Convalida Errata");
+else if(!contains(@,"FATTURA PER LA FORNITURA DI ENERGIA ELETTRICA")) {
   *off_allegato++;
-  $goto convalida;
+  goto convalida;
 } 
 ### End Script
 ### End Box
@@ -35,9 +35,9 @@ fornitore="Italpower";
 p+*off_allegato;
 ### End Spacers
 ### Script
-numero_fattura=$search(@,/Fattura Numero: (.+)\n/);
-data_fattura=$search_date(@,"%d/%m/%Y",/Data Fattura: (\D)/);
-data_scadenza=$search_date(@,"%d/%m/%Y",/Scadenza Fattura: (\D)/);
+numero_fattura=search(@,/Fattura Numero: (.+)\n/);
+data_fattura=search_date(@,"%d/%m/%Y",/Data Fattura: (\D)/);
+data_scadenza=search_date(@,"%d/%m/%Y",/Scadenza Fattura: (\D)/);
 ### End Script
 ### End Box
 
@@ -49,8 +49,8 @@ data_scadenza=$search_date(@,"%d/%m/%Y",/Scadenza Fattura: (\D)/);
 p+*off_allegato;
 ### End Spacers
 ### Script
-%totale_fattura=$search(@,/Totale Fattura \u20ac (\N)/);
-iva=$search(@,/IVA (\N%)/);
+%totale_fattura=search(@,/Totale Fattura \u20ac (\N)/);
+iva=search(@,/IVA (\N%)/);
 ### End Script
 ### End Box
 
@@ -62,8 +62,8 @@ iva=$search(@,/IVA (\N%)/);
 p+*off_allegato;
 ### End Spacers
 ### Script
-numero_cliente=$search(@,/Codice cliente (.+)\n/);
-'ragione_sociale=$search(@,/Ragione sociale (.+)\n/);
+numero_cliente=search(@,/Codice cliente (.+)\n/);
+'ragione_sociale=search(@,/Ragione sociale (.+)\n/);
 ### End Script
 ### End Box
 
@@ -75,7 +75,7 @@ p+*off_allegato;
 p+*page_offset;
 ### End Spacers
 ### Script
-mese_fattura=$search_date(@,"%B %Y",/Dettaglio consumi mese di (\D)/);
+mese_fattura=search_date(@,"%B %Y",/Dettaglio consumi mese di (\D)/);
 ### End Script
 ### End Box
 
@@ -88,8 +88,8 @@ p+*off_allegato;
 p+*page_offset;
 ### End Spacers
 ### Script
-codice_pod=$search(@,/Codice POD (.+)\n/);
-'indirizzo_fornitura=$singleline($search(@,/Indirizzo fornitura ([^]+?\d{5}.+)\n/));
+codice_pod=search(@,/Codice POD (.+)\n/);
+'indirizzo_fornitura=singleline(search(@,/Indirizzo fornitura ([^]+?\d{5}.+)\n/));
 ### End Script
 ### End Box
 
@@ -102,14 +102,14 @@ p+*off_allegato;
 p+*page_offset;
 ### End Spacers
 ### Script
-$step($captures(@,/Misura (\N) (\N) (\N)/)) {
-  .%energia_attiva_rilevata[0]; .%energia_attiva_rilevata[1]; .%energia_attiva_rilevata[2];
+step(captures(@,/Misura (\N) (\N) (\N)/)) {
+  $%energia_attiva_rilevata[0]; $%energia_attiva_rilevata[1]; $%energia_attiva_rilevata[2];
 }
-$step($captures(@,/Potenza \(kW\) (\N) (\N) (\N)/)) {
-  .%potenza[0]; .%potenza[1]; .%potenza[2];
+step(captures(@,/Potenza \(kW\) (\N) (\N) (\N)/)) {
+  $%potenza[0]; $%potenza[1]; $%potenza[2];
 }
-$step($captures(@,/Energia Reattiva \(kVar\) (\N) (\N) (\N)/)) {
-  .%energia_reattiva[0]; .%energia_reattiva[1]; .%energia_reattiva[2];
+step(captures(@,/Energia Reattiva \(kVar\) (\N) (\N) (\N)/)) {
+  $%energia_reattiva[0]; $%energia_reattiva[1]; $%energia_reattiva[2];
 }
 ### End Script
 ### End Box
@@ -123,28 +123,28 @@ p+*off_allegato;
 p+*page_offset;
 ### End Spacers
 ### Script
-%spesa_materia_energia=$search(@,/Servizi di Vendita (\N)/);
-%spesa_materia_energia=$search(@,/Spesa Materia Prima (\N)/);
-%trasporto_gestione=$search(@,/Servizi di Rete (\N)/);
-%trasporto_gestione=$search(@,/Trasporto, Gestione Contatore e Oneri di Sistema (\N)/);
-%oneri_amministrativi=$search(@,/Altri Oneri (\N)/);
-%accise=$search(@,/Imposte.+Euro.+ (\N)/);
-$step($captures(@,/Energia (?:F1|Peak) \u20ac\/kWh (\N) Euro (\N)/)) {
-  .%energia_attiva[0]; .%prezzo_energia[0];
+%spesa_materia_energia=search(@,/Servizi di Vendita (\N)/);
+%spesa_materia_energia=search(@,/Spesa Materia Prima (\N)/);
+%trasporto_gestione=search(@,/Servizi di Rete (\N)/);
+%trasporto_gestione=search(@,/Trasporto, Gestione Contatore e Oneri di Sistema (\N)/);
+%oneri_amministrativi=search(@,/Altri Oneri (\N)/);
+%accise=search(@,/Imposte.+Euro.+ (\N)/);
+step(captures(@,/Energia (?:F1|Peak) \u20ac\/kWh (\N) Euro (\N)/)) {
+  $%energia_attiva[0]; $%prezzo_energia[0];
 }
-$step($captures(@,/Energia (?:F2|Off-Peak) \u20ac\/kWh (\N) Euro (\N)/)) {
-  .%energia_attiva[1]; .%prezzo_energia[1];
+step(captures(@,/Energia (?:F2|Off-Peak) \u20ac\/kWh (\N) Euro (\N)/)) {
+  $%energia_attiva[1]; $%prezzo_energia[1];
 }
-$step($captures(@,/Energia F3 \u20ac\/kWh (\N) Euro (\N)/)) {
-  .%energia_attiva[2]; .%prezzo_energia[2];
+step(captures(@,/Energia F3 \u20ac\/kWh (\N) Euro (\N)/)) {
+  $%energia_attiva[2]; $%prezzo_energia[2];
 }
-%pcv=$search(@,/PCV .+ Euro (\N)/);
-%disp_var=$search(@,/Dispacciamento Quota Variabile.+ Euro (\N)/);
-%penale_reattiva_inf75=$search(@,/reattiva entro 75% .+ Euro \N (\N)/);
-%penale_reattiva_sup75=$search(@,/reattiva oltre 75% .+ Euro \N (\N)/);
-%imponibile=$search(@,/Totale periodo (\N)/);
-%pcv=$search(@,/PCV .+Euro (\N)/);
-%potenza[0:3]=$search(@,/Trasporto Quota Potenza \u20ac\/kW (\N)/);
+%pcv=search(@,/PCV .+ Euro (\N)/);
+%disp_var=search(@,/Dispacciamento Quota Variabile.+ Euro (\N)/);
+%penale_reattiva_inf75=search(@,/reattiva entro 75% .+ Euro \N (\N)/);
+%penale_reattiva_sup75=search(@,/reattiva oltre 75% .+ Euro \N (\N)/);
+%imponibile=search(@,/Totale periodo (\N)/);
+%pcv=search(@,/PCV .+Euro (\N)/);
+%potenza[0:3]=search(@,/Trasporto Quota Potenza \u20ac\/kW (\N)/);
 ### End Script
 ### End Box
 
@@ -156,10 +156,10 @@ p+*off_allegato;
 p+*page_offset;
 ### End Spacers
 ### Script
-$if($contains(@,"Dettaglio consumi")) {
+if(contains(@,"Dettaglio consumi")) {
   *page_offset++;
-  $nexttable;
-  $goto nome_fornitore;
+  nexttable;
+  goto nome_fornitore;
 }
 ### End Script
 ### End Box
