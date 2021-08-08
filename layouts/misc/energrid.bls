@@ -163,7 +163,7 @@ with(between(@,"DETTAGLIO IMPORTI","TOTALE (Salvo conguagli, errori e omissioni)
 p+*off_pod;
 ### End Spacers
 ### Script
-if (!ate() && !contains(@,"INFORMAZIONI AI CLIENTI")) {
+if (!(ate() || contains(@,"INFORMAZIONI AI CLIENTI"))) {
   *off_pod++;
   if(contains(@,"DATI FORNITURA")) {
     nexttable();

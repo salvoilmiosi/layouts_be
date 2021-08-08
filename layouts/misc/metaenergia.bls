@@ -82,7 +82,7 @@ numero_cliente = search(@,/Codice cliente: (.+)\n/);
 p+*next_page;
 ### End Spacers
 ### Script
-if (!ate() && !contains(@,"Comunicazioni finali")) {
+if (!(ate() || contains(@,"Comunicazioni finali"))) {
   _dettaglio+=@;
   *next_page++;
   goto lettura_dettaglio;

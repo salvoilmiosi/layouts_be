@@ -35,7 +35,7 @@ p+*next_page;
 ### Script
 if(ate()) {
   error(*ERRORE_DETTAGLIO_MANCANTE, "Italpower: Dettaglio Mancante");
-} else if(!contains(@,"AGGIORNAMENTI CORRISPETTIVI") && !contains(@,"DATI FORNITURA")) {
+} else if(!(contains(@,"AGGIORNAMENTI CORRISPETTIVI") || contains(@,"DATI FORNITURA"))) {
   *_dettaglio+=@;
   *off_dettaglio++;
   goto lettura_dettaglio;

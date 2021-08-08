@@ -69,7 +69,7 @@ if (ate()) {
   if (!*&_dettaglio) {
     error(*ERRORE_DETTAGLIO_MANCANTE, "Axpo: Dettaglio Mancante");
   }
-} else if (!contains(@,"DATI FORNITURA") && !contains(@,"COMUNICAZIONI")) {
+} else if (!(contains(@,"DATI FORNITURA") || contains(@,"COMUNICAZIONI"))) {
   *_dettaglio+=@;
   *off_dettaglio++;
   goto lettura_dettaglio;

@@ -30,7 +30,7 @@ p+*off_allegati;
 p+*next_page;
 ### End Spacers
 ### Script
-if(!ate() && !contains(@,"INFORMAZIONI PER I CLIENTI SORGENIA")) {
+if(!(ate() || contains(@,"INFORMAZIONI PER I CLIENTI SORGENIA"))) {
   *_dettaglio+=@;
   *next_page++;
   goto lettura_dati;
