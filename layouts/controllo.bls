@@ -38,7 +38,7 @@ else if(contains(@,"Estra Energie S.r.l")) import "misc/estra";
 else if(contains(@,"HERA COMM s.r.l")) import "misc/heracomm";
 else if(contains(@,"AMG GAS S.R.L.")) import "misc/amg/controllo";
 else if(!ate()) { *page_controllo++; goto controllo_layout; }
-else error(*ERRORE_NON_IMPLEMENTATO, "Nessun Layout");
+else error("Nessun Layout", *ERRORE_NON_IMPLEMENTATO);
 ### End Script
 ### End Box
 
@@ -49,7 +49,7 @@ else error(*ERRORE_NON_IMPLEMENTATO, "Nessun Layout");
 ### Script
 foreach(lines(readfile("required.lst"))) {
     for(firsttable();;nexttable()) {
-        if(![trim(@)]) error(*ERRORE_DATI_MANCANTI, format("Dati Mancanti: $0", trim(@)));
+        if(![trim(@)]) error(format("Dati Mancanti: $0", trim(@)), *ERRORE_DATI_MANCANTI);
         if (curtable() + 1 >= numtables()) break;
     }
 }

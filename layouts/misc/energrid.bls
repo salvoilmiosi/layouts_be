@@ -8,7 +8,7 @@
 ### Goto Label convalida
 ### Script
 if(!contains(@,"www.energrid.it")) {
-  error(*ERRORE_LAYOUT_INVALIDO, "EnerGrid: Stringa di Convalida Errata");
+  error("EnerGrid: Stringa di Convalida Errata", *ERRORE_LAYOUT_INVALIDO);
 }
 ### End Script
 ### End Box
@@ -50,7 +50,7 @@ data_scadenza=search_date(@,"%d/%m/%Y",/Scadenza fattura: (\D)/);
 
 mese_fattura=first_day(search_date(@,"%d/%m/%Y",/\D - (\D)/));
 if(!mese_fattura) {
-  error(*ERRORE_PERIODO_INVALIDO, "EnerGrid: Mese Fattura Mancante");
+  error("EnerGrid: Mese Fattura Mancante", *ERRORE_PERIODO_INVALIDO);
 }
 _mese=date_format(mese_fattura,"%m/%Y");
 ### End Script
@@ -112,7 +112,7 @@ with(between(@,"DETTAGLIO IMPOSTE","TOTALE (Salvo conguagli, errori e omissioni)
 p+_off_dettaglio;
 ### End Spacers
 ### Script
-if(ate()) error(*ERRORE_DETTAGLIO_MANCANTE, "EnerGrid: Dettaglio Mancante");
+if(ate()) error("EnerGrid: Dettaglio Mancante", *ERRORE_DETTAGLIO_MANCANTE);
 _pod_dettaglio=search(@,/POD: (.+)/);
 if(_pod_dettaglio!=codice_pod) {
   _off_dettaglio++;

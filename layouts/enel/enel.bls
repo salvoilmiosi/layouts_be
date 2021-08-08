@@ -7,7 +7,7 @@
 ### Rect 0.03387097 0.096921325 0.34032258 0.044469774
 ### Script
 if(!contains(@,"Enel Energia - Mercato libero dell'energia")) {
-  error(*ERRORE_LAYOUT_INVALIDO, "Enel: Stringa di Convalida Errata");
+  error("Enel: Stringa di Convalida Errata", *ERRORE_LAYOUT_INVALIDO);
 }
 ### End Script
 ### End Box
@@ -22,7 +22,7 @@ p+*offset_dettaglio;
 ### End Spacers
 ### Script
 if(ate()) {
-  error(*ERRORE_DETTAGLIO_MANCANTE, "Enel: Dettaglio Mancante");
+  error("Enel: Dettaglio Mancante", *ERRORE_DETTAGLIO_MANCANTE);
 } else if(@ != "DETTAGLIO IMPORTI IN BOLLETTA") {
   *offset_dettaglio++;
   goto calcolo_offset;
@@ -123,7 +123,7 @@ mese_fattura=search_date(@,"%b. %Y");
 mese_fine=search_date(@,"%b. %Y",/\D - (\D)/);
 if(mese_fine) {
   if(mese_fine < mese_fattura) {
-    error(*ERRORE_PERIODO_INVALIDO, "Enel: Periodo Non Valido");
+    error("Enel: Periodo Non Valido", *ERRORE_PERIODO_INVALIDO);
   }
   mese_fattura=month_add(mese_fattura,*calc_mese);
 }

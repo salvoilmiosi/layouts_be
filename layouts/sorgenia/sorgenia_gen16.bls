@@ -8,7 +8,7 @@
 ### Rect 0.037950665 0.5240123 0.4743833 0.03269837
 ### Script
 if(@ != "Servizio di fornitura energia elettrica") {
-  error(*ERRORE_LAYOUT_INVALIDO, "Sorgenia (gen16): Stringa di Convalida Errata");
+  error("Sorgenia (gen16): Stringa di Convalida Errata", *ERRORE_LAYOUT_INVALIDO);
 }
 ### End Script
 ### End Box

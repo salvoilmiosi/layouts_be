@@ -13,7 +13,7 @@ p+*next_page;
 ### End Spacers
 ### Script
 if(ate()) {
-  error(*ERRORE_DETTAGLIO_MANCANTE, "Italpower: Dettaglio Mancante");
+  error("Italpower: Dettaglio Mancante", *ERRORE_DETTAGLIO_MANCANTE);
 } else if(@ == "ELEMENTI DI DETTAGLIO") {
   goto lettura_dettaglio;
 } else {
@@ -34,7 +34,7 @@ p+*next_page;
 ### End Spacers
 ### Script
 if(ate()) {
-  error(*ERRORE_DETTAGLIO_MANCANTE, "Italpower: Dettaglio Mancante");
+  error("Italpower: Dettaglio Mancante", *ERRORE_DETTAGLIO_MANCANTE);
 } else if(!(contains(@,"AGGIORNAMENTI CORRISPETTIVI") || contains(@,"DATI FORNITURA"))) {
   *_dettaglio+=@;
   *off_dettaglio++;
@@ -95,7 +95,7 @@ function parse_periodo(str_periodo) {
       first_day(search_date(str_periodo,"%d %b. %Y",/(\D)\s*-\s*\D/)),
       first_day(search_date(str_periodo,"%d %b. %Y",/\D\s*-\s*(\D)/)));
   } else if(str_periodo) {
-    error(*ERRORE_PERIODO_INVALIDO, "Italpower: Formato Periodo Non Valido");
+    error("Italpower: Formato Periodo Non Valido", *ERRORE_PERIODO_INVALIDO);
   }
 }
 

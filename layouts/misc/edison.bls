@@ -8,7 +8,7 @@
 ### Rect 0.7381144 0.0045636054 0.23529412 0.022818027
 ### Script
 if(@ != "ENERGIA ELETTRICA") {
-  error(*ERRORE_LAYOUT_INVALIDO, "Edison: Stringa di Convalida Errata");
+  error("Edison: Stringa di Convalida Errata", *ERRORE_LAYOUT_INVALIDO);
 }
 ### End Script
 ### End Box
@@ -66,7 +66,7 @@ mese_fattura=search_date(@,"%B %Y");
 mese_fine=search_date(@,"%B %Y",/\D - (\D)/);
 if(mese_fine) {
   if(mese_fine < mese_fattura) {
-    error(*ERRORE_PERIODO_INVALIDO, "Edison: Periodo Non Valido");
+    error("Edison: Periodo Non Valido", *ERRORE_PERIODO_INVALIDO);
   }
   mese_fattura=month_add(mese_fattura,*calc_mese);
 }

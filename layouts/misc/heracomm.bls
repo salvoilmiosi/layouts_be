@@ -12,7 +12,7 @@ p+*off_allegato;
 ### End Spacers
 ### Script
 if (ate()) {
-  error(*ERRORE_LAYOUT_INVALIDO, "Heracomm: Stringa di Convalida Errata");
+  error("Heracomm: Stringa di Convalida Errata", *ERRORE_LAYOUT_INVALIDO);
 } else if (!search(@,/(1 \/ \d+)/)) {
   *off_allegato++;
   goto check_pagina;
@@ -120,7 +120,7 @@ with(*_dettaglio) {
     mese_inizio=first_day(search_date(@,"%d.%m.%Y",/dal (\D) al \D/));
     mese_fine=first_day(search_date(@,"%d.%m.%Y",/dal \D al (\D)/));
     if(mese_fine < mese_inizio) {
-      error(*ERRORE_PERIODO_INVALIDO, "Heracomm: Periodo Non Valido");
+      error("Heracomm: Periodo Non Valido", *ERRORE_PERIODO_INVALIDO);
     }
     mese_fattura=month_add(mese_inizio,*calc_mese);
   }

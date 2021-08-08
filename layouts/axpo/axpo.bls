@@ -12,7 +12,7 @@ p+*off_allegato;
 ### End Spacers
 ### Script
 if(ate()) {
-  error(*ERRORE_LAYOUT_INVALIDO, "Axpo: Stringa di Convalida Errata");
+  error("Axpo: Stringa di Convalida Errata", *ERRORE_LAYOUT_INVALIDO);
 } else if(@ != "BOLLETTA\nENERGIA\nELETTRICA\nFornitura del Mercato Libero") {
   *off_allegato++;
   goto check_convalida;
@@ -29,7 +29,7 @@ p+*off_allegato;
 ### End Spacers
 ### Script
 if(@ == "COMUNICAZIONI") {
-  error(*ERRORE_DETTAGLIO_MANCANTE, "Axpo: Dettaglio Mancante");
+  error("Axpo: Dettaglio Mancante", *ERRORE_DETTAGLIO_MANCANTE);
 }
 ### End Script
 ### End Box
@@ -46,7 +46,7 @@ p+*next_page;
 ### End Spacers
 ### Script
 if(ate()) {
-  error(*ERRORE_DETTAGLIO_MANCANTE, "Axpo: Dettaglio Mancante");
+  error("Axpo: Dettaglio Mancante", *ERRORE_DETTAGLIO_MANCANTE);
 }else if(@ != "QUADRO DI DETTAGLIO") {
   *off_dettaglio++;
   goto cerca_dettaglio;
@@ -67,7 +67,7 @@ p+*next_page;
 ### Script
 if (ate()) {
   if (!*&_dettaglio) {
-    error(*ERRORE_DETTAGLIO_MANCANTE, "Axpo: Dettaglio Mancante");
+    error("Axpo: Dettaglio Mancante", *ERRORE_DETTAGLIO_MANCANTE);
   }
 } else if (!(contains(@,"DATI FORNITURA") || contains(@,"COMUNICAZIONI"))) {
   *_dettaglio+=@;
@@ -149,7 +149,7 @@ with(*_dettaglio) {
   mese_inizio=first_day(search_date(@,"%d.%m.%Y",/PERIODO (\D) - \D/));
   mese_fine=first_day(search_date(@,"%d.%m.%Y",/PERIODO \D - (\D)/));
   if(mese_fine < mese_inizio) {
-    error(*ERRORE_PERIODO_INVALIDO, "Axpo: Periodo Non Valido");
+    error("Axpo: Periodo Non Valido", *ERRORE_PERIODO_INVALIDO);
   }
   mese_fattura=month_add(mese_inizio,*calc_mese);
   _mese=date_format(mese_fattura,"%m\\.%Y");

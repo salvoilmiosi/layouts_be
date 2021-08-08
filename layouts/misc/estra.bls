@@ -12,7 +12,7 @@ p+*off_dettaglio;
 ### End Spacers
 ### Script
 if(ate()) {
-  error(*ERRORE_DETTAGLIO_MANCANTE, "Estra: Dettaglio Mancante");
+  error("Estra: Dettaglio Mancante", *ERRORE_DETTAGLIO_MANCANTE);
 } else if(@ != "ELEMENTI DI DETTAGLIO") {
   *off_dettaglio++;
   goto ricerca_dettaglio;
@@ -57,7 +57,7 @@ data_fattura=search_date(@,"%d.%m.%Y",/del (\D)/);
 mese_inizio=first_day(search_date(@,"%d.%m.%Y",/(\D) - \D/));
 mese_fine=first_day(search_date(@,"%d.%m.%Y",/\D - (\D)/));
 if(mese_fine < mese_inizio) {
-  error(*ERRORE_PERIODO_INVALIDO, "Estra: Periodo Non Valido");
+  error("Estra: Periodo Non Valido", *ERRORE_PERIODO_INVALIDO);
 }
 mese_fattura=month_add(mese_inizio,*calc_mese);
 _periodo = format(/\d\d\.\d\d.\d\d\d\d - \d\d\.$0/,date_format(mese_fattura,"%m.%Y"));

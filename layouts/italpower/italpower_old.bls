@@ -10,7 +10,7 @@
 p+*off_allegato;
 ### End Spacers
 ### Script
-if(ate()) error(*ERRORE_LAYOUT_INVALIDO, "Italpower: Stringa di Convalida Errata");
+if(ate()) error("Italpower: Stringa di Convalida Errata", *ERRORE_LAYOUT_INVALIDO);
 else if(!contains(@,"FATTURA PER LA FORNITURA DI ENERGIA ELETTRICA")) {
   *off_allegato++;
   goto convalida;

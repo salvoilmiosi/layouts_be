@@ -17,7 +17,7 @@ fornitore="MetaEnergia";
 ### Flags TRIM
 ### Script
 if(@ != "FATTURA PER LA FORNITURA DI ENERGIA ELETTRICA - MERCATO LIBERO") {
-  error(*ERRORE_LAYOUT_INVALIDO, "MetaEnergia: Stringa di Convalida Errata");
+  error("MetaEnergia: Stringa di Convalida Errata", *ERRORE_LAYOUT_INVALIDO);
 }
 ### End Script
 ### End Box
@@ -41,7 +41,7 @@ numero_fattura = search(@,/Fattura N\. (\w+)/);
 data_fattura = search_date(@,"%d/%m/%Y",/Emessa il (\D)/);
 mese_fattura = first_day(search_date(@,"%d/%m/%Y",/Periodo di riferimento \D - (\D)/));
 if (!mese_fattura) {
-  error(*ERRORE_PERIODO_INVALIDO, "MetaEnergia: Mese Fattura Mancante");
+  error("MetaEnergia: Mese Fattura Mancante", *ERRORE_PERIODO_INVALIDO);
 }
 
 _mese = date_format(mese_fattura,"%m/%Y");

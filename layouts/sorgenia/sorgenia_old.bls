@@ -12,7 +12,7 @@ p+*off_allegati;
 ### End Spacers
 ### Script
 if(ate()) {
-  error(*ERRORE_LAYOUT_INVALIDO, "Sorgenia (old): Stringa di Convalida Errata");
+  error("Sorgenia (old): Stringa di Convalida Errata", *ERRORE_LAYOUT_INVALIDO);
 } else if(@ != "BOLLETTA PER LA FORNITURA DI ENERGIA ELETTRICA NEL MERCATO LIBERO") {
   *off_allegati++;
   goto convalida;
@@ -108,11 +108,11 @@ p+*off_allegati;
 mese_fattura=search_date(@,"%B %Y");
 mese_fine=search_date(@,"%B %Y",/\D\/(\D)/);
 if(mese_fine < mese_fattura) {
-  error(*ERRORE_PERIODO_INVALIDO, "Sorgenia: Periodo Non Valido");
+  error("Sorgenia: Periodo Non Valido", *ERRORE_PERIODO_INVALIDO);
 }
 mese_fattura=month_add(mese_fattura,*calc_mese);
 if(!mese_fattura) {
-  error(*ERRORE_PERIODO_INVALIDO, "Sorgenia (old): Mese Fattura Mancante");
+  error("Sorgenia (old): Mese Fattura Mancante", *ERRORE_PERIODO_INVALIDO);
 }
 ### End Script
 ### End Box

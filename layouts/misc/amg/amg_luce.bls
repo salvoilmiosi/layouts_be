@@ -12,7 +12,7 @@ p+*off_dettaglio;
 ### End Spacers
 ### Script
 if(ate()) {
-  error(*ERRORE_DETTAGLIO_MANCANTE, "AMG: Dettaglio Mancante");
+  error("AMG: Dettaglio Mancante", *ERRORE_DETTAGLIO_MANCANTE);
 } else if(contains(@,"DETTAGLIO FATTURA")) {
   goto lettura_dettaglio;
 } else {
@@ -109,10 +109,10 @@ if(matches(@,/\w+\. - \w+\. \d{4}/)) {
   mese_fine=search_date(format("$0 $1", subitem(_items,1), subitem(_items,2)),"%b %Y");
   mese_fattura=month_add(mese_inizio,*calc_mese);
 } else {
-  error(*ERRORE_PERIODO_INVALIDO, "AMG: Formato Periodo Errato");
+  error("AMG: Formato Periodo Errato", *ERRORE_PERIODO_INVALIDO);
 }
 if(mese_inizio > mese_fine) {
-  error(*ERRORE_PERIODO_INVALIDO, "AMG: Formato Periodo Errato");
+  error("AMG: Formato Periodo Errato", *ERRORE_PERIODO_INVALIDO);
 }
 _mese=date_format(mese_fattura,"%m/%Y");
 ### End Script
