@@ -11,7 +11,7 @@
 p+*next_page;
 ### End Spacers
 ### Script
-if(!sys.ate && !contains(@,"INFORMAZIONI PER I CLIENTI SORGENIA")) {
+if(!ate() && !contains(@,"INFORMAZIONI PER I CLIENTI SORGENIA")) {
   *_dettaglio+=@;
   *next_page++;
   goto lettura_dati;
@@ -117,7 +117,7 @@ import "parsing_dettaglio";
 if(mese_fine) {
   if(mese_fattura != mese_fine) {
     *calc_mese++;
-    nexttable;
+    nexttable();
     goto nome_fornitore;
   }
 }

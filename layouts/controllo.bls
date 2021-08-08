@@ -6,7 +6,7 @@
 ### Rect 0 0 0 0
 ### Script
 _i=0;
-foreach(lines(readfile(sys.layout_dir + "/errors.lst"))) {
+foreach(lines(readfile("errors.lst"))) {
     *["ERRORE_" + trim(@)] = _i;
     _i++;
 }
@@ -37,7 +37,7 @@ else if(contains(@,"Edison Energia SpA")) import "misc/edison";
 else if(contains(@,"Estra Energie S.r.l")) import "misc/estra";
 else if(contains(@,"HERA COMM s.r.l")) import "misc/heracomm";
 else if(contains(@,"AMG GAS S.R.L.")) import "misc/amg/controllo";
-else if(!sys.ate) { *page_controllo++; goto controllo_layout; }
+else if(!ate()) { *page_controllo++; goto controllo_layout; }
 else error(*ERRORE_NON_IMPLEMENTATO, "Nessun Layout");
 ### End Script
 ### End Box
@@ -47,12 +47,10 @@ else error(*ERRORE_NON_IMPLEMENTATO, "Nessun Layout");
 ### Page 1
 ### Rect 0 0 0 0
 ### Script
-foreach(lines(readfile(sys.layout_dir + "/required.lst"))) {
-    firsttable;
-    for(;;) {
+foreach(lines(readfile("required.lst"))) {
+    for(firsttable();;nexttable()) {
         if(![trim(@)]) error(*ERRORE_DATI_MANCANTI, format("Dati Mancanti: $0", trim(@)));
-        if (sys.curtable + 1 >= sys.numtables) break;
-        nexttable;
+        if (curtable() + 1 >= numtables()) break;
     }
 }
 ### End Script

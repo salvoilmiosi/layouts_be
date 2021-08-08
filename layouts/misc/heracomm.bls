@@ -11,7 +11,7 @@
 p+*off_allegato;
 ### End Spacers
 ### Script
-if (sys.ate) {
+if (ate()) {
   error(*ERRORE_LAYOUT_INVALIDO, "Heracomm: Stringa di Convalida Errata");
 } else if (!search(@,/(1 \/ \d+)/)) {
   *off_allegato++;
@@ -45,7 +45,7 @@ p+*off_dettaglio;
 rotate+*rotation;
 ### End Spacers
 ### Script
-if(isempty(@) || sys.ate) goto nome_fornitore;
+if(isempty(@) || ate()) goto nome_fornitore;
 else {
   *_dettaglio+=@;
 }
@@ -241,7 +241,7 @@ with(*_dettaglio) {
 ### Script
 if(mese_fattura != mese_fine) {
   *calc_mese++;
-  nexttable;
+  nexttable();
   goto nome_fornitore;
 }
 ### End Script

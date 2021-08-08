@@ -11,7 +11,7 @@
 p+*off_allegato;
 ### End Spacers
 ### Script
-if(sys.ate) {
+if(ate()) {
   error(*ERRORE_LAYOUT_INVALIDO, "Axpo: Stringa di Convalida Errata");
 } else if(@ != "BOLLETTA\nENERGIA\nELETTRICA\nFornitura del Mercato Libero") {
   *off_allegato++;
@@ -45,7 +45,7 @@ p+*off_dettaglio;
 p+*next_page;
 ### End Spacers
 ### Script
-if(sys.ate) {
+if(ate()) {
   error(*ERRORE_DETTAGLIO_MANCANTE, "Axpo: Dettaglio Mancante");
 }else if(@ != "QUADRO DI DETTAGLIO") {
   *off_dettaglio++;
@@ -65,7 +65,7 @@ p+*off_dettaglio;
 p+*next_page;
 ### End Spacers
 ### Script
-if (sys.ate) {
+if (ate()) {
   if (!*&_dettaglio) {
     error(*ERRORE_DETTAGLIO_MANCANTE, "Axpo: Dettaglio Mancante");
   }
@@ -245,7 +245,7 @@ p+*off_dettaglio;
 if(mese_fattura != mese_fine) {
   # Prossima tabella multimese
   *calc_mese++;
-  nexttable;
+  nexttable();
   goto nome_fornitore;
 }
 if(@ == "DATI FORNITURA") {
@@ -253,7 +253,7 @@ if(@ == "DATI FORNITURA") {
   *calc_mese = 0;
   *next_page += 1 + *off_dettaglio;
   *off_dettaglio = 0;
-  nexttable;
+  nexttable();
   clear *_dettaglio;
   goto cerca_dettaglio;
 }

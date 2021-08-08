@@ -124,7 +124,7 @@ with(rbetween(@,date_format(mese_fattura,"%B %Y"),/FORNITURA DI .+/)) {
 ### Script
 if(mese_fattura != mese_fine) {
   *calc_mese++;
-  nexttable;
+  nexttable();
   goto nome_fornitore;
 }
 ### End Script

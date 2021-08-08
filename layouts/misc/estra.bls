@@ -11,7 +11,7 @@
 p+*off_dettaglio;
 ### End Spacers
 ### Script
-if(sys.ate) {
+if(ate()) {
   error(*ERRORE_DETTAGLIO_MANCANTE, "Estra: Dettaglio Mancante");
 } else if(@ != "ELEMENTI DI DETTAGLIO") {
   *off_dettaglio++;
@@ -29,7 +29,7 @@ if(sys.ate) {
 p+*off_dettaglio;
 ### End Spacers
 ### Script
-if(!sys.ate) {
+if(!ate()) {
   *_dettaglio+=replace(@,"\u2212","-");
   *off_dettaglio++;
   goto lettura_dettaglio;
@@ -153,7 +153,7 @@ with(*_dettaglio) {
 ### Script
 if(mese_fattura!=mese_fine) {
   *calc_mese++;
-  nexttable;
+  nexttable();
   goto nome_fornitore;
 }
 ### End Script

@@ -131,7 +131,7 @@ step(captures(@,format(/Indice mese di competenza F3 .+ \d\d\/$0 \u20ac\/kWh (\N
 p+*page_offset;
 ### End Spacers
 ### Script
-if (!sys.ate) {
+if (!ate()) {
   *page_offset++;
   goto quadro_dettaglio;
 }

@@ -12,7 +12,7 @@ p+*off_dettaglio;
 p+*next_page;
 ### End Spacers
 ### Script
-if(sys.ate) {
+if(ate()) {
   error(*ERRORE_DETTAGLIO_MANCANTE, "Italpower: Dettaglio Mancante");
 } else if(@ == "ELEMENTI DI DETTAGLIO") {
   goto lettura_dettaglio;
@@ -33,7 +33,7 @@ p+*off_dettaglio;
 p+*next_page;
 ### End Spacers
 ### Script
-if(sys.ate) {
+if(ate()) {
   error(*ERRORE_DETTAGLIO_MANCANTE, "Italpower: Dettaglio Mancante");
 } else if(!contains(@,"AGGIORNAMENTI CORRISPETTIVI") && !contains(@,"DATI FORNITURA")) {
   *_dettaglio+=@;
@@ -295,17 +295,17 @@ p+*off_dettaglio;
 if(!*calc_conguaglio) {
   if(mese_fattura != mese_fine) {
     *calc_mese++;
-    nexttable;
+    nexttable();
     goto nome_fornitore;
   } else if(mese_inizio_conguaglio) {
     *calc_conguaglio = 1;
     *calc_mese = 0;
-    nexttable;
+    nexttable();
     goto nome_fornitore;
   }
 } else if(mese_fattura != mese_fine_conguaglio) {
   *calc_mese++;
-  nexttable;
+  nexttable();
   goto nome_fornitore;
 }
 if(@ == "DATI FORNITURA") {
@@ -313,7 +313,7 @@ if(@ == "DATI FORNITURA") {
   *calc_mese = 0;
   *next_page += 1 + *off_dettaglio;
   *off_dettaglio = 0;
-  nexttable;
+  nexttable();
   clear *_dettaglio;
   goto cerca_dettaglio;
 }

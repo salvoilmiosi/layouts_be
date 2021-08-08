@@ -112,7 +112,7 @@ with(between(@,"DETTAGLIO IMPOSTE","TOTALE (Salvo conguagli, errori e omissioni)
 p+_off_dettaglio;
 ### End Spacers
 ### Script
-if(sys.ate) error(*ERRORE_DETTAGLIO_MANCANTE, "EnerGrid: Dettaglio Mancante");
+if(ate()) error(*ERRORE_DETTAGLIO_MANCANTE, "EnerGrid: Dettaglio Mancante");
 _pod_dettaglio=search(@,/POD: (.+)/);
 if(_pod_dettaglio!=codice_pod) {
   _off_dettaglio++;
@@ -163,10 +163,10 @@ with(between(@,"DETTAGLIO IMPORTI","TOTALE (Salvo conguagli, errori e omissioni)
 p+*off_pod;
 ### End Spacers
 ### Script
-if (!sys.ate && !contains(@,"INFORMAZIONI AI CLIENTI")) {
+if (!ate() && !contains(@,"INFORMAZIONI AI CLIENTI")) {
   *off_pod++;
   if(contains(@,"DATI FORNITURA")) {
-    nexttable;
+    nexttable();
     goto nome_fornitore;
   } else {
     goto check_pagina;

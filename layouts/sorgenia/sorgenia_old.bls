@@ -11,7 +11,7 @@
 p+*off_allegati;
 ### End Spacers
 ### Script
-if(sys.ate) {
+if(ate()) {
   error(*ERRORE_LAYOUT_INVALIDO, "Sorgenia (old): Stringa di Convalida Errata");
 } else if(@ != "BOLLETTA PER LA FORNITURA DI ENERGIA ELETTRICA NEL MERCATO LIBERO") {
   *off_allegati++;
@@ -30,7 +30,7 @@ p+*off_allegati;
 p+*next_page;
 ### End Spacers
 ### Script
-if(!sys.ate && !contains(@,"INFORMAZIONI PER I CLIENTI SORGENIA")) {
+if(!ate() && !contains(@,"INFORMAZIONI PER I CLIENTI SORGENIA")) {
   *_dettaglio+=@;
   *next_page++;
   goto lettura_dati;
@@ -163,7 +163,7 @@ import "parsing_dettaglio";
 if(mese_fine) {
   if(mese_fattura != mese_fine) {
     *calc_mese++;
-    nexttable;
+    nexttable();
     goto nome_fornitore;
   }
 }

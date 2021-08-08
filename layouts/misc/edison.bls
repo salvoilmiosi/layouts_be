@@ -140,7 +140,7 @@ with(replace(@,"\u2212","-")) {
 if(mese_fine) {
   if(mese_fattura != mese_fine) {
     *calc_mese++;
-    nexttable;
+    nexttable();
     goto nome_fornitore;
   }
 }

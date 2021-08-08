@@ -136,7 +136,7 @@ p+*spacer_multipod;
 p+*next_page;
 ### End Spacers
 ### Script
-if(sys.ate || contains(@,"Comunicazioni") || contains(@,"Dati di fornitura")) {
+if(ate() || contains(@,"Comunicazioni") || contains(@,"Dati di fornitura")) {
   goto parsing_spese;
 }
 _dettaglio+=@;
@@ -194,7 +194,7 @@ p+*next_page;
 if(*spacer_multipod) {
   if(@ == "Dati di fornitura") {
     *next_page++;
-    nexttable;
+    nexttable();
     goto nome_fornitore;
   }
 }

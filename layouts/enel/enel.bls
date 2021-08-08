@@ -21,7 +21,7 @@ if(!contains(@,"Enel Energia - Mercato libero dell'energia")) {
 p+*offset_dettaglio;
 ### End Spacers
 ### Script
-if(sys.ate) {
+if(ate()) {
   error(*ERRORE_DETTAGLIO_MANCANTE, "Enel: Dettaglio Mancante");
 } else if(@ != "DETTAGLIO IMPORTI IN BOLLETTA") {
   *offset_dettaglio++;
@@ -52,8 +52,8 @@ t-*spacer_dettaglio;
 p+*offset_dettaglio;
 ### End Spacers
 ### Script
-*spacer_dettaglio=box.height;
-if(!sys.ate) {
+*spacer_dettaglio=box_height();
+if(!ate()) {
   *offset_dettaglio++;
   goto dettaglio_costi;
 }
@@ -241,7 +241,7 @@ with(*_dettaglio) {
 if(mese_fine) {
   if(mese_fattura != mese_fine) {
     *calc_mese++;
-    nexttable;
+    nexttable();
     goto nome_fornitore;
   }
 }
