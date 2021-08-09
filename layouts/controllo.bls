@@ -5,12 +5,9 @@
 ### Page 1
 ### Rect 0 0 0 0
 ### Script
-_i=0;
 foreach(lines(readfile("errors.lst"))) {
-    *["ERRORE_" + trim(@)] = _i;
-    _i++;
+    *["ERRORE_" + @] = curindex();
 }
-clear _i;
 ### End Script
 ### End Box
 
@@ -49,7 +46,7 @@ else error("Nessun Layout", *ERRORE_NON_IMPLEMENTATO);
 ### Script
 foreach(lines(readfile("required.lst"))) {
     for(firsttable();;nexttable()) {
-        if(![trim(@)]) error(format("Dati Mancanti: $0", trim(@)), *ERRORE_DATI_MANCANTI);
+        if(![@]) error(format("Dati Mancanti: $0", @), *ERRORE_DATI_MANCANTI);
         if (curtable() + 1 >= numtables()) break;
     }
 }
