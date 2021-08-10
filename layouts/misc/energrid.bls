@@ -8,7 +8,7 @@
 ### Goto Label convalida
 ### Script
 if(!contains(@,"www.energrid.it")) {
-  error("EnerGrid: Stringa di Convalida Errata", *ERRORE_LAYOUT_INVALIDO);
+  error("EnerGrid: Stringa di Convalida Errata", global ERRORE_LAYOUT_INVALIDO);
 }
 ### End Script
 ### End Box
@@ -50,7 +50,7 @@ data_scadenza=search_date(@,"%d/%m/%Y",/Scadenza fattura: (\D)/);
 
 mese_fattura=first_day(search_date(@,"%d/%m/%Y",/\D - (\D)/));
 if(!mese_fattura) {
-  error("EnerGrid: Mese Fattura Mancante", *ERRORE_PERIODO_INVALIDO);
+  error("EnerGrid: Mese Fattura Mancante", global ERRORE_PERIODO_INVALIDO);
 }
 _mese=date_format(mese_fattura,"%m/%Y");
 ### End Script
@@ -72,7 +72,7 @@ codice_pod=search(@,/POD: (\w+)/);
 ### Page 2
 ### Rect 0.045739044 0.10376283 0.91132927 0.21464685
 ### Spacers
-p+*off_pod;
+p+global off_pod;
 ### End Spacers
 ### Script
 'indirizzo_fornitura=singleline(search(@,/Indirizzo di fornitura: ([^]+?\d{5}.+)\n/));
@@ -87,13 +87,17 @@ codice_pod=search(@,/POD(?: \(punto di prelievo\)|:) (\w+)/);
 ### Page 2
 ### Rect 0.043880455 0.5927153 0.9120019 0.23200065
 ### Spacers
-p+*off_pod;
+p+global off_pod;
 ### End Spacers
 ### Script
 with(between(@,"RIEPILOGO CONSUMI PRIMO ADDEBITO","TOTALE (Salvo conguagli, errori e omissioni)")) {
   step(captures(@,format(/\d\d\/$0 Consumi Fatturati (\N) (\N) (\N) \N (\N) (\N) (\N)/,_mese))) {
-    $%energia_attiva_rilevata[0]; $%energia_attiva_rilevata[1]; $%energia_attiva_rilevata[2];
-    $%energia_reattiva[0]; $%energia_reattiva[1]; $%energia_reattiva[2];
+    set %energia_attiva_rilevata[0];
+    set %energia_attiva_rilevata[1];
+    set %energia_attiva_rilevata[2];
+    set %energia_reattiva[0];
+    set %energia_reattiva[1];
+    set %energia_reattiva[2];
   }
 }
 with(between(@,"DETTAGLIO IMPOSTE","TOTALE (Salvo conguagli, errori e omissioni)")) {
@@ -112,7 +116,7 @@ with(between(@,"DETTAGLIO IMPOSTE","TOTALE (Salvo conguagli, errori e omissioni)
 p+_off_dettaglio;
 ### End Spacers
 ### Script
-if(ate()) error("EnerGrid: Dettaglio Mancante", *ERRORE_DETTAGLIO_MANCANTE);
+if(ate()) error("EnerGrid: Dettaglio Mancante", global ERRORE_DETTAGLIO_MANCANTE);
 _pod_dettaglio=search(@,/POD: (.+)/);
 if(_pod_dettaglio!=codice_pod) {
   _off_dettaglio++;
@@ -134,13 +138,16 @@ with(between(@,"DETTAGLIO IMPORTI","TOTALE (Salvo conguagli, errori e omissioni)
   with(between(@,"Spese per la materia energia","Spese per trasporto")) {
     %spesa_materia_energia=search(@,/(\N)/);
     step(captures(@,format(/Componente di Generazione fascia F1 .+ al \d\d\/$0 Euro\/kWh (\N) (\N)/,_mese))) {
-      $%prezzo_energia[0]; $%energia_attiva[0];
+      set %prezzo_energia[0];
+      set %energia_attiva[0];
     }
     step(captures(@,format(/Componente di Generazione fascia F2 .+ al \d\d\/$0 Euro\/kWh (\N) (\N)/,_mese))) {
-      $%prezzo_energia[1]; $%energia_attiva[1];
+      set %prezzo_energia[1];
+      set %energia_attiva[1];
     }
     step(captures(@,format(/Componente di Generazione fascia F3 .+ al \d\d\/$0 Euro\/kWh (\N) (\N)/,_mese))) {
-      $%prezzo_energia[2]; $%energia_attiva[2];
+      set %prezzo_energia[2];
+      set %energia_attiva[2];
     }
   }
   with(between(@,"Spese per trasporto","Spese per oneri")) {
@@ -160,11 +167,11 @@ with(between(@,"DETTAGLIO IMPORTI","TOTALE (Salvo conguagli, errori e omissioni)
 ### Rect 0.017741935 0.034207527 0.31774193 0.15507412
 ### Goto Label check_pagina
 ### Spacers
-p+*off_pod;
+p+global off_pod;
 ### End Spacers
 ### Script
 if (!(ate() || contains(@,"INFORMAZIONI AI CLIENTI"))) {
-  *off_pod++;
+  global off_pod++;
   if(contains(@,"DATI FORNITURA")) {
     nexttable();
     goto nome_fornitore;

@@ -8,16 +8,16 @@
 ### Rect 0.04516129032258064 0.08893956670467502 0.2596774193548387 0.037628278221208664
 ### Goto Label cerca_dettaglio
 ### Spacers
-p+*off_dettaglio;
-p+*next_page;
+p+global off_dettaglio;
+p+global next_page;
 ### End Spacers
 ### Script
 if(ate()) {
-  error("Italpower: Dettaglio Mancante", *ERRORE_DETTAGLIO_MANCANTE);
+  error("Italpower: Dettaglio Mancante", global ERRORE_DETTAGLIO_MANCANTE);
 } else if(@ == "ELEMENTI DI DETTAGLIO") {
   goto lettura_dettaglio;
 } else {
-  *off_dettaglio++;
+  global off_dettaglio++;
   goto cerca_dettaglio;
 }
 ### End Script
@@ -29,15 +29,15 @@ if(ate()) {
 ### Rect 0.024193548387096774 0.08323831242873432 0.9258064516129032 0.8289623717217788
 ### Goto Label lettura_dettaglio
 ### Spacers
-p+*off_dettaglio;
-p+*next_page;
+p+global off_dettaglio;
+p+global next_page;
 ### End Spacers
 ### Script
 if(ate()) {
-  error("Italpower: Dettaglio Mancante", *ERRORE_DETTAGLIO_MANCANTE);
+  error("Italpower: Dettaglio Mancante", global ERRORE_DETTAGLIO_MANCANTE);
 } else if(!(contains(@,"AGGIORNAMENTI CORRISPETTIVI") || contains(@,"DATI FORNITURA"))) {
-  *_dettaglio+=@;
-  *off_dettaglio++;
+  global _dettaglio+=@;
+  global off_dettaglio++;
   goto lettura_dettaglio;
 } else {
   goto nome_fornitore;
@@ -61,8 +61,8 @@ fornitore="Italpower";
 ### Rect 0.045161292 0.16647662 0.42580646 0.13568985
 ### Script
 step(captures(@,/CODICE CLIENTE: (\w+) Intestatario del contratto: (.+)\n/)) {
-  $numero_cliente;
-  $'ragione_sociale;
+  set numero_cliente;
+  set 'ragione_sociale;
 }
 ### End Script
 ### End Box
@@ -95,19 +95,21 @@ function parse_periodo(str_periodo) {
       first_day(search_date(str_periodo,"%d %b. %Y",/(\D)\s*-\s*\D/)),
       first_day(search_date(str_periodo,"%d %b. %Y",/\D\s*-\s*(\D)/)));
   } else if(str_periodo) {
-    error("Italpower: Formato Periodo Non Valido", *ERRORE_PERIODO_INVALIDO);
+    error("Italpower: Formato Periodo Non Valido", global ERRORE_PERIODO_INVALIDO);
   }
 }
 
 step(parse_periodo(search(@,/Periodo fatturato (.+)/))) {
-  $mese_inizio; $mese_fine;
+  set mese_inizio;
+  set mese_fine;
 }
 
 step(parse_periodo(search(@,/Periodo conguagliato (.+)/))) {
-  $mese_inizio_conguaglio; $mese_fine_conguaglio;
+  set mese_inizio_conguaglio;
+  set mese_fine_conguaglio;
 }
 
-mese_fattura=month_add(if(*calc_conguaglio, mese_inizio_conguaglio, mese_inizio), *calc_mese);
+mese_fattura=month_add(conditional(global calc_conguaglio, mese_inizio_conguaglio, mese_inizio), global calc_mese);
 ### End Script
 ### End Box
 
@@ -126,7 +128,7 @@ data_scadenza=search_date(@,"%d %B %Y");
 ### Page 3
 ### Rect 0.044354837 0.1378327 0.43145162 0.23479088
 ### Spacers
-p+*next_page;
+p+global next_page;
 ### End Spacers
 ### Script
 'indirizzo_fornitura=singleline(search(@,/Le stiamo fornendo energia elettrica in \u2022 ([^]+?\d{5}.+)\n/));
@@ -138,7 +140,7 @@ p+*next_page;
 ### Page 3
 ### Rect 0.5039354178097982 0.08221476510067115 0.4408602 0.2961122348993288
 ### Spacers
-p+*next_page;
+p+global next_page;
 ### End Spacers
 ### Script
 codice_pod=search(@,/NUMERO POD: (\w+)/);
@@ -152,7 +154,7 @@ codice_pod=search(@,/NUMERO POD: (\w+)/);
 ### Page 3
 ### Rect 0.048387095 0.6624857 0.89870286 0.055942718
 ### Spacers
-p+*next_page;
+p+global next_page;
 ### End Spacers
 ### Script
 with(between(@,"RIEPILOGO LETTURE E CONSUMI","CONSUMI FATTURATI")) {
@@ -160,8 +162,8 @@ with(between(@,"RIEPILOGO LETTURE E CONSUMI","CONSUMI FATTURATI")) {
   foreach(captures(@,format(/(.+\d\d\/$0 F1.+)\n(.+F2.+)\n(.+F3.+)/,date_format(mese_fattura,"%m/%Y")))) {
     step(table_row(@,_header)) {
       ;
-      $%energia_attiva_rilevata[];
-      $%energia_reattiva[];
+      set %energia_attiva_rilevata[];
+      set %energia_reattiva[];
     }
   }
 }
@@ -205,7 +207,7 @@ function calc_penale_reattiva(@, percent_reattiva, format_str) {
   }
   return _ret;
 }
-with(*_dettaglio) {
+with(global _dettaglio) {
   _periodo=format(/\d\d\/\d\d\/\d\d\d\d-\s*\d\d\/$0/,date_format(mese_fattura,"%m/%Y"));
   _periodo_generic=/\d{2}\/\d{2}\/\d{4}\s*-\s*\d{2}\/\d{2}\/\d{4}/;
   with(between(@,"","Totale materia energia")) {
@@ -225,13 +227,19 @@ with(*_dettaglio) {
       }
     }
     step(captures(@,format(/Energia - F1 - Periodo $0 Euro\/kWh (\N) (\N) (\N)/,_periodo))) {
-      $%prezzo_energia[0]; {$%energia_attiva[0]; %_tot_consumi+=@;} spesa_materia_energia+=trunc(num(@),2);
+      set %prezzo_energia[0];
+      { set %energia_attiva[0]; %_tot_consumi+=@; }
+      spesa_materia_energia+=trunc(num(@),2);
     }
     step(captures(@,format(/Energia - F2 - Periodo $0 Euro\/kWh (\N) (\N) (\N)/,_periodo))) {
-      $%prezzo_energia[1]; {$%energia_attiva[1]; %_tot_consumi+=@;} spesa_materia_energia+=trunc(num(@),2);
+      set %prezzo_energia[1];
+      { set %energia_attiva[1]; %_tot_consumi+=@; }
+      spesa_materia_energia+=trunc(num(@),2);
     }
     step(captures(@,format(/Energia - F3 - Periodo $0 Euro\/kWh (\N) (\N) (\N)/,_periodo))) {
-      $%prezzo_energia[2]; {$%energia_attiva[2]; %_tot_consumi+=@;} spesa_materia_energia+=trunc(num(@),2);
+      set %prezzo_energia[2];
+      { set %energia_attiva[2]; %_tot_consumi+=@; }
+      spesa_materia_energia+=trunc(num(@),2);
     }
     foreach(search_all(@,format(/Perdite di rete - F[1-3] - Periodo $0 Euro\/kWh \N (\N \N)/,_periodo))) {
       step(captures(@,/(\N) (\N)/)) {
@@ -288,33 +296,33 @@ with(*_dettaglio) {
 ### Page 4
 ### Rect 0.05161290322580646 0.14481185860889398 0.18870967741935485 0.030786773090079815
 ### Spacers
-p+*next_page;
-p+*off_dettaglio;
+p+global next_page;
+p+global off_dettaglio;
 ### End Spacers
 ### Script
-if(!*calc_conguaglio) {
+if(!global calc_conguaglio) {
   if(mese_fattura != mese_fine) {
-    *calc_mese++;
+    global calc_mese++;
     nexttable();
     goto nome_fornitore;
   } else if(mese_inizio_conguaglio) {
-    *calc_conguaglio = 1;
-    *calc_mese = 0;
+    global calc_conguaglio = 1;
+    global calc_mese = 0;
     nexttable();
     goto nome_fornitore;
   }
 } else if(mese_fattura != mese_fine_conguaglio) {
-  *calc_mese++;
+  global calc_mese++;
   nexttable();
   goto nome_fornitore;
 }
 if(@ == "DATI FORNITURA") {
-  *calc_conguaglio = 0;
-  *calc_mese = 0;
-  *next_page += 1 + *off_dettaglio;
-  *off_dettaglio = 0;
+  global calc_conguaglio = 0;
+  global calc_mese = 0;
+  global next_page += 1 + global off_dettaglio;
+  global off_dettaglio = 0;
   nexttable();
-  clear *_dettaglio;
+  clear global _dettaglio;
   goto cerca_dettaglio;
 }
 ### End Script

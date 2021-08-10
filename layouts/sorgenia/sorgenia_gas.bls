@@ -8,12 +8,12 @@
 ### Rect 0.040290102 0.080957815 0.91055596 0.86431015
 ### Goto Label lettura_dati
 ### Spacers
-p+*next_page;
+p+global next_page;
 ### End Spacers
 ### Script
 if(!(ate() || contains(@,"INFORMAZIONI PER I CLIENTI SORGENIA"))) {
-  *_dettaglio+=@;
-  *next_page++;
+  global _dettaglio+=@;
+  global next_page++;
   goto lettura_dati;
 }
 ### End Script
@@ -43,7 +43,7 @@ numero_cliente=search(@,/CODICE CLIENTE (.+)\n/);
 ### Page 1
 ### Rect 0.076612905 0.15037057 0.38810483 0.02850627
 ### Script
-$'ragione_sociale;
+set 'ragione_sociale;
 ### End Script
 ### End Box
 
@@ -74,11 +74,11 @@ codice_pdr=search(@,/per il punto di riconsegna \(PDR\) (\d+)/);
 mese_fattura=search_date(@,"%B %Y");
 mese_fine=search_date(@,"%B %Y",/\D\/(\D)/);
 if(mese_fine < mese_fattura) {
-  error("Sorgenia: Periodo Non Valido", *ERRORE_PERIODO_INVALIDO);
+  error("Sorgenia: Periodo Non Valido", global ERRORE_PERIODO_INVALIDO);
 }
-mese_fattura=month_add(mese_fattura,*calc_mese);
+mese_fattura=month_add(mese_fattura,global calc_mese);
 if(!mese_fattura) {
-  error("Sorgenia: Mese Fattura Mancante", *ERRORE_PERIODO_INVALIDO);
+  error("Sorgenia: Mese Fattura Mancante", global ERRORE_PERIODO_INVALIDO);
 }
 ### End Script
 ### End Box
@@ -95,7 +95,7 @@ data_scadenza=search_date(@,"%d/%m/%Y",/DA SALDARE ENTRO (\D)/);
 ### Page 1
 ### Rect 0.31451613 0.43543327 0.36794356 0.033494867
 ### Script
-$%totale_fattura;
+set %totale_fattura;
 ### End Script
 ### End Box
 
@@ -107,7 +107,7 @@ $%totale_fattura;
 import "parsing_dettaglio_gas";
 if(mese_fine) {
   if(mese_fattura != mese_fine) {
-    *calc_mese++;
+    global calc_mese++;
     nexttable();
     goto nome_fornitore;
   }

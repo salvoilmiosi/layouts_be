@@ -6,16 +6,37 @@
 ### Page 1
 ### Rect 0 0 0 0
 ### Script
-with(*_dettaglio) {
+function calc_prezzo_energia(@,expr) {
+  clear _tot_unitario;
+  clear _tot_kwh;
+  clear _tot_prezzo;
+  clear _i;
+  foreach(search_all(@,format(/Prezzo $0 euro\/kWh (\N \N \N)/,expr))) {
+    step(captures(@,/(\N) (\N) (\N)/)) {
+      %_tot_unitario=@;
+      %_tot_kwh+=@;
+      %_tot_prezzo+=@;
+    }
+    _i++;
+  }
+  if(_i == 1) return list(_tot_unitario, _tot_kwh);
+  else if(_tot_prezzo) return list(trunc(_tot_prezzo/_tot_kwh,6), _tot_kwh);
+}
+
+with(global _dettaglio) {
   with(between(@,"CONSUMI e RICALCOLI","CONSUMI ULTIMI 13 MESI")) {
     with(between(@,"ENERGIA ATTIVA","ENERGIA REATTIVA")) {
       step(captures(@,format(/$0 \w+\*? (\N) (\N) (\N)/,date_format(mese_fattura,"%b - %y")))) {
-        $%energia_attiva_rilevata[0]; $%energia_attiva_rilevata[1]; $%energia_attiva_rilevata[2];
+        set %energia_attiva_rilevata[0];
+        set %energia_attiva_rilevata[1];
+        set %energia_attiva_rilevata[2];
       }
     }
     with(between(@,"ENERGIA REATTIVA")) {
       step(captures(@,format(/$0 (\N) (\N) (\N)/,date_format(mese_fattura,"%b - %y")))) {
-        $%energia_reattiva[0]; $%energia_reattiva[1]; $%energia_reattiva[2];
+        set %energia_reattiva[0];
+        set %energia_reattiva[1];
+        set %energia_reattiva[2];
       }
     }
   }
@@ -28,24 +49,21 @@ with(*_dettaglio) {
     %spesa_materia_energia=search(@,/DETTAGLIO DELLA SPESA PER (?:L\u2019ENERGIA ELETTRICA|LA MATERIA ENERGIA)[^]+?(\N) DETTAGLIO/);
     %trasporto_gestione=search(@,/DETTAGLIO DELLA SPESA PER (?:IL TRASPORTO, GESTIONE DEL CONTATORE|TRASPORTO ENERGIA, GESTIONE CONTATORE) E ONERI DI SISTEMA[^]+?(\N) IMPOSTE/);
 
-    foreach(search_all(@,/Prezzo (?:F1|Picco|Ore Giorno) euro\/kWh (\N \N)/)) {
-      step(captures(@,/(\N) (\N)/)) {
-        $%prezzo_energia[0]; %energia_attiva[0]+=@;
-      }
+    step(calc_prezzo_energia(/(?:F1|Picco|Ore Giorno)/)) {
+      set prezzo_energia[0];
+      set energia_attiva[0];
     }
-    foreach(search_all(@,/Prezzo (?:F2|Fuori Picco|Ore Notte) euro\/kWh (\N \N)/)) {
-      step(captures(@,/(\N) (\N)/)) {
-        $%prezzo_energia[1]; %energia_attiva[1]+=@;
-      }
+    step(calc_prezzo_energia(/(?:F2|Fuori Picco|Ore Notte)/)) {
+      set prezzo_energia[1];
+      set energia_attiva[1];
     }
-    foreach(search_all(@,/Prezzo F3 euro\/kWh (\N \N)/)) {
-      step(captures(@,/(\N) (\N)/)) {
-        $%prezzo_energia[2]; %energia_attiva[2]+=@;
-      }
+    step(calc_prezzo_energia(/F3/)) {
+      set prezzo_energia[2];
+      set energia_attiva[2];
     }
-
-    step(captures(@,/Prezzo (?:energia(?: monorario)?|Luce) euro\/kWh (\N) (\N)/)) {
-      $%~prezzo_energia; $%~energia_attiva;
+    step(calc_prezzo_energia(/(?:energia(?: monorario)?|Luce)/)) {
+      set overwrite prezzo_energia;
+      set overwrite energia_attiva;
     }
 
     %sbilanciamento=search(@,/Incremento prezzo euro\/kWh (\N)/);

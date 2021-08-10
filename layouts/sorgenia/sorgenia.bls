@@ -7,6 +7,6 @@
 ### Script
 if(@ == "BOLLETTA PER LA FORNITURA DI ENERGIA ELETTRICA NEL MERCATO LIBERO") import "sorgenia_luce";
 else if(@ == "BOLLETTA PER LA FORNITURA DI GAS NATURALE NEL MERCATO LIBERO") import "sorgenia_gas";
-else error("Sorgenia: Stringa di Convalida Errata", *ERRORE_LAYOUT_INVALIDO);
+else error("Sorgenia: Stringa di Convalida Errata", global ERRORE_LAYOUT_INVALIDO);
 ### End Script
 ### End Box

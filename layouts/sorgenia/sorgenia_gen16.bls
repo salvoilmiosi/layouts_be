@@ -8,7 +8,7 @@
 ### Rect 0.037950665 0.5240123 0.4743833 0.03269837
 ### Script
 if(@ != "Servizio di fornitura energia elettrica") {
-  error("Sorgenia (gen16): Stringa di Convalida Errata", *ERRORE_LAYOUT_INVALIDO);
+  error("Sorgenia (gen16): Stringa di Convalida Errata", global ERRORE_LAYOUT_INVALIDO);
 }
 ### End Script
 ### End Box
@@ -66,9 +66,9 @@ if(matches(@,/\w+ - \w+ \d{4}/)) {
   mese_inizio=date(@,"%B %Y");
   mese_fine=date(@,"%B %Y");
 }else{
-  error(*ERRORE_PERIODO_INVALIDO,"Sorgenia: Formato Periodo Non Valido");
+  error("Sorgenia: Formato Periodo Non Valido", global ERRORE_PERIODO_INVALIDO);
 }
-mese_fattura=month_add(mese_inizio,*calc_mese);
+mese_fattura=month_add(mese_inizio,global calc_mese);
 ### End Script
 ### End Box
 
@@ -97,18 +97,23 @@ data_fattura=search_date(@,"%d/%m/%Y",/Del: (\D)/);
 ### Script
 with(rbetween(@,date_format(mese_fattura,"%B %Y"),/FORNITURA DI .+/)) {
   step(captures(@,/CONSUMI EFFETTIVI \(kWh\) (\N) (\N) (\N)/)) {
-    $%energia_attiva_rilevata[0]; $%energia_attiva_rilevata[1]; $%energia_attiva_rilevata[2];
+    set %energia_attiva_rilevata[0];
+    set %energia_attiva_rilevata[1];
+    set %energia_attiva_rilevata[2];
   }
   %spesa_materia_energia=search(@,/SERVIZI DI VENDITA (\N)/);
   %pcv=search(@,/PCV euro\/cliente\/mese \N \N (\N)/);
   step(captures(@,/Prezzo F1 euro\/kWh (\N) (\N)/)) {
-    $%prezzo_energia[0]; $%energia_attiva[0];
+    set %prezzo_energia[0];
+    set %energia_attiva[0];
   }
   step(captures(@,/Prezzo F2 euro\/kWh (\N) (\N)/)) {
-    $%prezzo_energia[1]; $%energia_attiva[1];
+    set %prezzo_energia[1];
+    set %energia_attiva[1];
   }
   step(captures(@,/Prezzo F3 euro\/kWh (\N) (\N)/)) {
-    $%prezzo_energia[2]; $%energia_attiva[2];
+    set %prezzo_energia[2];
+    set %energia_attiva[2];
   }
   %trasporto_gestione=search(@,/SERVIZI DI RETE (\N)/);
   %potenza[0:3]=search(@,/Quota Potenza euro\/kW\/mese \N (\N)/);
@@ -123,7 +128,7 @@ with(rbetween(@,date_format(mese_fattura,"%B %Y"),/FORNITURA DI .+/)) {
 ### Rect 0.036764704 0.0058689383 0.030834913 0.017606815
 ### Script
 if(mese_fattura != mese_fine) {
-  *calc_mese++;
+  global calc_mese++;
   nexttable();
   goto nome_fornitore;
 }

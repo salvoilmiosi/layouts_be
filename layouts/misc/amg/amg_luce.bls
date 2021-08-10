@@ -8,15 +8,15 @@
 ### Rect 0.01455026455026455 0.01216089803554724 0.03835978835978836 0.028999064546304958
 ### Goto Label ricerca_dettaglio
 ### Spacers
-p+*off_dettaglio;
+p+global off_dettaglio;
 ### End Spacers
 ### Script
 if(ate()) {
-  error("AMG: Dettaglio Mancante", *ERRORE_DETTAGLIO_MANCANTE);
+  error("AMG: Dettaglio Mancante", global ERRORE_DETTAGLIO_MANCANTE);
 } else if(contains(@,"DETTAGLIO FATTURA")) {
   goto lettura_dettaglio;
 } else {
-  *off_dettaglio++;
+  global off_dettaglio++;
   goto ricerca_dettaglio;
 }
 ### End Script
@@ -29,12 +29,12 @@ if(ate()) {
 ### Rect 0.06084656084656084 0.013096351730589336 0.03835978835978836 0.02806361085126286
 ### Goto Label lettura_dettaglio
 ### Spacers
-p+*off_dettaglio;
+p+global off_dettaglio;
 ### End Spacers
 ### Script
 if(!ate() && !isempty(@)) {
-  *_dettaglio+=@;
-  *off_dettaglio++;
+  global _dettaglio+=@;
+  global off_dettaglio++;
   goto lettura_dettaglio;
 }
 ### End Script
@@ -107,12 +107,12 @@ if(matches(@,/\w+\. - \w+\. \d{4}/)) {
   _items = captures(@,/(\w+)\. - (\w+)\. (\d{4})/);
   mese_inizio=search_date(format("$0 $1", subitem(_items,0), subitem(_items,2)),"%b %Y");
   mese_fine=search_date(format("$0 $1", subitem(_items,1), subitem(_items,2)),"%b %Y");
-  mese_fattura=month_add(mese_inizio,*calc_mese);
+  mese_fattura=month_add(mese_inizio,global calc_mese);
 } else {
-  error("AMG: Formato Periodo Errato", *ERRORE_PERIODO_INVALIDO);
+  error("AMG: Formato Periodo Errato", global ERRORE_PERIODO_INVALIDO);
 }
 if(mese_inizio > mese_fine) {
-  error("AMG: Formato Periodo Errato", *ERRORE_PERIODO_INVALIDO);
+  error("AMG: Formato Periodo Errato", global ERRORE_PERIODO_INVALIDO);
 }
 _mese=date_format(mese_fattura,"%m/%Y");
 ### End Script
@@ -166,7 +166,7 @@ function calc_parziale(@) {
   return trunc(_tot,2);
 }
 _regex_periodo=/\d\d\/\d\d\/\d\d\d\d - \d\d\/\d\d\/\d\d\d\d/;
-with(*_dettaglio) {
+with(global _dettaglio) {
   with(between(@,"Spesa per la Materia Prima Energia","Spesa per il trasporto")) {
     foreach(search_all(@,format(/Comp\. PCV ($0 \N) \u20ac\/cliente\/mese/,_regex_periodo))) {
       if(check_periodo()) {
@@ -177,7 +177,8 @@ with(*_dettaglio) {
     foreach(search_all(@,format(/Comp\. PED F123 ($0 \N \u20ac\/kWh \N) kWh/,_regex_periodo))) {
       if(check_periodo()) {
         step(captures(@,/(\N) \u20ac\/kWh (\N)/)) {
-          $%prezzo_energia; %energia_attiva+=@;
+          %prezzo_energia=@;
+          %energia_attiva+=@;
         }
       }
     }
@@ -219,7 +220,7 @@ with(*_dettaglio) {
 ### Rect 0.15343915343915343 0.014967259120673527 0.035714285714285726 0.025257249766136577
 ### Script
 if(mese_fattura != mese_fine) {
-  *calc_mese++;
+  global calc_mese++;
   nexttable();
   goto nome_fornitore;
 }

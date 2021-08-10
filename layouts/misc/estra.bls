@@ -8,13 +8,13 @@
 ### Goto Label ricerca_dettaglio
 ### Flags TRIM
 ### Spacers
-p+*off_dettaglio;
+p+global off_dettaglio;
 ### End Spacers
 ### Script
 if(ate()) {
-  error("Estra: Dettaglio Mancante", *ERRORE_DETTAGLIO_MANCANTE);
+  error("Estra: Dettaglio Mancante", global ERRORE_DETTAGLIO_MANCANTE);
 } else if(@ != "ELEMENTI DI DETTAGLIO") {
-  *off_dettaglio++;
+  global off_dettaglio++;
   goto ricerca_dettaglio;
 }
 ### End Script
@@ -26,12 +26,12 @@ if(ate()) {
 ### Rect 0.04032258 0.114025086 0.9370968 0.8540479
 ### Goto Label lettura_dettaglio
 ### Spacers
-p+*off_dettaglio;
+p+global off_dettaglio;
 ### End Spacers
 ### Script
 if(!ate()) {
-  *_dettaglio+=replace(@,"\u2212","-");
-  *off_dettaglio++;
+  global _dettaglio+=replace(@,"\u2212","-");
+  global off_dettaglio++;
   goto lettura_dettaglio;
 }
 ### End Script
@@ -57,9 +57,9 @@ data_fattura=search_date(@,"%d.%m.%Y",/del (\D)/);
 mese_inizio=first_day(search_date(@,"%d.%m.%Y",/(\D) - \D/));
 mese_fine=first_day(search_date(@,"%d.%m.%Y",/\D - (\D)/));
 if(mese_fine < mese_inizio) {
-  error("Estra: Periodo Non Valido", *ERRORE_PERIODO_INVALIDO);
+  error("Estra: Periodo Non Valido", global ERRORE_PERIODO_INVALIDO);
 }
-mese_fattura=month_add(mese_inizio,*calc_mese);
+mese_fattura=month_add(mese_inizio,global calc_mese);
 _periodo = format(/\d\d\.\d\d.\d\d\d\d - \d\d\.$0/,date_format(mese_fattura,"%m.%Y"));
 ### End Script
 ### End Box
@@ -99,7 +99,9 @@ codice_pod=search(@,/POD \(Punto di prelievo\) (\w+)/);
 ### Script
 with(between(@,"CONSUMI FATTURATI","RIEPILOGO IMPOSTE E IVA")) {
   step(captures(@,format(/Effettivi $0 \N (\N) (\N) (\N)/,_periodo))) {
-    $%energia_attiva_rilevata[0]; $%energia_attiva_rilevata[1]; $%energia_attiva_rilevata[2];
+    set %energia_attiva_rilevata[0];
+    set %energia_attiva_rilevata[1];
+    set %energia_attiva_rilevata[2];
   }
 }
 ### End Script
@@ -110,18 +112,21 @@ with(between(@,"CONSUMI FATTURATI","RIEPILOGO IMPOSTE E IVA")) {
 ### Page 3
 ### Rect 0.32258067 0.079041496 0.048387095 0.028506272
 ### Script
-with(*_dettaglio) {
+with(global _dettaglio) {
   with(between(@,"TOTALE MATERIA ENERGIA","TOTALE TRASPORTO E GESTIONE CONTATORE")) {
     ^spesa_materia_energia=search_all(@,format(/$0 .+ (\N) \N/,_periodo));
     %pcv=search(@,format(/Commercializzazione vendita $0 \u20ac\/POD\/mese \N \N (\N)/,_periodo));
     step(captures(@,format(/Energia F1 $0 \u20ac\/kWh (\N) (\N)/,_periodo))) {
-      $%prezzo_energia[0]; $%energia_attiva[0];
+      set %prezzo_energia[0];
+      set %energia_attiva[0];
     }
     step(captures(@,format(/Energia F2 $0 \u20ac\/kWh (\N) (\N)/,_periodo))) {
-      $%prezzo_energia[1]; $%energia_attiva[1];
+      set %prezzo_energia[1];
+      set %energia_attiva[1];
     }
     step(captures(@,format(/Energia F3 $0 \u20ac\/kWh (\N) (\N)/,_periodo))) {
-      $%prezzo_energia[2]; $%energia_attiva[2];
+      set %prezzo_energia[2];
+      set %energia_attiva[2];
     }
     %sbilanciamento=search(@,format(/Sbilanciamento $0 \u20ac\/kWh (\N)/,_periodo));
   }
@@ -152,7 +157,7 @@ with(*_dettaglio) {
 ### Rect 0.3844086 0.07889734 0.043010753 0.02756654
 ### Script
 if(mese_fattura!=mese_fine) {
-  *calc_mese++;
+  global calc_mese++;
   nexttable();
   goto nome_fornitore;
 }

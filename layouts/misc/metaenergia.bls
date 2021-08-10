@@ -17,7 +17,7 @@ fornitore="MetaEnergia";
 ### Flags TRIM
 ### Script
 if(@ != "FATTURA PER LA FORNITURA DI ENERGIA ELETTRICA - MERCATO LIBERO") {
-  error("MetaEnergia: Stringa di Convalida Errata", *ERRORE_LAYOUT_INVALIDO);
+  error("MetaEnergia: Stringa di Convalida Errata", global ERRORE_LAYOUT_INVALIDO);
 }
 ### End Script
 ### End Box
@@ -41,7 +41,7 @@ numero_fattura = search(@,/Fattura N\. (\w+)/);
 data_fattura = search_date(@,"%d/%m/%Y",/Emessa il (\D)/);
 mese_fattura = first_day(search_date(@,"%d/%m/%Y",/Periodo di riferimento \D - (\D)/));
 if (!mese_fattura) {
-  error("MetaEnergia: Mese Fattura Mancante", *ERRORE_PERIODO_INVALIDO);
+  error("MetaEnergia: Mese Fattura Mancante", global ERRORE_PERIODO_INVALIDO);
 }
 
 _mese = date_format(mese_fattura,"%m/%Y");
@@ -60,7 +60,7 @@ data_scadenza = search_date(@,"%d/%m/%Y",/Totale da pagare entro il (\D)/);
 ### Page 1
 ### Rect 0.5484651 0.3650642 0.36650985 0.03586273
 ### Script
-$%totale_fattura;
+set %totale_fattura;
 ### End Script
 ### End Box
 
@@ -79,12 +79,12 @@ numero_cliente = search(@,/Codice cliente: (.+)\n/);
 ### Rect 0.052041367 0.12135033 0.9031695 0.8370542
 ### Goto Label lettura_dettaglio
 ### Spacers
-p+*next_page;
+p+global next_page;
 ### End Spacers
 ### Script
 if (!(ate() || contains(@,"Comunicazioni finali"))) {
   _dettaglio+=@;
-  *next_page++;
+  global next_page++;
   goto lettura_dettaglio;
 }
 ### End Script
@@ -98,21 +98,27 @@ if (!(ate() || contains(@,"Comunicazioni finali"))) {
 with(_dettaglio) {
   step(captures(search(@,/Energia attiva \(kWh\)\n((Dal.+\n)+)/),
     format(/al \d\d\/$0 \w+ (\N) (\N) (\N)/,_mese))) {
-    $%energia_attiva_rilevata[0]; $%energia_attiva_rilevata[1]; $%energia_attiva_rilevata[2];
+    set %energia_attiva_rilevata[0];
+    set %energia_attiva_rilevata[1];
+    set %energia_attiva_rilevata[2];
   }
   step(captures(search(@,/Energia reattiva \(kVARh\)\n((Dal.+\n)+)/),
     format(/al \d\d\/$0 \w+ (\N) (\N) (\N)/,_mese))) {
-    $%energia_reattiva[0]; $%energia_reattiva[1]; $%energia_reattiva[2];
+    set %energia_reattiva[0];
+    set %energia_reattiva[1];
+    set %energia_reattiva[2];
   }
 
   %spesa_materia_energia = search(@,/TOTALE SERVIZI DI VENDITA (\N)/);
   step(captures(search(@,/Energia in Peak\n((Dal.+\n)+)/),
     format(/al \d\d\/$0 \u20ac\/kWh (\N) (\N)/,_mese))) {
-    $%prezzo_energia[0]; $%energia_attiva[0];
+    set %prezzo_energia[0];
+    set %energia_attiva[0];
   }
   step(captures(search(@,/Energia in Off-Peak\n((Dal.+\n)+)/),
     format(/al \d\d\/$0 \u20ac\/kWh (\N) (\N)/,_mese))) {
-    $%prezzo_energia[1]; $%energia_attiva[1];
+    set %prezzo_energia[1];
+    set %energia_attiva[1];
   }
 
   %trasporto_gestione = search(@,/TOTALE SERVIZI DI RETE (\N)/);

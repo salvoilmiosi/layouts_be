@@ -8,16 +8,16 @@
 ### Rect 0.0048387097 0.005701254 0.9919355 0.11123422987096773
 ### Goto Label check_pagina
 ### Spacers
-p+*off_allegato;
+p+global off_allegato;
 ### End Spacers
 ### Script
 if (ate()) {
-  error("Heracomm: Stringa di Convalida Errata", *ERRORE_LAYOUT_INVALIDO);
+  error("Heracomm: Stringa di Convalida Errata", global ERRORE_LAYOUT_INVALIDO);
 } else if (!search(@,/(1 \/ \d+)/)) {
-  *off_allegato++;
+  global off_allegato++;
   goto check_pagina;
 } else if (!contains(@,"www.gruppohera.it")) {
-  *rotation=3;
+  global rotation=3;
 }
 ### End Script
 ### End Box
@@ -26,11 +26,11 @@ if (ate()) {
 ### Page 1
 ### Rect 0.028506271379703536 0.23387096774193547 0.620296465222349 0.12580645161290324
 ### Spacers
-p+*off_dettaglio;
-rotate+*rotation;
+p+global off_dettaglio;
+rotate+global rotation;
 ### End Spacers
 ### Script
-*mul_nota_credito=if(contains(@,"Importo a credito"),-1,1);
+global mul_nota_credito=conditional(contains(@,"Importo a credito"),-1,1);
 ### End Script
 ### End Box
 
@@ -40,14 +40,14 @@ rotate+*rotation;
 ### Rect 0.019455252918287938 0.14619882 0.47393317008171215 0.8187134
 ### Goto Label lettura_dettaglio
 ### Spacers
-p+*off_allegato;
-p+*off_dettaglio;
-rotate+*rotation;
+p+global off_allegato;
+p+global off_dettaglio;
+rotate+global rotation;
 ### End Spacers
 ### Script
 if(isempty(@) || ate()) goto nome_fornitore;
 else {
-  *_dettaglio+=@;
+  global _dettaglio+=@;
 }
 ### End Script
 ### End Box
@@ -57,13 +57,13 @@ else {
 ### Page 4
 ### Rect 0.4950413 0.14107715677419358 0.4842064302204928 0.8187134
 ### Spacers
-p+*off_allegato;
-p+*off_dettaglio;
-rotate+*rotation;
+p+global off_allegato;
+p+global off_dettaglio;
+rotate+global rotation;
 ### End Spacers
 ### Script
-*_dettaglio+=@;
-*off_dettaglio++;
+global _dettaglio+=@;
+global off_dettaglio++;
 goto lettura_dettaglio;
 ### End Script
 ### End Box
@@ -82,8 +82,8 @@ fornitore="Heracomm";
 ### Page 3
 ### Rect 0.02892562 0.2748538 0.29008263 0.6175917825864277
 ### Spacers
-p+*off_allegato;
-rotate+*rotation;
+p+global off_allegato;
+rotate+global rotation;
 ### End Spacers
 ### Script
 numero_fattura=search(@,/(?:Bolletta|Fattura elettronica) n\. (\d+)/);
@@ -102,8 +102,8 @@ codice_pod=search(@,/POD \(Punto di prelievo\): (\w+)/);
 ### Page 3
 ### Rect 0.346281 0.12982456 0.6305785 0.70058477
 ### Spacers
-p+*off_allegato;
-rotate+*rotation;
+p+global off_allegato;
+rotate+global rotation;
 ### End Spacers
 ### Script
 %totale_fattura=search(@,/Totale bolletta\/contratto (\N)/);
@@ -115,14 +115,14 @@ rotate+*rotation;
 ### Page 4
 ### Rect 0.34734598900075014 0.06527792929611916 0.028054298642533948 0.03457106274007682
 ### Script
-with(*_dettaglio) {
-  with(between(@,if(contains(@,"Quadro di dettaglio"),"Quadro di dettaglio","Elementi di dettaglio"),"\n")) {
+with(global _dettaglio) {
+  with(between(@,conditional(contains(@,"Quadro di dettaglio"),"Quadro di dettaglio","Elementi di dettaglio"),"\n")) {
     mese_inizio=first_day(search_date(@,"%d.%m.%Y",/dal (\D) al \D/));
     mese_fine=first_day(search_date(@,"%d.%m.%Y",/dal \D al (\D)/));
     if(mese_fine < mese_inizio) {
-      error("Heracomm: Periodo Non Valido", *ERRORE_PERIODO_INVALIDO);
+      error("Heracomm: Periodo Non Valido", global ERRORE_PERIODO_INVALIDO);
     }
-    mese_fattura=month_add(mese_inizio,*calc_mese);
+    mese_fattura=month_add(mese_inizio,global calc_mese);
   }
   _periodo=format(/dal \d\d\.\d\d\.\d\d\d\d al \d\d\.$0/,date_format(mese_fattura,"%m.%Y"));
   _lettura_fine=date_format(last_day(mese_fattura),"%d\\.%m\\.%Y");
@@ -131,7 +131,9 @@ with(*_dettaglio) {
     date_format(mese_fattura,"01\\.%m\\.%Y"));
   with(between(@,"energia attiva (kWh)","consumo rilevato energia")) {
     step(captures(@,format(/$0 (\N) (\N) (\N) Lettura Rilevata/,_lettura_fine))) {
-      $%energia_attiva_rilevata[0]; $%energia_attiva_rilevata[1]; $%energia_attiva_rilevata[2];
+      set %energia_attiva_rilevata[0];
+      set %energia_attiva_rilevata[1];
+      set %energia_attiva_rilevata[2];
     }
     step(captures(@,format(/$0 (\N) (\N) (\N) Lettura Rilevata/,_lettura_inizio))) {
       %energia_attiva_rilevata[0]-=@; %energia_attiva_rilevata[1]-=@; %energia_attiva_rilevata[2]-=@;
@@ -139,7 +141,9 @@ with(*_dettaglio) {
   }
   with(between(@,"energia reattiva (kVARh)","consumo rilevato energia")) {
     step(captures(@,format(/$0 (\N) (\N) (\N) Lettura Rilevata/,_lettura_fine))) {
-      $%energia_reattiva[0]; $%energia_reattiva[1]; $%energia_reattiva[2];
+      set %energia_reattiva[0];
+      set %energia_reattiva[1];
+      set %energia_reattiva[2];
     }
     step(captures(@,format(/$0 (\N) (\N) (\N) Lettura Rilevata/,_lettura_inizio))) {
       %energia_reattiva[0]-=@; %energia_reattiva[1]-=@; %energia_reattiva[2]-=@;
@@ -147,20 +151,25 @@ with(*_dettaglio) {
   }
   with(between(@,"potenza (kW)","...........")) {
     step(captures(@,format(/$0 (\N) (\N) (\N) Lettura Rilevata/,_lettura_fine))) {
-      $%potenza[0]; $%potenza[1]; $%potenza[2];
+      set %potenza[0];
+      set %potenza[1];
+      set %potenza[2];
     }
   }
   with(between(@,"Totale servizi di Vendita","...........")) {
-    with(between(@,if(contains(@,"Prezzo Netto"),"Prezzo Netto","Prezzo dell'energia"),"Perdite di Rete")) {
+    with(between(@,conditional(contains(@,"Prezzo Netto"),"Prezzo Netto","Prezzo dell'energia"),"Perdite di Rete")) {
       with(search(@,format(/Importo $0\n((?:\s+.+\n)+)/,_periodo))) {
         step(captures(@,/fascia F1 \u20ac\/kWh (\N) (\N) kWh/)) {
-          $%prezzo_energia[0]; $%energia_attiva[0];
+          set %prezzo_energia[0];
+          set %energia_attiva[0];
         }
         step(captures(@,/fascia F2 \u20ac\/kWh (\N) (\N) kWh/)) {
-          $%prezzo_energia[1]; $%energia_attiva[1];
+          set %prezzo_energia[1];
+          set %energia_attiva[1];
         }
         step(captures(@,/fascia F3 \u20ac\/kWh (\N) (\N) kWh/)) {
-          $%prezzo_energia[2]; $%energia_attiva[2];
+          set %prezzo_energia[2];
+          set %energia_attiva[2];
         }
       }
     }
@@ -195,7 +204,7 @@ with(*_dettaglio) {
     with(between(@,"QUOTA FISSA", "QUOTA POTENZA")) {
       foreach(search_all(@,/Importo (dal \d\d\.\d\d\.\d\d\d\d al \d\d\.\d\d\.\d\d\d\d .+)/)) {
         if(date_between(mese_fattura,search_date(@,"%d.%m.%Y",/dal (\D) al \D/),search_date(@,"%d.%m.%Y",/dal \D al (\D)/))) {
-          trasporto_gestione+=trunc(abs(num(search(@,/\u20ac\/cliente\/mese (\N)/)))**mul_nota_credito, 2);
+          trasporto_gestione+=trunc(abs(num(search(@,/\u20ac\/cliente\/mese (\N)/)))*global mul_nota_credito, 2);
           break;
         }
       }
@@ -226,7 +235,7 @@ with(*_dettaglio) {
     }
   }
   with(between(@,"Totale Imposte")) {
-    accise=trunc(0.0125 * _totale_consumi * *mul_nota_credito, 2);
+    accise=trunc(0.0125 * _totale_consumi * global mul_nota_credito, 2);
     iva=search(@,/IVA (\d+%)/);
     imponibile=sum(spesa_materia_energia,trasporto_gestione,accise);
   }
@@ -240,7 +249,7 @@ with(*_dettaglio) {
 ### Rect 0.3773412702120966 0.06426464259653104 0.027093787866044883 0.03737960254547193
 ### Script
 if(mese_fattura != mese_fine) {
-  *calc_mese++;
+  global calc_mese++;
   nexttable();
   goto nome_fornitore;
 }
