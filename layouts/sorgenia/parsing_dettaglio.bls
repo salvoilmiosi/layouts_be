@@ -62,8 +62,8 @@ with(global _dettaglio) {
       set energia_attiva[2];
     }
     step(calc_prezzo_energia(/(?:energia(?: monorario)?|Luce)/)) {
-      set overwrite prezzo_energia;
-      set overwrite energia_attiva;
+      set prezzo_energia;
+      set energia_attiva;
     }
 
     %sbilanciamento=search(@,/Incremento prezzo euro\/kWh (\N)/);

@@ -66,7 +66,7 @@ p+global next_page;
 ### End Spacers
 ### Script
 if (ate()) {
-  if (! global ref _dettaglio) {
+  if (! global _dettaglio) {
     error("Axpo: Dettaglio Mancante", global ERRORE_DETTAGLIO_MANCANTE);
   }
 } else if (!(contains(@,"DATI FORNITURA") || contains(@,"COMUNICAZIONI"))) {
@@ -176,8 +176,8 @@ with(global _dettaglio) {
         set energia_attiva[2];
       }
       step(calc_prezzo_energia("")) {
-        set overwrite prezzo_energia;
-        set overwrite energia_attiva;
+        set prezzo_energia;
+        set energia_attiva;
       }
     }
   }
