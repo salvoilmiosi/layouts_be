@@ -105,8 +105,8 @@ iva=search(@,/Aliquota al (\d+%)/);
 ### Script
 if(matches(@,/\w+\. - \w+\. \d{4}/)) {
   _items = captures(@,/(\w+)\. - (\w+)\. (\d{4})/);
-  mese_inizio=search_date(format("$0 $1", subitem(_items,0), subitem(_items,2)),"%b %Y");
-  mese_fine=search_date(format("$0 $1", subitem(_items,1), subitem(_items,2)),"%b %Y");
+  mese_inizio=date(format("$0 $1", _items[0], _items[2]), "%b %Y");
+  mese_fine=date(format("$0 $1", _items[1], _items[2]), "%b %Y");
   mese_fattura=month_add(mese_inizio,global calc_mese);
 } else {
   error("AMG: Formato Periodo Errato", global ERRORE_PERIODO_INVALIDO);

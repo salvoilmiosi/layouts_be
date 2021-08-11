@@ -48,22 +48,22 @@ def check_conguagli(results):
                 sorted_data.append(data.copy())
         
     sorted_data.sort(key = lambda obj : (
-        obj['values'][0]['codice_pod'][0],
-        date.fromisoformat(obj['values'][0]['mese_fattura'][0]),
-        date.fromisoformat(obj['values'][0]['data_fattura'][0])))
+        obj['values'][0]['codice_pod'],
+        date.fromisoformat(obj['values'][0]['mese_fattura']),
+        date.fromisoformat(obj['values'][0]['data_fattura'])))
 
     for i in range(1, len(sorted_data)):
         old_values = sorted_data[i-1]['values'][0]
         cur_values = sorted_data[i]['values'][0]
 
-        old_pod = old_values['codice_pod'][0]
-        new_pod = cur_values['codice_pod'][0]
+        old_pod = old_values['codice_pod']
+        new_pod = cur_values['codice_pod']
 
-        old_mesefatt = date.fromisoformat(old_values['mese_fattura'][0])
-        new_mesefatt = date.fromisoformat(cur_values['mese_fattura'][0])
+        old_mesefatt = date.fromisoformat(old_values['mese_fattura'])
+        new_mesefatt = date.fromisoformat(cur_values['mese_fattura'])
 
-        old_datafatt = date.fromisoformat(old_values['data_fattura'][0])
-        new_datafatt = date.fromisoformat(cur_values['data_fattura'][0])
+        old_datafatt = date.fromisoformat(old_values['data_fattura'])
+        new_datafatt = date.fromisoformat(cur_values['data_fattura'])
 
         if old_pod == new_pod and old_mesefatt == new_mesefatt and new_datafatt > old_datafatt:
             cur_values['conguaglio'] = True

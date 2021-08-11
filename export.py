@@ -79,7 +79,11 @@ def export_file(input_file):
                     row.append({'value':filename, 'number_format': ''})
                 else:
                     try:
-                        value = v[obj.value][obj.index]
+                        value = v[obj.value]
+                        if isinstance(value, list):
+                            value = value[obj.index]
+                        elif obj.index > 0:
+                            value = None
                         if obj.type == 'str':
                             row.append({'value': value, 'number_format': '@'})
                         elif obj.type == 'date':
@@ -96,11 +100,11 @@ def export_file(input_file):
                             row.append({'value': float(value[:-1]) / 100, 'number_format': '0%'})
                         else:
                             row.append({'value': value, 'number_format': ''})
-                    except (KeyError, IndexError, ValueError):
+                    except (KeyError, IndexError, ValueError, TypeError):
                         row.append({'value': '', 'number_format': ''})
 
             conguaglio = v['conguaglio'] if 'conguaglio' in v else False
-            pod = v['codice_pod'][0] if 'codice_pod' in v else None
+            pod = v['codice_pod'] if 'codice_pod' in v else None
             out.append({'row':row, 'conguaglio':conguaglio, 'pod':pod})
 
     with open(input_file, 'r') as file:

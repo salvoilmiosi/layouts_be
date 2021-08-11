@@ -28,10 +28,10 @@ for k,v in clienti['clients'].items():
             file_from = f['filename']
             if not f['values']: continue
 
-            mese_fattura=date.fromisoformat(f['values'][0]['mese_fattura'][0])
+            mese_fattura=date.fromisoformat(f['values'][0]['mese_fattura'])
             if mese_fattura.year < 2020:
                 continue
-            pod=f['values'][0]['codice_pod'][0][-3:]
+            pod=f['values'][0]['codice_pod'][-3:]
             if 'pods' in v:
                 pattern = v['pods'][pod]['filename']
             else:

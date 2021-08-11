@@ -36,9 +36,9 @@ def find_filename(fattura):
     for l in letture:
         if 'values' not in l: continue
         for v in l['values']:
-            if v['fornitore'][0] != nome_fornitore: continue
-            if v['numero_fattura'][0] == numero_fattura \
-                or (v['codice_pod'][0] == codice_pod and date.fromisoformat(v['mese_fattura'][0]) == mese_fattura):
+            if v['fornitore'] != nome_fornitore: continue
+            if v['numero_fattura'] == numero_fattura \
+                or (v['codice_pod'] == codice_pod and date.fromisoformat(v['mese_fattura']) == mese_fattura):
                 return l['filename']
     return None
 
