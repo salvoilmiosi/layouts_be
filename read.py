@@ -84,13 +84,13 @@ def read_pdf(pdf_file):
     rel_path = pdf_file.relative_to(input_directory)
     if ret['errcode'] == 0:
         if 'notes' in ret:
-            print('\033[33m{0} ### {1}'.format(rel_path, ', '.join(ret['notes'])))
+            print('\033[33m{0} ### {1}\033[0m'.format(rel_path, ', '.join(ret['notes']))) # yellow
         else:
             print(rel_path)
     elif ret['errcode'] > 0:
-        print('\033[30m{0} ### {1}: {2}'.format(rel_path, errcodes[ret['errcode']], ret['error']))
+        print('\033[31m{0} ### {1}: {2}\033[0m'.format(rel_path, errcodes[ret['errcode']], ret['error'])) # red
     else:
-        print('\033[35m{0} ### {1}'.format(rel_path, ret['error']))
+        print('\033[35m{0} ### {1}\033[0m'.format(rel_path, ret['error'])) # magenta
 
     return ret
 
