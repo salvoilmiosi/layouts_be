@@ -47,7 +47,7 @@ else error("Nessun Layout", global ERRORE_NON_IMPLEMENTATO);
 foreach(lines(readfile("required.lst"))) {
     for(firsttable();;nexttable()) {
         if(![@]) error(format("Dati Mancanti: $0", @), global ERRORE_DATI_MANCANTI);
-        if (curtable() + 1 >= numtables()) break;
+        if (islasttable()) break;
     }
 }
 ### End Script
