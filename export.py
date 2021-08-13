@@ -151,4 +151,4 @@ if __name__ == '__main__':
         for f in in_path.rglob('*.json'):
             export_file(f)
     else:
-        export_file(f)
+        export_file(in_path)
