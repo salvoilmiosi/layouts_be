@@ -52,7 +52,7 @@ set 'ragione_sociale;
 ### Page 1
 ### Rect 0.078366615 0.33640674 0.38614953 0.039876044
 ### Script
-numero_fattura=search(@,/N\. fattura (.+)/);
+numero_fattura=search(@,/N\. fattura\*? (.+)/);
 data_fattura=search_date(@,"%d/%m/%Y",/Emessa il (\D)/);
 ### End Script
 ### End Box
