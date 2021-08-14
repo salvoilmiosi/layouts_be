@@ -86,10 +86,10 @@ function parse_periodo(str_periodo) {
       search_date(str_periodo, "%b. %Y"),
       search_date(str_periodo, "%b. %Y"));
   } else if(matches(str_periodo,/\d+ \w+\.\s*-\s*\d+ \w+\. \d+/)) { # es. 01 gen.-31 mar. 2021
-    _items = captures(str_periodo,/\d+ (\w+)\.\s*-\s*\d+ (\w+)\. (\d+)/);
+    $items = captures(str_periodo,/\d+ (\w+)\.\s*-\s*\d+ (\w+)\. (\d+)/);
     return list(
-      date(format("$0 $1", _items[0], _items[2]), "%b %Y"),
-      date(format("$0 $1", _items[1], _items[2]), "%b %Y"));
+      date(format("$0 $1", $items[0], $items[2]), "%b %Y"),
+      date(format("$0 $1", $items[1], $items[2]), "%b %Y"));
   } else if(matches(str_periodo,/\d+ \w+\. \d+\s*-\s*\d+ \w+ \d+/)) { # es. 01 dic. 2020-31 gen. 2021
     return list(
       first_day(search_date(str_periodo,"%d %b. %Y",/(\D)\s*-\s*\D/)),
@@ -181,31 +181,29 @@ function check_periodo(@) {
     search_date(@,"%d/%m/%Y",/\D\s*-\s*(\D)/));
 }
 function calc_totale_parziale(@) {
-  clear _ret;
   foreach(search_all(@,format(/Periodo ($0 Euro\/POD\/mese \N)/,_periodo_generic))) {
     if(check_periodo()) {
-      _ret+=trunc(num(search(@,/Euro\/POD\/mese (\N)/)),2);
+      $ret+=trunc(num(search(@,/Euro\/POD\/mese (\N)/)),2);
     }
   }
-  ^_ret+=search_all(@,format(/Periodo $0 Euro\/kW\/mese \N \N (\N)/,_periodo));
+  ^$ret+=search_all(@,format(/Periodo $0 Euro\/kW\/mese \N \N (\N)/,_periodo));
   foreach(search_all(@,format(/Periodo ($0 Euro\/kWh \N)/,_periodo_generic))) {
     if(check_periodo()) {
-      _ret+=trunc(num(search(@,/Euro\/kWh (\N)/)) * _tot_consumi,2);
+      $ret+=trunc(num(search(@,/Euro\/kWh (\N)/)) * _tot_consumi,2);
     }
   }
-  return _ret;
+  return $ret;
 }
 function calc_penale_reattiva(@, percent_reattiva, format_str) {
-  clear _ret;
-  for(_i=0; _i<3; _i++) {
-    foreach(search_all(@,format(/Energia Reattiva \($2\) - F$1 - Periodo ($0 Euro\/kVarh \N)/,_periodo_generic,_i+1, format_str))) {
+  for($i=0; $i<3; $i++) {
+    foreach(search_all(@,format(/Energia Reattiva \($2\) - F$1 - Periodo ($0 Euro\/kVarh \N)/,_periodo_generic, $i+1, format_str))) {
       if(check_periodo()) {
-        _ret+=trunc(max(0, energia_reattiva[_i] - energia_attiva[_i] * percent_reattiva)
-          *num(search(@,/Euro\/kVarh (\N)/)),2);
+        $ret+=trunc(max(0, energia_reattiva[$i] - energia_attiva[$i] * percent_reattiva) *
+          num(search(@,/Euro\/kVarh (\N)/)),2);
       }
     }
   }
-  return _ret;
+  return $ret;
 }
 with(global _dettaglio) {
   _periodo=format(/\d\d\/\d\d\/\d\d\d\d-\s*\d\d\/$0/,date_format(mese_fattura,"%m/%Y"));

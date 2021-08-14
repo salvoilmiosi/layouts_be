@@ -7,20 +7,16 @@
 ### Rect 0 0 0 0
 ### Script
 function calc_prezzo_energia(@,expr) {
-  clear _tot_unitario;
-  clear _tot_kwh;
-  clear _tot_prezzo;
-  clear _i;
   foreach(search_all(@,format(/Prezzo $0 euro\/kWh (\N \N \N)/,expr))) {
     step(captures(@,/(\N) (\N) (\N)/)) {
-      %_tot_unitario=@;
-      %_tot_kwh+=@;
-      %_tot_prezzo+=@;
+      % $tot_unitario=@;
+      % $tot_kwh+=@;
+      % $tot_prezzo+=@;
     }
-    _i++;
+    $i++;
   }
-  if(_i == 1) return list(_tot_unitario, _tot_kwh);
-  else if(_tot_prezzo) return list(trunc(_tot_prezzo/_tot_kwh,6), _tot_kwh);
+  if($i == 1) return list($tot_unitario, $tot_kwh);
+  else if($tot_prezzo) return list(trunc($tot_prezzo/$tot_kwh,6), $tot_kwh);
 }
 
 with(global _dettaglio) {

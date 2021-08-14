@@ -147,23 +147,22 @@ function check_periodo(@) {
     search_date(@,"%d/%m/%Y",/\D - (\D)/));
 }
 function calc_parziale(@) {
-  clear _tot;
   foreach(search_all(@,format(/($0 \N \u20ac\/cliente\/giorni \N giorni \N)/,_regex_periodo))) {
     if(check_periodo()) {
-      %_tot+=search(@,/(\N)$/);
+      % $ret+=search(@,/(\N)$/);
     }
   }
   foreach(search_all(@,format(/($0 \N) \u20ac\/cliente\/mese/,_regex_periodo))) {
     if(check_periodo()) {
-      %_tot+=search(@,/(\N)$/);
+      % $ret+=search(@,/(\N)$/);
     }
   }
   foreach(search_all(@,format(/($0 \N \u20ac\/kWh \N kWh \N)/,_regex_periodo))) {
     if(check_periodo()) {
-      %_tot+=search(@,/(\N)$/);
+      % $ret+=search(@,/(\N)$/);
     }
   }
-  return trunc(_tot,2);
+  return trunc($ret,2);
 }
 _regex_periodo=/\d\d\/\d\d\/\d\d\d\d - \d\d\/\d\d\/\d\d\d\d/;
 with(global _dettaglio) {
