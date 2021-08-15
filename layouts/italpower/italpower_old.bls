@@ -49,7 +49,7 @@ data_scadenza=search_date(@,"%d/%m/%Y",/Scadenza Fattura: (\D)/);
 p+global off_allegato;
 ### End Spacers
 ### Script
-%totale_fattura=search(@,/Totale Fattura \u20ac (\N)/);
+totale_fattura=search_num(@,/Totale Fattura \u20ac (\N)/);
 iva=search(@,/IVA (\N%)/);
 ### End Script
 ### End Box
@@ -63,7 +63,7 @@ p+global off_allegato;
 ### End Spacers
 ### Script
 numero_cliente=search(@,/Codice cliente (.+)\n/);
-'ragione_sociale=search(@,/Ragione sociale (.+)\n/);
+ragione_sociale=totitle(search(@,/Ragione sociale (.+)\n/));
 ### End Script
 ### End Box
 
@@ -89,7 +89,7 @@ p+global page_offset;
 ### End Spacers
 ### Script
 codice_pod=search(@,/Codice POD (.+)\n/);
-'indirizzo_fornitura=singleline(search(@,/Indirizzo fornitura ([^]+?\d{5}.+)\n/));
+indirizzo_fornitura=totitle(singleline(search(@,/Indirizzo fornitura ([^]+?\d{5}.+)\n/)));
 ### End Script
 ### End Box
 
@@ -102,20 +102,20 @@ p+global off_allegato;
 p+global page_offset;
 ### End Spacers
 ### Script
-step(captures(@,/Misura (\N) (\N) (\N)/)) {
-  set %energia_attiva_rilevata[0];
-  set %energia_attiva_rilevata[1];
-  set %energia_attiva_rilevata[2];
+step(captures_num(@,/Misura (\N) (\N) (\N)/)) {
+  energia_attiva_rilevata[0]=@;
+  energia_attiva_rilevata[1]=@;
+  energia_attiva_rilevata[2]=@;
 }
-step(captures(@,/Potenza \(kW\) (\N) (\N) (\N)/)) {
-  set %potenza[0];
-  set %potenza[1];
-  set %potenza[2];
+step(captures_num(@,/Potenza \(kW\) (\N) (\N) (\N)/)) {
+  potenza[0]=@;
+  potenza[1]=@;
+  potenza[2]=@;
 }
-step(captures(@,/Energia Reattiva \(kVar\) (\N) (\N) (\N)/)) {
-  set %energia_reattiva[0];
-  set %energia_reattiva[1];
-  set %energia_reattiva[2];
+step(captures_num(@,/Energia Reattiva \(kVar\) (\N) (\N) (\N)/)) {
+  energia_reattiva[0]=@;
+  energia_reattiva[1]=@;
+  energia_reattiva[2]=@;
 }
 ### End Script
 ### End Box
@@ -129,31 +129,31 @@ p+global off_allegato;
 p+global page_offset;
 ### End Spacers
 ### Script
-%spesa_materia_energia=search(@,/Servizi di Vendita (\N)/);
-%spesa_materia_energia=search(@,/Spesa Materia Prima (\N)/);
-%trasporto_gestione=search(@,/Servizi di Rete (\N)/);
-%trasporto_gestione=search(@,/Trasporto, Gestione Contatore e Oneri di Sistema (\N)/);
-%oneri_amministrativi=search(@,/Altri Oneri (\N)/);
-%accise=search(@,/Imposte.+Euro.+ (\N)/);
-step(captures(@,/Energia (?:F1|Peak) \u20ac\/kWh (\N) Euro (\N)/)) {
-  set %energia_attiva[0];
-  set %prezzo_energia[0];
+spesa_materia_energia=search_num(@,/Servizi di Vendita (\N)/);
+spesa_materia_energia=search_num(@,/Spesa Materia Prima (\N)/);
+trasporto_gestione=search_num(@,/Servizi di Rete (\N)/);
+trasporto_gestione=search_num(@,/Trasporto, Gestione Contatore e Oneri di Sistema (\N)/);
+oneri_amministrativi=search_num(@,/Altri Oneri (\N)/);
+accise=search_num(@,/Imposte.+Euro.+ (\N)/);
+step(captures_num(@,/Energia (?:F1|Peak) \u20ac\/kWh (\N) Euro (\N)/)) {
+  energia_attiva[0]=@;
+  prezzo_energia[0]=@;
 }
-step(captures(@,/Energia (?:F2|Off-Peak) \u20ac\/kWh (\N) Euro (\N)/)) {
-  set %energia_attiva[1];
-  set %prezzo_energia[1];
+step(captures_num(@,/Energia (?:F2|Off-Peak) \u20ac\/kWh (\N) Euro (\N)/)) {
+  energia_attiva[1]=@;
+  prezzo_energia[1]=@;
 }
-step(captures(@,/Energia F3 \u20ac\/kWh (\N) Euro (\N)/)) {
-  set %energia_attiva[2];
-  set %prezzo_energia[2];
+step(captures_num(@,/Energia F3 \u20ac\/kWh (\N) Euro (\N)/)) {
+  energia_attiva[2]=@;
+  prezzo_energia[2]=@;
 }
-%pcv=search(@,/PCV .+ Euro (\N)/);
-%disp_var=search(@,/Dispacciamento Quota Variabile.+ Euro (\N)/);
-%penale_reattiva_inf75=search(@,/reattiva entro 75% .+ Euro \N (\N)/);
-%penale_reattiva_sup75=search(@,/reattiva oltre 75% .+ Euro \N (\N)/);
-%imponibile=search(@,/Totale periodo (\N)/);
-%pcv=search(@,/PCV .+Euro (\N)/);
-%potenza[0:3]=search(@,/Trasporto Quota Potenza \u20ac\/kW (\N)/);
+pcv=search_num(@,/PCV .+ Euro (\N)/);
+disp_var=search_num(@,/Dispacciamento Quota Variabile.+ Euro (\N)/);
+penale_reattiva_inf75=search_num(@,/reattiva entro 75% .+ Euro \N (\N)/);
+penale_reattiva_sup75=search_num(@,/reattiva oltre 75% .+ Euro \N (\N)/);
+imponibile=search_num(@,/Totale periodo (\N)/);
+pcv=search_num(@,/PCV .+Euro (\N)/);
+potenza[0:3]=search_num(@,/Trasporto Quota Potenza \u20ac\/kW (\N)/);
 ### End Script
 ### End Box
 

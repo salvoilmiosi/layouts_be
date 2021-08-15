@@ -43,7 +43,7 @@ numero_cliente=search(@,/CODICE CLIENTE (.+)\n/);
 ### Page 1
 ### Rect 0.076612905 0.15037057 0.38810483 0.02850627
 ### Script
-set 'ragione_sociale;
+ragione_sociale=totitle(@);
 ### End Script
 ### End Box
 
@@ -63,7 +63,7 @@ data_fattura=search_date(@,"%d/%m/%Y",/Emessa il (\D)/);
 ### Rect 0.47096774 0.33537194 0.46042183 0.05117309
 ### Script
 codice_pdr=search(@,/per il punto di riconsegna \(PDR\) (\d+)/);
-'indirizzo_fornitura=singleline(search(@,/\ndi ([^]+?\d{5}.+)/));
+indirizzo_fornitura=totitle(singleline(search(@,/\ndi ([^]+?\d{5}.+)/)));
 ### End Script
 ### End Box
 
@@ -95,7 +95,7 @@ data_scadenza=search_date(@,"%d/%m/%Y",/DA SALDARE ENTRO (\D)/);
 ### Page 1
 ### Rect 0.31451613 0.43543327 0.36794356 0.033494867
 ### Script
-set %totale_fattura;
+totale_fattura = +@;
 ### End Script
 ### End Box
 

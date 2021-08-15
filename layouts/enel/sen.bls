@@ -75,8 +75,8 @@ fornitore=coalesce(global fornitore,"SEN");
 ### Page 1
 ### Rect 0.052688174 0.1687363 0.45327735 0.17021497
 ### Script
-'indirizzo_fornitura=singleline(search(@,/Forniamo energia in ([^]+?\d{5}.+)\n/));
-%potenza[0:3]=search(@,/(?:Potenza contrattualmente impegnata|Livello massimo di potenza) (\N)/);
+indirizzo_fornitura=totitle(singleline(search(@,/Forniamo energia in ([^]+?\d{5}.+)\n/)));
+potenza[0:3]=search_num(@,/(?:Potenza contrattualmente impegnata|Livello massimo di potenza) (\N)/);
 ### End Script
 ### End Box
 
@@ -119,7 +119,7 @@ _mese=date_format(mese_fattura,"%m/%y");
 ### Page 1
 ### Rect 0.05043084 0.6717093 0.6890491 0.29750395
 ### Script
-%cts=search(@,/CORRISPETTIVO TARIFFARIO SPECIFICO.+ (\N)/);
+cts=search_num(@,/CORRISPETTIVO TARIFFARIO SPECIFICO.+ (\N)/);
 iva=search(@,/IVA.* (\N%)/);
 ### End Script
 ### End Box
@@ -128,7 +128,7 @@ iva=search(@,/IVA.* (\N%)/);
 ### Page 1
 ### Rect 0.51906633 0.36861986 0.21763146 0.035925712
 ### Script
-%totale_fattura=search(@,/(\N)/);
+totale_fattura=search_num(@,/(\N)/);
 data_scadenza=search_date(@,"%d.%m.%Y",/Entro il (\D)/);
 ### End Script
 ### End Box
@@ -137,7 +137,7 @@ data_scadenza=search_date(@,"%d.%m.%Y",/Entro il (\D)/);
 ### Page 1
 ### Rect 0.5096111270967741 0.19265552657924745 0.4194211309677419 0.0889864346522235
 ### Script
-'ragione_sociale=search(@,/(.+)/);
+ragione_sociale=totitle(search(@,/(.+)/));
 ### End Script
 ### End Box
 
@@ -148,19 +148,19 @@ data_scadenza=search_date(@,"%d.%m.%Y",/Entro il (\D)/);
 ### Script
 with(between(@,/(?:Consumi rilevati|Dettaglio dei consumi)/,"INFORMAZIONI PER I CLIENTI")) {
   _table_fmt=table_header(@,/F1/,/F2/,/F3/,/F1/,/F2/,/F3/,/F1 F2 F3/,/F1/,/F2/,/F3/);
-  step(table_row(
+  step(nums(table_row(
     search(@,format(/dal \d\d\.\d\d\.\d\d\d\d\n(.+) al \d\d\.$0/,
-      date_format(mese_fattura,"%m\\.%Y"))),_table_fmt)) {
-    set %energia_attiva_rilevata[0];
-    set %energia_attiva_rilevata[1];
-    set %energia_attiva_rilevata[2];
-    set %energia_reattiva[0];
-    set %energia_reattiva[1];
-    set %energia_reattiva[2];
+      date_format(mese_fattura,"%m\\.%Y"))),_table_fmt))) {
+    energia_attiva_rilevata[0]=@;
+    energia_attiva_rilevata[1]=@;
+    energia_attiva_rilevata[2]=@;
+    energia_reattiva[0]=@;
+    energia_reattiva[1]=@;
+    energia_reattiva[2]=@;
     ;
-    set %potenza[0];
-    set %potenza[1];
-    set %potenza[2];
+    potenza[0]=@;
+    potenza[1]=@;
+    potenza[2]=@;
   }
 }
 ### End Script
@@ -175,44 +175,44 @@ _mese_full=date_format(mese_fattura,"%B %Y");
 _mese_abbr=date_format(mese_fattura,"%m/%Y");
 with(global _dettaglio) {
   with(between(@,"SPESA PER LA MATERIA ENERGIA","TOTALE SPESA PER LA MATERIA ENERGIA")) {
-    ^spesa_materia_energia+=search_all(@,format(/$0[^]+?mesi \N (\N)/,_mese_full));
-    ^spesa_materia_energia+=search_all(search_all(@,
-      format(/dal \d\d\/\d\d\/\d\d\d\d al \d\d\/0([^]+?)(dal|Totale|$)/,_mese_abbr)),/(\N)(?:\n|$)/);
+    spesa_materia_energia+=sum(matches_num(@,format(/$0[^]+?mesi \N (\N)/,_mese_full)));
+    spesa_materia_energia+=sum(matches_num(matches(@,
+      format(/dal \d\d\/\d\d\/\d\d\d\d al \d\d\/0([^]+?)(dal|Totale|$)/,_mese_abbr)),/(\N)(?:\n|$)/));
     with(search(@,format(/(In F1 dal \d\d\/\d\d\/\d\d\d\d al \d\d\/$0 [^]+?)(dal|Totale|$)/,_mese_abbr))) {   
-      step(captures(@,/F1.+\/kWh (\N) kWh (\N)/)) {
-        set %prezzo_energia[0];
-        set %energia_attiva[0];
+      step(captures_num(@,/F1.+\/kWh (\N) kWh (\N)/)) {
+        prezzo_energia[0]=@;
+        energia_attiva[0]=@;
       }
-      step(captures(@,/F2.+\/kWh (\N) kWh (\N)/)) {
-        set %prezzo_energia[1];
-        set %energia_attiva[1];
+      step(captures_num(@,/F2.+\/kWh (\N) kWh (\N)/)) {
+        prezzo_energia[1]=@;
+        energia_attiva[1]=@;
       }
-      step(captures(@,/F3.+\/kWh (\N) kWh (\N)/)) {
-        set %prezzo_energia[2];
-        set %energia_attiva[2];
+      step(captures_num(@,/F3.+\/kWh (\N) kWh (\N)/)) {
+        prezzo_energia[2]=@;
+        energia_attiva[2]=@;
       }
     }
   }
   with(between(@,"SPESA PER IL TRASPORTO","TOTALE SPESA PER IL TRASPORTO")) {
-    ^trasporto_gestione=search_all(@,format(/$0[^]+?mesi \N (\N)/,_mese_full));
-    with(search_all(@,format(/dal \d\d\/\d\d\/\d\d\d\d al \d\d\/0([^]+?)(dal|Totale|$)/,_mese_abbr))) {
-      ^trasporto_gestione+=search_all(@,/(\N)(?:\n|$)/);
+    trasporto_gestione=sum(matches_num(@,format(/$0[^]+?mesi \N (\N)/,_mese_full)));
+    with(matches(@,format(/dal \d\d\/\d\d\/\d\d\d\d al \d\d\/0([^]+?)(dal|Totale|$)/,_mese_abbr))) {
+      trasporto_gestione+=sum(matches_num(@,/(\N)(?:\n|$)/));
     }
-    %potenza[0:3]=search(@,format(/QUOTA POTENZA\n$0.+ kW (\N) mesi \N/,_mese_full));
+    potenza[0:3]=search_num(@,format(/QUOTA POTENZA\n$0.+ kW (\N) mesi \N/,_mese_full));
   }
   with(between(@,"SPESA PER ONERI DI SISTEMA","TOTALE SPESA PER ONERI")) {
-    ^oneri=search_all(@,format(/$0[^]+?mesi \N (\N)/,_mese_full));
-    with(search_all(@,format(/dal \d\d\/\d\d\/\d\d\d\d al \d\d\/0([^]+?)(?:dal|Totale|$)/,_mese_abbr))) {
-      ^oneri+=search_all(@,/.+ (\N)/);
+    oneri=sum(matches_num(@,format(/$0[^]+?mesi \N (\N)/,_mese_full)));
+    with(matches(@,format(/dal \d\d\/\d\d\/\d\d\d\d al \d\d\/0([^]+?)(?:dal|Totale|$)/,_mese_abbr))) {
+      oneri+=sum(matches_num(@,/.+ (\N)/));
     }
   }
   with(between(@,"IMPOSTE ED IVA","TOTALE IMPOSTE ED IVA")) {
     iva=search(@,/IVA (\N%)/);
-    %accise=search(search(@,/ACCISA SULL'ENERGIA ELETTRICA\n((dal.+\n)+)/),
+    accise=search_num(search(@,/ACCISA SULL'ENERGIA ELETTRICA\n((dal.+\n)+)/),
       format(/al \d\d\/$0.+ (\N)/,_mese_abbr));
   }
-  %altre_partite=search(@,/TOTALE ALTRE PARTITE SOGGETTE IVA (\N)/);
-  imponibile=sum(spesa_materia_energia, trasporto_gestione, oneri, altre_partite, accise);
+  altre_partite=search_num(@,/TOTALE ALTRE PARTITE SOGGETTE IVA (\N)/);
+  imponibile = spesa_materia_energia + trasporto_gestione + oneri + altre_partite + accise;
 }
 ### End Script
 ### End Box

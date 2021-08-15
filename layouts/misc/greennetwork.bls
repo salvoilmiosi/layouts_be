@@ -59,9 +59,9 @@ data_scadenza=search_date(@,"%d %B %Y",/scadenza (\D)/);
 p+global off_allegati;
 ### End Spacers
 ### Script
-%spesa_materia_energia=search(@,/Spesa per la materia energia (\N)/);
-%trasporto_gestione=search(@,/Spesa per trasporto, gestione contatore e oneri sistema (\N)/);
-%totale_fattura=search(@,/TOTALE DA PAGARE (\N)/);
+spesa_materia_energia=search_num(@,/Spesa per la materia energia (\N)/);
+trasporto_gestione=search_num(@,/Spesa per trasporto, gestione contatore e oneri sistema (\N)/);
+totale_fattura=search_num(@,/TOTALE DA PAGARE (\N)/);
 ### End Script
 ### End Box
 
@@ -73,7 +73,7 @@ p+global off_allegati;
 p+global off_allegati;
 ### End Spacers
 ### Script
-'ragione_sociale=search(@,/Ragione sociale: (.+)\n/);
+ragione_sociale=totitle(search(@,/Ragione sociale: (.+)\n/));
 ### End Script
 ### End Box
 
@@ -84,10 +84,10 @@ p+global off_allegati;
 p+global off_allegati;
 ### End Spacers
 ### Script
-'indirizzo_fornitura=search(@,/Le stiamo fornendo energia elettrica in (.+)\n/);
+indirizzo_fornitura=totitle(search(@,/Le stiamo fornendo energia elettrica in (.+)\n/));
 numero_cliente=search(@,/Codice cliente: (\N)/);
 codice_pod=search(@,/POD: (.+?)\b/);
-%potenza_disponibile=search(@,/Pot\. Disponibile kW: (\N)/);
+potenza_disponibile=search_num(@,/Pot\. Disponibile kW: (\N)/);
 ### End Script
 ### End Box
 
@@ -109,7 +109,7 @@ iva=percent(search(@,/(\N)/));
 p+global off_allegati;
 ### End Spacers
 ### Script
-%imponibile=search(@,/(\N)/);
+imponibile=search_num(@,/(\N)/);
 ### End Script
 ### End Box
 
@@ -121,14 +121,14 @@ p+global off_allegati;
 p+global off_allegati;
 ### End Spacers
 ### Script
-step(captures(@,format(/\d\d\/$0 \d\d\/$0 Consumi \w+ \N (\N) (\N) (\N) \N (\N) (\N) (\N) (\N)/,date_format(mese_fattura,"%m/%Y")))) {
-  set %energia_attiva_rilevata[0];
-  set %energia_attiva_rilevata[1];
-  set %energia_attiva_rilevata[2];
-  set %energia_reattiva[0];
-  set %energia_reattiva[1];
-  set %energia_reattiva[2];
-  set %potenza[0:3];
+step(captures_num(@,format(/\d\d\/$0 \d\d\/$0 Consumi \w+ \N (\N) (\N) (\N) \N (\N) (\N) (\N) (\N)/,date_format(mese_fattura,"%m/%Y")))) {
+  energia_attiva_rilevata[0]=@;
+  energia_attiva_rilevata[1]=@;
+  energia_attiva_rilevata[2]=@;
+  energia_reattiva[0]=@;
+  energia_reattiva[1]=@;
+  energia_reattiva[2]=@;
+  potenza[0:3]=@;
 }
 ### End Script
 ### End Box
@@ -141,7 +141,7 @@ step(captures(@,format(/\d\d\/$0 \d\d\/$0 Consumi \w+ \N (\N) (\N) (\N) \N (\N) 
 p+global off_allegati;
 ### End Spacers
 ### Script
-%accise=search(@,format(/$0 \w+ Erariale.+kWh \N \u20ac (\N)/,date_format(mese_fattura,"%B %Y")));
+accise=search_num(@,format(/$0 \w+ Erariale.+kWh \N \u20ac (\N)/,date_format(mese_fattura,"%B %Y")));
 ### End Script
 ### End Box
 
@@ -155,20 +155,20 @@ p+global off_allegati;
 ### Script
 _mese=date_format(mese_fattura,"%m/%Y");
 with(search(@,/Componente di Generazione.+\n((Dal.+\n)+)/)) {
-  step(captures(@,format(/F1 .+\d\d\/$0 \u20ac\/kWh (\N) (\N) kWh/,_mese))) {
-    set %prezzo_energia[0];
-    set %energia_attiva[0];
+  step(captures_num(@,format(/F1 .+\d\d\/$0 \u20ac\/kWh (\N) (\N) kWh/,_mese))) {
+    prezzo_energia[0]=@;
+    energia_attiva[0]=@;
   }
-  step(captures(@,format(/F2 .+\d\d\/$0 \u20ac\/kWh (\N) (\N) kWh/,_mese))) {
-    set %prezzo_energia[1];
-    set %energia_attiva[1];
+  step(captures_num(@,format(/F2 .+\d\d\/$0 \u20ac\/kWh (\N) (\N) kWh/,_mese))) {
+    prezzo_energia[1]=@;
+    energia_attiva[1]=@;
   }
-  step(captures(@,format(/F3 .+\d\d\/$0 \u20ac\/kWh (\N) (\N) kWh/,_mese))) {
-    set %prezzo_energia[2];
-    set %energia_attiva[2];
+  step(captures_num(@,format(/F3 .+\d\d\/$0 \u20ac\/kWh (\N) (\N) kWh/,_mese))) {
+    prezzo_energia[2]=@;
+    energia_attiva[2]=@;
   }
 }
-%pcv=search(search(@,/Prezzo commercializzazione vendita.+\n((Dal.+\n)+)/),
+pcv=search_num(search(@,/Prezzo commercializzazione vendita.+\n((Dal.+\n)+)/),
   format(/\d\d\/$0 .+ _mese (\N)/,_mese));
 ### End Script
 ### End Box

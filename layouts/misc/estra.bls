@@ -60,7 +60,7 @@ if(mese_fine < mese_inizio) {
   error("Estra: Periodo Non Valido", global ERRORE_PERIODO_INVALIDO);
 }
 mese_fattura=month_add(mese_inizio,global calc_mese);
-_periodo = format(/\d\d\.\d\d.\d\d\d\d - \d\d\.$0/,date_format(mese_fattura,"%m.%Y"));
+_periodo=format(/\d\d\.\d\d.\d\d\d\d - \d\d\.$0/,date_format(mese_fattura,"%m.%Y"));
 ### End Script
 ### End Box
 
@@ -69,7 +69,7 @@ _periodo = format(/\d\d\.\d\d.\d\d\d\d - \d\d\.$0/,date_format(mese_fattura,"%m.
 ### Rect 0.05 0.12656784 0.46129033 0.19156215
 ### Script
 numero_cliente=search(@,/CODICE CLIENTE (\d+)/);
-'ragione_sociale=singleline(search(@,/INTESTATARIO FORNITURA ([^]+?) C\.F\./));
+ragione_sociale=totitle(singleline(search(@,/INTESTATARIO FORNITURA ([^]+?) C\.F\./)));
 ### End Script
 ### End Box
 
@@ -77,7 +77,7 @@ numero_cliente=search(@,/CODICE CLIENTE (\d+)/);
 ### Page 1
 ### Rect 0.05 0.32155073 0.92419356 0.05359179
 ### Script
-%totale_fattura=search(@,/euro (\N)/);
+totale_fattura=search_num(@,/euro (\N)/);
 data_scadenza=search_date(@,"%d.%m.%Y",/entro il (\D)/);
 ### End Script
 ### End Box
@@ -87,8 +87,8 @@ data_scadenza=search_date(@,"%d.%m.%Y",/entro il (\D)/);
 ### Rect 0.045161292 0.11516534 0.45806453 0.15507412
 ### Script
 codice_pod=search(@,/POD \(Punto di prelievo\) (\w+)/);
-%potenza[0:3]=search(@,/Potenza impegnata (\N) kW/);
-'indirizzo_fornitura=singleline(search(@,/Indirizzo di fornitura ([^]+?\d{5}.+)/));
+potenza[0:3]=search_num(@,/Potenza impegnata (\N) kW/);
+indirizzo_fornitura=totitle(singleline(search(@,/Indirizzo di fornitura ([^]+?\d{5}.+)/)));
 ### End Script
 ### End Box
 
@@ -98,10 +98,10 @@ codice_pod=search(@,/POD \(Punto di prelievo\) (\w+)/);
 ### Rect 0.053225808 0.31470925 0.92419356 0.64766246
 ### Script
 with(between(@,"CONSUMI FATTURATI","RIEPILOGO IMPOSTE E IVA")) {
-  step(captures(@,format(/Effettivi $0 \N (\N) (\N) (\N)/,_periodo))) {
-    set %energia_attiva_rilevata[0];
-    set %energia_attiva_rilevata[1];
-    set %energia_attiva_rilevata[2];
+  step(captures_num(@,format(/Effettivi $0 \N (\N) (\N) (\N)/,_periodo))) {
+    energia_attiva_rilevata[0]=@;
+    energia_attiva_rilevata[1]=@;
+    energia_attiva_rilevata[2]=@;
   }
 }
 ### End Script
@@ -114,39 +114,39 @@ with(between(@,"CONSUMI FATTURATI","RIEPILOGO IMPOSTE E IVA")) {
 ### Script
 with(global _dettaglio) {
   with(between(@,"TOTALE MATERIA ENERGIA","TOTALE TRASPORTO E GESTIONE CONTATORE")) {
-    ^spesa_materia_energia=search_all(@,format(/$0 .+ (\N) \N/,_periodo));
-    %pcv=search(@,format(/Commercializzazione vendita $0 \u20ac\/POD\/mese \N \N (\N)/,_periodo));
-    step(captures(@,format(/Energia F1 $0 \u20ac\/kWh (\N) (\N)/,_periodo))) {
-      set %prezzo_energia[0];
-      set %energia_attiva[0];
+    spesa_materia_energia=sum(matches_num(@,format(/$0 .+ (\N) \N/,_periodo)));
+    pcv=search_num(@,format(/Commercializzazione vendita $0 \u20ac\/POD\/mese \N \N (\N)/,_periodo));
+    step(captures_num(@,format(/Energia F1 $0 \u20ac\/kWh (\N) (\N)/,_periodo))) {
+      prezzo_energia[0]=@;
+      energia_attiva[0]=@;
     }
-    step(captures(@,format(/Energia F2 $0 \u20ac\/kWh (\N) (\N)/,_periodo))) {
-      set %prezzo_energia[1];
-      set %energia_attiva[1];
+    step(captures_num(@,format(/Energia F2 $0 \u20ac\/kWh (\N) (\N)/,_periodo))) {
+      prezzo_energia[1]=@;
+      energia_attiva[1]=@;
     }
-    step(captures(@,format(/Energia F3 $0 \u20ac\/kWh (\N) (\N)/,_periodo))) {
-      set %prezzo_energia[2];
-      set %energia_attiva[2];
+    step(captures_num(@,format(/Energia F3 $0 \u20ac\/kWh (\N) (\N)/,_periodo))) {
+      prezzo_energia[2]=@;
+      energia_attiva[2]=@;
     }
-    %sbilanciamento=search(@,format(/Sbilanciamento $0 \u20ac\/kWh (\N)/,_periodo));
+    sbilanciamento=search_num(@,format(/Sbilanciamento $0 \u20ac\/kWh (\N)/,_periodo));
   }
   with(between(@,"TOTALE TRASPORTO E GESTIONE CONTATORE","TOTALE ONERI DI SISTEMA")) {
-    ^trasporto_gestione=search_all(@,format(/$0 .+ (\N) \N/,_periodo));
-    %potenza[0:3]=search(@,format(/Quota potenza $0 \u20ac\/kW \N (\N)/,_periodo));
+    trasporto_gestione=sum(matches_num(@,format(/$0 .+ (\N) \N/,_periodo)));
+    potenza[0:3]=search_num(@,format(/Quota potenza $0 \u20ac\/kW \N (\N)/,_periodo));
   }
   with(between(@,"TOTALE ONERI DI SISTEMA","TOTALE ALTRE IMPOSTE")) {
-    ^oneri=search_all(@,format(/$0 .+ (\N) \N/,_periodo));
+    oneri=sum(matches_num(@,format(/$0 .+ (\N) \N/,_periodo)));
   }
   with(between(@,"TOTALE ALTRE IMPOSTE","TOTALE FORNITURA")) {
-    %accise=search(@,format(/Imposta erariale di consumo $0 \d+\u00b0 \u20ac\/kWh \N \N (\N)/,_periodo));
+    accise=search_num(@,format(/Imposta erariale di consumo $0 \d+\u00b0 \u20ac\/kWh \N \N (\N)/,_periodo));
   }
   with(between(@,"TOTALE ALTRE PARTITE","TOTALE FORNITURA")) {
-    ^altre_partite=search_all(@,format(/$0 .+ (\N) \N/,_periodo));
+    altre_partite=sum(matches_num(@,format(/$0 .+ (\N) \N/,_periodo)));
   }
   with(between(@,"TOTALE FORNITURA","TOTALE DA PAGARE")) {
     iva=search(@,/IVA (\d+%)/);
   }
-  imponibile=sum(spesa_materia_energia, trasporto_gestione, oneri, accise, altre_partite);
+  imponibile = spesa_materia_energia + trasporto_gestione + oneri + accise + altre_partite;
 }
 ### End Script
 ### End Box

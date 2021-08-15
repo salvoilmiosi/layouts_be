@@ -35,7 +35,7 @@ numero_cliente=search(@,/Codice Cliente (.+)/);
 ### Page 1
 ### Rect 0.49973556 0.19253415 0.408514 0.08879002
 ### Script
-'ragione_sociale=search(@,/(.+)/);
+ragione_sociale=totitle(search(@,/(.+)/));
 ### End Script
 ### End Box
 
@@ -45,8 +45,8 @@ numero_cliente=search(@,/Codice Cliente (.+)/);
 ### Rect 0.03701745 0.30936313 0.42570066 0.20374973
 ### Script
 codice_pod=search(@,/POD \(Punto di prelievo\): (.+)/);
-'indirizzo_fornitura=singleline(search(@,/Indirizzo di fornitura:\n([^]+?\d{5}.+)/));
-%potenza[0:3]=search(@,/(\N) kW di potenza impegnata/);
+indirizzo_fornitura=totitle(singleline(search(@,/Indirizzo di fornitura:\n([^]+?\d{5}.+)/)));
+potenza[0:3]=search_num(@,/(\N) kW di potenza impegnata/);
 ### End Script
 ### End Box
 
@@ -55,14 +55,14 @@ codice_pod=search(@,/POD \(Punto di prelievo\): (.+)/);
 ### Page 1
 ### Rect 0.26176625 0.5822756 0.23662084 0.025235059
 ### Script
-if(matches(@,/\w+ - \w+ \d{4}/)) {
-  _items=captures(@,/(\w+) - (\w+) (\d{4})/);
+if(ismatch(@,/\w+ - \w+ \d{4}/)) {
+  _items=captures_num(@,/(\w+) - (\w+) (\d{4})/);
   mese_inizio=date(format("$0 $1", _items[0], _items[2]), "%b %Y");
   mese_fine=date(format("$0 $1", _items[1], _items[2]), "%b %Y");
-}else if(matches(@,/\w+ \d{4} - \w+ \d{4}/)) {
+}else if(ismatch(@,/\w+ \d{4} - \w+ \d{4}/)) {
   mese_inizio=search_date(@,"%b %Y",/(\D) - \D/);
   mese_fine=search_date(@,"%b %Y",/\D - (\D)/);
-}else if(matches(@,/\w+ \d{4}/)) {
+}else if(ismatch(@,/\w+ \d{4}/)) {
   mese_inizio=date(@,"%B %Y");
   mese_fine=date(@,"%B %Y");
 }else{
@@ -86,7 +86,7 @@ data_fattura=search_date(@,"%d/%m/%Y",/Del: (\D)/);
 ### Page 1
 ### Rect 0.26176625 0.55984443 0.20227392 0.023365796
 ### Script
-%totale_fattura=search(@,/euro (\N)/);
+totale_fattura=search_num(@,/euro (\N)/);
 ### End Script
 ### End Box
 
@@ -96,29 +96,29 @@ data_fattura=search_date(@,"%d/%m/%Y",/Del: (\D)/);
 ### Rect 0.0315568 0.02850627 0.9274193 0.91467947
 ### Script
 with(rbetween(@,date_format(mese_fattura,"%B %Y"),/FORNITURA DI .+/)) {
-  step(captures(@,/CONSUMI EFFETTIVI \(kWh\) (\N) (\N) (\N)/)) {
-    set %energia_attiva_rilevata[0];
-    set %energia_attiva_rilevata[1];
-    set %energia_attiva_rilevata[2];
+  step(captures_num(@,/CONSUMI EFFETTIVI \(kWh\) (\N) (\N) (\N)/)) {
+    energia_attiva_rilevata[0]=@;
+    energia_attiva_rilevata[1]=@;
+    energia_attiva_rilevata[2]=@;
   }
-  %spesa_materia_energia=search(@,/SERVIZI DI VENDITA (\N)/);
-  %pcv=search(@,/PCV euro\/cliente\/mese \N \N (\N)/);
-  step(captures(@,/Prezzo F1 euro\/kWh (\N) (\N)/)) {
-    set %prezzo_energia[0];
-    set %energia_attiva[0];
+  spesa_materia_energia=search_num(@,/SERVIZI DI VENDITA (\N)/);
+  pcv=search_num(@,/PCV euro\/cliente\/mese \N \N (\N)/);
+  step(captures_num(@,/Prezzo F1 euro\/kWh (\N) (\N)/)) {
+    prezzo_energia[0]=@;
+    energia_attiva[0]=@;
   }
-  step(captures(@,/Prezzo F2 euro\/kWh (\N) (\N)/)) {
-    set %prezzo_energia[1];
-    set %energia_attiva[1];
+  step(captures_num(@,/Prezzo F2 euro\/kWh (\N) (\N)/)) {
+    prezzo_energia[1]=@;
+    energia_attiva[1]=@;
   }
-  step(captures(@,/Prezzo F3 euro\/kWh (\N) (\N)/)) {
-    set %prezzo_energia[2];
-    set %energia_attiva[2];
+  step(captures_num(@,/Prezzo F3 euro\/kWh (\N) (\N)/)) {
+    prezzo_energia[2]=@;
+    energia_attiva[2]=@;
   }
-  %trasporto_gestione=search(@,/SERVIZI DI RETE (\N)/);
-  %potenza[0:3]=search(@,/Quota Potenza euro\/kW\/mese \N (\N)/);
-  %accise=search(@,/Imposta erariale \(fino a .+ kWh\) euro\/kWh \N \N (\N)/);
-  %imponibile=search(@,/(\N)$/);
+  trasporto_gestione=search_num(@,/SERVIZI DI RETE (\N)/);
+  potenza[0:3]=search_num(@,/Quota Potenza euro\/kW\/mese \N (\N)/);
+  accise=search_num(@,/Imposta erariale \(fino a .+ kWh\) euro\/kWh \N \N (\N)/);
+  imponibile=search_num(@,/(\N)$/);
 }
 ### End Script
 ### End Box

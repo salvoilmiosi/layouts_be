@@ -68,7 +68,7 @@ numero_cliente=search(@,/(\N)/);
 p+global off_allegati;
 ### End Spacers
 ### Script
-set 'ragione_sociale;
+ragione_sociale=totitle(@);
 ### End Script
 ### End Box
 
@@ -94,7 +94,7 @@ p+global off_allegati;
 ### End Spacers
 ### Script
 codice_pod=search(@,/per il punto di fornitura \(POD\) ([0-9A-Z]+)/);
-'indirizzo_fornitura=singleline(search(@,/\ndi ([^]+?\d{5}.+)/));
+indirizzo_fornitura=totitle(singleline(search(@,/\ndi ([^]+?\d{5}.+)/)));
 ### End Script
 ### End Box
 
@@ -135,7 +135,7 @@ data_scadenza=search_date(@,"%d/%m/%Y",/DA SALDARE ENTRO (\D)/);
 p+global off_allegati;
 ### End Spacers
 ### Script
-%totale_fattura=search(@,/(\N) \u20ac/);
+totale_fattura=search_num(@,/(\N) \u20ac/);
 ### End Script
 ### End Box
 
@@ -147,7 +147,7 @@ p+global off_allegati;
 p+global off_allegati;
 ### End Spacers
 ### Script
-%potenza[0:3]=search(@,/Potenza impegnata: (\N)/);
+potenza[0:3]=search_num(@,/Potenza impegnata: (\N)/);
 ### End Script
 ### End Box
 

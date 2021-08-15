@@ -7,11 +7,11 @@
 ### Rect 0 0 0 0
 ### Script
 function calc_prezzo_energia(@,expr) {
-  foreach(search_all(@,format(/Prezzo $0 euro\/kWh (\N \N \N)/,expr))) {
-    step(captures(@,/(\N) (\N) (\N)/)) {
-      % $tot_unitario=@;
-      % $tot_kwh+=@;
-      % $tot_prezzo+=@;
+  foreach(matches(@,format(/Prezzo $0 euro\/kWh (\N \N \N)/,expr))) {
+    step(captures_num(@,/(\N) (\N) (\N)/)) {
+      $tot_unitario=@;
+      $tot_kwh+=@;
+      $tot_prezzo+=@;
     }
     $i++;
   }
@@ -22,55 +22,55 @@ function calc_prezzo_energia(@,expr) {
 with(global _dettaglio) {
   with(between(@,"CONSUMI e RICALCOLI","CONSUMI ULTIMI 13 MESI")) {
     with(between(@,"ENERGIA ATTIVA","ENERGIA REATTIVA")) {
-      step(captures(@,format(/$0 \w+\*? (\N) (\N) (\N)/,date_format(mese_fattura,"%b - %y")))) {
-        set %energia_attiva_rilevata[0];
-        set %energia_attiva_rilevata[1];
-        set %energia_attiva_rilevata[2];
+      step(captures_num(@,format(/$0 \w+\*? (\N) (\N) (\N)/,date_format(mese_fattura,"%b - %y")))) {
+        energia_attiva_rilevata[0]=@;
+        energia_attiva_rilevata[1]=@;
+        energia_attiva_rilevata[2]=@;
       }
     }
     with(between(@,"ENERGIA REATTIVA")) {
-      step(captures(@,format(/$0 (\N) (\N) (\N)/,date_format(mese_fattura,"%b - %y")))) {
-        set %energia_reattiva[0];
-        set %energia_reattiva[1];
-        set %energia_reattiva[2];
+      step(captures_num(@,format(/$0 (\N) (\N) (\N)/,date_format(mese_fattura,"%b - %y")))) {
+        energia_reattiva[0]=@;
+        energia_reattiva[1]=@;
+        energia_reattiva[2]=@;
       }
     }
   }
   
-  ^cts=search_all(@,/Corrispettivo Tariffario Specifico dal \d\d\/\d\d\/\d\d\d\d al \d\d\/\d\d\/\d\d\d\d (\N)/);
+  cts=sum(matches_num(@,/Corrispettivo Tariffario Specifico dal \d\d\/\d\d\/\d\d\d\d al \d\d\/\d\d\/\d\d\d\d (\N)/));
   iva=search(@,/Iva (\N%)/);
 
   with(rbetween(@,date_format(mese_fattura,"%B %Y"),/FORNITURA DI .+\n/)) {
-    %pcv=search(@,/PCV euro\/cliente\/mese \N \N (\N)/);
-    %spesa_materia_energia=search(@,/DETTAGLIO DELLA SPESA PER (?:L\u2019ENERGIA ELETTRICA|LA MATERIA ENERGIA)[^]+?(\N) DETTAGLIO/);
-    %trasporto_gestione=search(@,/DETTAGLIO DELLA SPESA PER (?:IL TRASPORTO, GESTIONE DEL CONTATORE|TRASPORTO ENERGIA, GESTIONE CONTATORE) E ONERI DI SISTEMA[^]+?(\N) IMPOSTE/);
+    pcv=search_num(@,/PCV euro\/cliente\/mese \N \N (\N)/);
+    spesa_materia_energia=search_num(@,/DETTAGLIO DELLA SPESA PER (?:L\u2019ENERGIA ELETTRICA|LA MATERIA ENERGIA)[^]+?(\N) DETTAGLIO/);
+    trasporto_gestione=search_num(@,/DETTAGLIO DELLA SPESA PER (?:IL TRASPORTO, GESTIONE DEL CONTATORE|TRASPORTO ENERGIA, GESTIONE CONTATORE) E ONERI DI SISTEMA[^]+?(\N) IMPOSTE/);
 
     step(calc_prezzo_energia(/(?:F1|Picco|Ore Giorno)/)) {
-      set prezzo_energia[0];
-      set energia_attiva[0];
+      prezzo_energia[0]=@;
+      energia_attiva[0]=@;
     }
     step(calc_prezzo_energia(/(?:F2|Fuori Picco|Ore Notte)/)) {
-      set prezzo_energia[1];
-      set energia_attiva[1];
+      prezzo_energia[1]=@;
+      energia_attiva[1]=@;
     }
     step(calc_prezzo_energia(/F3/)) {
-      set prezzo_energia[2];
-      set energia_attiva[2];
+      prezzo_energia[2]=@;
+      energia_attiva[2]=@;
     }
     step(calc_prezzo_energia(/(?:energia(?: monorario)?|Luce)/)) {
-      set prezzo_energia;
-      set energia_attiva;
+      prezzo_energia=@;
+      energia_attiva=@;
     }
 
-    %sbilanciamento=search(@,/Incremento prezzo euro\/kWh (\N)/);
+    sbilanciamento=search_num(@,/Incremento prezzo euro\/kWh (\N)/);
 
-    %imponibile=search(@,/FORNITURA DI.+ (\N)/);
+    imponibile=search_num(@,/FORNITURA DI.+ (\N)/);
 
-    %penale_reattiva_inf75=search(@,/Energia Reattiva tra il 33% e 75% attiva euro\/kVARh \N \N (\N)/);
-    %penale_reattiva_sup75=search(@,/Energia Reattiva oltre il 75% attiva euro\/kVARh \N \N (\N)/);
+    penale_reattiva_inf75=search_num(@,/Energia Reattiva tra il 33% e 75% attiva euro\/kVARh \N \N (\N)/);
+    penale_reattiva_sup75=search_num(@,/Energia Reattiva oltre il 75% attiva euro\/kVARh \N \N (\N)/);
 
-    %potenza[0:3]=search(@,/Quota Potenza euro\/kW\/mese \N (\N)/);
-    %accise=search(@,/Imposta erariale.+ (\N)\n/);
+    potenza[0:3]=search_num(@,/Quota Potenza euro\/kW\/mese \N (\N)/);
+    accise=search_num(@,/Imposta erariale.+ (\N)\n/);
   }
 }
 ### End Script
