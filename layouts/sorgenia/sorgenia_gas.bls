@@ -8,12 +8,12 @@
 ### Rect 0.040290102 0.080957815 0.91055596 0.86431015
 ### Goto Label lettura_dati
 ### Spacers
-p+global next_page;
+p+$next_page;
 ### End Spacers
 ### Script
 if(!(ate() || contains(@,"INFORMAZIONI PER I CLIENTI SORGENIA"))) {
-  global _dettaglio+=@;
-  global next_page++;
+  global dettaglio+=@;
+  $next_page++;
   goto lettura_dati;
 }
 ### End Script
@@ -76,7 +76,7 @@ mese_fine=search_date(@,"%B %Y",/\D\/(\D)/);
 if(mese_fine < mese_fattura) {
   error("Sorgenia: Periodo Non Valido", global ERRORE_PERIODO_INVALIDO);
 }
-mese_fattura=month_add(mese_fattura,global calc_mese);
+mese_fattura=month_add(mese_fattura, $calc_mese);
 if(!mese_fattura) {
   error("Sorgenia: Mese Fattura Mancante", global ERRORE_PERIODO_INVALIDO);
 }
@@ -107,7 +107,7 @@ totale_fattura = +@;
 import "parsing_dettaglio_gas";
 if(mese_fine) {
   if(mese_fattura != mese_fine) {
-    global calc_mese++;
+    $calc_mese++;
     nexttable();
     goto nome_fornitore;
   }

@@ -68,9 +68,9 @@ if(mese_fine) {
   if(mese_fine < mese_fattura) {
     error("Edison: Periodo Non Valido", global ERRORE_PERIODO_INVALIDO);
   }
-  mese_fattura=month_add(mese_fattura,global calc_mese);
+  mese_fattura=month_add(mese_fattura, $calc_mese);
 }
-_mese=date_format(mese_fattura,"%m/%Y");
+$mese=date_format(mese_fattura,"%m/%Y");
 ### End Script
 ### End Box
 
@@ -89,7 +89,7 @@ data_scadenza=search_date(@,"%d %B %Y");
 ### Rect 0.32505226 0.58302 0.6542018 0.22527969
 ### Script
 step(captures_num(replace(@,"\u2212","-"),
-  format(/\w+ \d\d\/\d\d\/\d\d\d\d - \d\d\/$0 (\N) (\N) (\N)/,_mese)))
+  format(/\w+ \d\d\/\d\d\/\d\d\d\d - \d\d\/$0 (\N) (\N) (\N)/, $mese)))
 {
   energia_attiva_rilevata[0]=@;
   energia_attiva_rilevata[1]=@;
@@ -104,35 +104,35 @@ step(captures_num(replace(@,"\u2212","-"),
 ### Rect 0.013715775 0.0849123 0.96867657 0.8248623
 ### Script
 with(replace(@,"\u2212","-")) {
-  step(captures_num(@,format(/Componente energia - F1 .+ al \d\d\/$0 \u20ac\/kWh (\N) (\N) kWh/,_mese))) {
+  step(captures_num(@,format(/Componente energia - F1 .+ al \d\d\/$0 \u20ac\/kWh (\N) (\N) kWh/, $mese))) {
     prezzo_energia[0]=@;
     energia_attiva[0]=@;
   }
-  step(captures_num(@,format(/Componente energia - F2 .+ al \d\d\/$0 \u20ac\/kWh (\N) (\N) kWh/,_mese))) {
+  step(captures_num(@,format(/Componente energia - F2 .+ al \d\d\/$0 \u20ac\/kWh (\N) (\N) kWh/, $mese))) {
     prezzo_energia[1]=@;
     energia_attiva[1]=@;
   }
-  step(captures_num(@,format(/Componente energia - F3 .+ al \d\d\/$0 \u20ac\/kWh (\N) (\N) kWh/,_mese))) {
+  step(captures_num(@,format(/Componente energia - F3 .+ al \d\d\/$0 \u20ac\/kWh (\N) (\N) kWh/, $mese))) {
     prezzo_energia[2]=@;
     energia_attiva[2]=@;
   }
-  potenza[0:3]=search_num(@,format(/Quota potenza .+ al \d\d\/$0 \u20ac\/kW\/mese \N (\N) kW/,_mese));
+  potenza[0:3]=search_num(@,format(/Quota potenza .+ al \d\d\/$0 \u20ac\/kW\/mese \N (\N) kW/, $mese));
   iva=search(@,/IVA (\N%)/);
   with(between(@,"Spesa per l'energia","Spesa per il trasporto")) {
-    spesa_materia_energia=sum(matches_num(@,format(/Dal .+ al \d\d\/$0.+ (\N) \u20ac/,_mese)));
+    spesa_materia_energia=sum(matches_num(@,format(/Dal .+ al \d\d\/$0.+ (\N) \u20ac/, $mese)));
   }
   with(between(@,"Spesa per il trasporto","Spesa per gli oneri")) {
-    trasporto_gestione=sum(matches_num(@,format(/Dal .+ al \d\d\/$0.+ (\N) \u20ac/,_mese)));
+    trasporto_gestione=sum(matches_num(@,format(/Dal .+ al \d\d\/$0.+ (\N) \u20ac/, $mese)));
   }
   with(between(@,"Spesa per gli oneri","Totale Imposte")) {
-    oneri=sum(matches_num(@,format(/Dal .+ al \d\d\/$0.+ (\N) \u20ac/,_mese)));
+    oneri=sum(matches_num(@,format(/Dal .+ al \d\d\/$0.+ (\N) \u20ac/, $mese)));
   }
   with(between(@,"Totale Imposte")) {
-    accise=search_num(@,format(/Imposta erariale di consumo \(accisa\) .+ al \d\d\/$0 \u20ac\/kWh \N \N kWh (\N) \u20ac/,_mese));
+    accise=search_num(@,format(/Imposta erariale di consumo \(accisa\) .+ al \d\d\/$0 \u20ac\/kWh \N \N kWh (\N) \u20ac/, $mese));
   }
   imponibile = spesa_materia_energia + trasporto_gestione + oneri + accise;
   with(between(@,"Imposte e IVA","TOTALE")) {
-    imponibile+=sum(matches_num(@,format(/Dal .+ al \d\d\/$0.+ (\N) \u20ac/,_mese)));
+    imponibile+=sum(matches_num(@,format(/Dal .+ al \d\d\/$0.+ (\N) \u20ac/, $mese)));
   }
 }
 ### End Script
@@ -144,7 +144,7 @@ with(replace(@,"\u2212","-")) {
 ### Script
 if(mese_fine) {
   if(mese_fattura != mese_fine) {
-    global calc_mese++;
+    $calc_mese++;
     nexttable();
     goto nome_fornitore;
   }

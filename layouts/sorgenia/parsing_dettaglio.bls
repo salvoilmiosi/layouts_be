@@ -19,7 +19,7 @@ function calc_prezzo_energia(@, $expr) {
   else if($tot_prezzo) return list(trunc($tot_prezzo/$tot_kwh,6), $tot_kwh);
 }
 
-with(global _dettaglio) {
+with(global dettaglio) {
   with(between(@,"CONSUMI e RICALCOLI","CONSUMI ULTIMI 13 MESI")) {
     with(between(@,"ENERGIA ATTIVA","ENERGIA REATTIVA")) {
       step(captures_num(@,format(/$0 \w+\*? (\N) (\N) (\N)/,date_format(mese_fattura,"%b - %y")))) {

@@ -6,7 +6,7 @@
 ### Rect 0 0 0 0
 ### Script
 error("Sorgenia: Fattura Gas Non Implementata", global ERRORE_NON_IMPLEMENTATO);
-with(global _dettaglio) {
+with($dettaglio) {
   with(between(@,"IMPORTI\n","ALTRE PARTITE\n")) {
     
   }

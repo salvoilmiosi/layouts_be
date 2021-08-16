@@ -76,7 +76,7 @@ if(contains(@,"Dati di fornitura")) {
   codice_pod=search(@,/POD (.+)\n/);
   potenza[0:3]=search_num(@,/Potenza Impegnata (\N)/);
 } else {
-  global spacer_multipod=1;
+  $spacer_multipod=1;
 }
 ### End Script
 ### End Box
@@ -87,7 +87,7 @@ if(contains(@,"Dati di fornitura")) {
 ### Rect 0.06617039400000002 0.3263163991448119 0.42907363 0.2335468
 ### Script
 iva=search(@,/IVA (\N%)/);
-if(!global spacer_multipod) {
+if(!$spacer_multipod) {
   spesa_materia_energia=search_num(@,/(?:Corrispettivi energia|Spese per l'energia) (\N) \u20ac/);
   trasporto_gestione=search_num(@,/(?:Trasporto|Spesa per trasporto, gestione contatore e oneri di sistema) (\N) \u20ac/);
 }
@@ -100,10 +100,10 @@ if(!global spacer_multipod) {
 ### Rect 0.03205999 0.09432077 0.45019805 0.24091297
 ### Goto Label dati_fattura_multipod
 ### Spacers
-p+global next_page;
+p+$next_page;
 ### End Spacers
 ### Script
-if(global spacer_multipod) {
+if($spacer_multipod) {
   indirizzo_fornitura=totitle(singleline(search(@,/Indirizzo ([^]+?\(..\))/)));
   codice_pod=search(@,/POD (.+)\n/);
   potenza[0:3]=search_num(@,/Potenza Impegnata (\N)/);
@@ -116,10 +116,10 @@ if(global spacer_multipod) {
 ### Page 3
 ### Rect 0.4935484 0.09236032 0.45645162 0.16419612
 ### Spacers
-p+global next_page;
+p+$next_page;
 ### End Spacers
 ### Script
-if(global spacer_multipod) {
+if($spacer_multipod) {
   spesa_materia_energia=search_num(@,/(?:Corrispettivi energia|Spese per l'energia) \u20ac (\N)/);
   trasporto_gestione=search_num(@,/(?:Trasporto|Spesa per trasporto, gestione contatore e oneri di sistema) \u20ac (\N)/);
 }
@@ -132,15 +132,15 @@ if(global spacer_multipod) {
 ### Rect 0.033843674 0.09464082 0.9073328 0.87001145
 ### Goto Label lettura_spese
 ### Spacers
-p+global spacer_multipod;
-p+global next_page;
+p+$spacer_multipod;
+p+$next_page;
 ### End Spacers
 ### Script
 if(ate() || contains(@,"Comunicazioni") || contains(@,"Dati di fornitura")) {
   goto parsing_spese;
 }
-_dettaglio+=@;
-global next_page++;
+$dettaglio+=@;
+$next_page++;
 goto lettura_spese;
 ### End Script
 ### End Box
@@ -151,7 +151,7 @@ goto lettura_spese;
 ### Rect 0.19357695 0.047890533 0.046551988 0.030786768
 ### Goto Label parsing_spese
 ### Script
-with(between(_dettaglio,date_format(mese_fattura,"%B %Y"),/\n.+?TOT\. \u20ac/)) {
+with(between($dettaglio,date_format(mese_fattura,"%B %Y"),/\n.+?TOT\. \u20ac/)) {
   with(between(@,"Consumi rilevati dal distributore","Spese per l'energia")) {
     energia_attiva_rilevata[0]=search_num(@,/F1 .+ (\N)\n/);
     energia_attiva_rilevata[1]=search_num(@,/F2 .+ (\N)\n/);
@@ -190,13 +190,14 @@ with(between(_dettaglio,date_format(mese_fattura,"%B %Y"),/\n.+?TOT\. \u20ac/)) 
 ### Page 3
 ### Rect 0.040290087 0.09806158 0.20306204 0.029646521
 ### Spacers
-p+global spacer_multipod;
-p+global next_page;
+p+$spacer_multipod;
+p+$next_page;
 ### End Spacers
 ### Script
-if(global spacer_multipod) {
+if($spacer_multipod) {
   if(@ == "Dati di fornitura") {
-    global next_page++;
+    $next_page++;
+    clear $dettaglio;
     nexttable();
     goto nome_fornitore;
   }

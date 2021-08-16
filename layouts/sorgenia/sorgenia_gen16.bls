@@ -56,9 +56,9 @@ potenza[0:3]=search_num(@,/(\N) kW di potenza impegnata/);
 ### Rect 0.26176625 0.5822756 0.23662084 0.025235059
 ### Script
 if(ismatch(@,/\w+ - \w+ \d{4}/)) {
-  _items=captures_num(@,/(\w+) - (\w+) (\d{4})/);
-  mese_inizio=date(format("$0 $1", _items[0], _items[2]), "%b %Y");
-  mese_fine=date(format("$0 $1", _items[1], _items[2]), "%b %Y");
+  $items=captures_num(@,/(\w+) - (\w+) (\d{4})/);
+  mese_inizio=date(format("$0 $1", $items[0], $items[2]), "%b %Y");
+  mese_fine=date(format("$0 $1", $items[1], $items[2]), "%b %Y");
 }else if(ismatch(@,/\w+ \d{4} - \w+ \d{4}/)) {
   mese_inizio=search_date(@,"%b %Y",/(\D) - \D/);
   mese_fine=search_date(@,"%b %Y",/\D - (\D)/);
@@ -68,7 +68,7 @@ if(ismatch(@,/\w+ - \w+ \d{4}/)) {
 }else{
   error("Sorgenia: Formato Periodo Non Valido", global ERRORE_PERIODO_INVALIDO);
 }
-mese_fattura=month_add(mese_inizio,global calc_mese);
+mese_fattura=month_add(mese_inizio, $calc_mese);
 ### End Script
 ### End Box
 
@@ -128,7 +128,7 @@ with(rbetween(@,date_format(mese_fattura,"%B %Y"),/FORNITURA DI .+/)) {
 ### Rect 0.036764704 0.0058689383 0.030834913 0.017606815
 ### Script
 if(mese_fattura != mese_fine) {
-  global calc_mese++;
+  $calc_mese++;
   nexttable();
   goto nome_fornitore;
 }

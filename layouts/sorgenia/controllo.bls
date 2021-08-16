@@ -6,12 +6,12 @@
 ### Rect 0.87903225 0.9327252 0.08387095 0.051311314
 ### Goto Label convalida
 ### Spacers
-p+global off_allegati;
+p+$off_allegati;
 ### End Spacers
 ### Script
 if(ate()) error("Sorgenia: Impossibile determinare il layout", global ERRORE_LAYOUT_INVALIDO);
 else if(!contains(@,"PAG")) {
-  global off_allegati++;
+  $off_allegati++;
   goto convalida;
 }
 ### End Script
@@ -21,12 +21,12 @@ else if(!contains(@,"PAG")) {
 ### Page 1
 ### Rect 0.48387095 0.080957815 0.4290323 0.074116305
 ### Spacers
-p+global off_allegati;
+p+$off_allegati;
 ### End Spacers
 ### Script
 if(contains(@,"servizio di fatturazione trasmessa")) {
   import "sorgenia_gen16";
-  goto fine_layout;
+  return;
 }
 ### End Script
 ### End Box
@@ -35,7 +35,7 @@ if(contains(@,"servizio di fatturazione trasmessa")) {
 ### Page 1
 ### Rect 0.050817497 0.9309445 0.5866107 0.04451664
 ### Spacers
-p+global off_allegati;
+p+$off_allegati;
 ### End Spacers
 ### Script
 if(contains(@,"Sorgenia S.p.A")) {
@@ -44,10 +44,4 @@ if(contains(@,"Sorgenia S.p.A")) {
   import "sorgenia";
 }
 ### End Script
-### End Box
-
-### Box Fine Layout
-### Page 1
-### Rect 0 0 0 0
-### Goto Label fine_layout
 ### End Box

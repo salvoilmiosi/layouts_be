@@ -8,8 +8,8 @@
 ### Rect 0.04516129032258064 0.08893956670467502 0.2596774193548387 0.037628278221208664
 ### Goto Label cerca_dettaglio
 ### Spacers
-p+global off_dettaglio;
-p+global next_page;
+p+$off_dettaglio;
+p+$next_page;
 ### End Spacers
 ### Script
 if(ate()) {
@@ -17,7 +17,7 @@ if(ate()) {
 } else if(@ == "ELEMENTI DI DETTAGLIO") {
   goto lettura_dettaglio;
 } else {
-  global off_dettaglio++;
+  $off_dettaglio++;
   goto cerca_dettaglio;
 }
 ### End Script
@@ -29,15 +29,15 @@ if(ate()) {
 ### Rect 0.024193548387096774 0.08323831242873432 0.9258064516129032 0.8289623717217788
 ### Goto Label lettura_dettaglio
 ### Spacers
-p+global off_dettaglio;
-p+global next_page;
+p+$off_dettaglio;
+p+$next_page;
 ### End Spacers
 ### Script
 if(ate()) {
   error("Italpower: Dettaglio Mancante", global ERRORE_DETTAGLIO_MANCANTE);
 } else if(!(contains(@,"AGGIORNAMENTI CORRISPETTIVI") || contains(@,"DATI FORNITURA"))) {
-  global _dettaglio+=@;
-  global off_dettaglio++;
+  $dettaglio+=@;
+  $off_dettaglio++;
   goto lettura_dettaglio;
 } else {
   goto nome_fornitore;
@@ -107,7 +107,7 @@ step(parse_periodo(search(@,/Periodo conguagliato (.+)/))) {
   mese_fine_conguaglio=@;
 }
 
-mese_fattura=month_add(conditional(global calc_conguaglio, mese_inizio_conguaglio, mese_inizio), global calc_mese);
+mese_fattura=month_add(conditional($calc_conguaglio, mese_inizio_conguaglio, mese_inizio), $calc_mese);
 ### End Script
 ### End Box
 
@@ -126,7 +126,7 @@ data_scadenza=search_date(@,"%d %B %Y");
 ### Page 3
 ### Rect 0.044354837 0.1378327 0.43145162 0.23479088
 ### Spacers
-p+global next_page;
+p+$next_page;
 ### End Spacers
 ### Script
 indirizzo_fornitura=totitle(singleline(search(@,/Le stiamo fornendo energia elettrica in \u2022 ([^]+?\d{5}.+)\n/)));
@@ -138,7 +138,7 @@ indirizzo_fornitura=totitle(singleline(search(@,/Le stiamo fornendo energia elet
 ### Page 3
 ### Rect 0.5039354178097982 0.08221476510067115 0.4408602 0.2961122348993288
 ### Spacers
-p+global next_page;
+p+$next_page;
 ### End Spacers
 ### Script
 codice_pod=search(@,/NUMERO POD: (\w+)/);
@@ -152,13 +152,13 @@ potenza[0:3]=search_num(@,/Potenza impegnata: (\N) kW/);
 ### Page 3
 ### Rect 0.048387095 0.6624857 0.89870286 0.055942718
 ### Spacers
-p+global next_page;
+p+$next_page;
 ### End Spacers
 ### Script
 with(between(@,"RIEPILOGO LETTURE E CONSUMI","CONSUMI FATTURATI")) {
-  _header=table_header(@,/Dal Al/,/Consumi/,/Consumi/);
+  $header=table_header(@,/Dal Al/,/Consumi/,/Consumi/);
   foreach(captures(@,format(/(.+\d\d\/$0 F1.+)\n(.+F2.+)\n(.+F3.+)/,date_format(mese_fattura,"%m/%Y")))) {
-    step(nums(table_row(@,_header))) {
+    step(nums(table_row(@, $header))) {
       ;
       energia_attiva_rilevata[]=@;
       energia_reattiva[]=@;
@@ -173,28 +173,34 @@ with(between(@,"RIEPILOGO LETTURE E CONSUMI","CONSUMI FATTURATI")) {
 ### Page 4
 ### Rect 0.22715053909677418 0.027588217240592926 0.04543010606451612 0.03170482722919042
 ### Script
+function regex_periodo() {
+  return format(/\d\d\/\d\d\/\d\d\d\d-\s*\d\d\/$0/,date_format(mese_fattura,"%m/%Y"));
+}
+function regex_periodo_generic() {
+  return /\d{2}\/\d{2}\/\d{4}\s*-\s*\d{2}\/\d{2}\/\d{4}/;
+}
 function check_periodo(@) {
   return date_between(mese_fattura,
     search_date(@,"%d/%m/%Y",/(\D)\s*-\s*\D/),
     search_date(@,"%d/%m/%Y",/\D\s*-\s*(\D)/));
 }
 function calc_totale_parziale(@) {
-  foreach(matches(@,format(/Periodo ($0 Euro\/POD\/mese \N)/,_periodo_generic))) {
+  foreach(matches(@,format(/Periodo ($0 Euro\/POD\/mese \N)/, regex_periodo_generic()))) {
     if(check_periodo()) {
       $ret+=trunc(search_num(@,/Euro\/POD\/mese (\N)/),2);
     }
   }
-  $ret+=sum(matches_num(@,format(/Periodo $0 Euro\/kW\/mese \N \N (\N)/,_periodo)));
-  foreach(matches(@,format(/Periodo ($0 Euro\/kWh \N)/,_periodo_generic))) {
+  $ret+=sum(matches_num(@,format(/Periodo $0 Euro\/kW\/mese \N \N (\N)/, regex_periodo())));
+  foreach(matches(@,format(/Periodo ($0 Euro\/kWh \N)/, regex_periodo_generic()))) {
     if(check_periodo()) {
-      $ret+=trunc(search_num(@,/Euro\/kWh (\N)/) * _tot_consumi,2);
+      $ret+=trunc(search_num(@,/Euro\/kWh (\N)/) * sum(energia_attiva),2);
     }
   }
   return $ret;
 }
 function calc_penale_reattiva(@, $percent_reattiva, $format_str) {
   for($i=0; $i<3; $i++) {
-    foreach(matches(@,format(/Energia Reattiva \($2\) - F$1 - Periodo ($0 Euro\/kVarh \N)/,_periodo_generic, $i+1, $format_str))) {
+    foreach(matches(@,format(/Energia Reattiva \($2\) - F$1 - Periodo ($0 Euro\/kVarh \N)/, regex_periodo_generic(), $i+1, $format_str))) {
       if(check_periodo()) {
         $ret+=trunc(max(0, energia_reattiva[$i] - energia_attiva[$i] * $percent_reattiva) *
           search_num(@,/Euro\/kVarh (\N)/),2);
@@ -203,49 +209,48 @@ function calc_penale_reattiva(@, $percent_reattiva, $format_str) {
   }
   return $ret;
 }
-with(global _dettaglio) {
-  _periodo=format(/\d\d\/\d\d\/\d\d\d\d-\s*\d\d\/$0/,date_format(mese_fattura,"%m/%Y"));
-  _periodo_generic=/\d{2}\/\d{2}\/\d{4}\s*-\s*\d{2}\/\d{2}\/\d{4}/;
+with($dettaglio) {
   with(between(@,"","Totale materia energia")) {
     foreach(matches(@,/Acconti fatture precedenti per servizi di vendita su kWh \N - Periodo (.+ \N)/)) {
       if(check_periodo()) {
         spesa_materia_energia+=search_num(@,/(\N)$/);
       }
     }
-    foreach(matches(@,format(/Commercializzazione e vendita \(PCV1\) - Periodo ($0 Euro\/POD\/mese \N)/,_periodo_generic))) {
+    foreach(matches(@,format(/Commercializzazione e vendita \(PCV1\) - Periodo ($0 Euro\/POD\/mese \N)/, regex_periodo_generic()))) {
       if(check_periodo()) {
         pcv=trunc(search_num(@,/Euro\/POD\/mese (\N)/),2);
       }
     }
-    foreach(matches(@,format(/Periodo ($0 Euro\/POD\/mese \N)/,_periodo_generic))) {
+    foreach(matches(@,format(/Periodo ($0 Euro\/POD\/mese \N)/, regex_periodo_generic()))) {
       if(check_periodo()) {
         spesa_materia_energia+=trunc(search_num(@,/Euro\/POD\/mese (\N)/),2);
       }
     }
-    step(captures_num(@,format(/Energia - F1 - Periodo $0 Euro\/kWh (\N) (\N) (\N)/,_periodo))) {
+    step(captures_num(@,format(/Energia - F1 - Periodo $0 Euro\/kWh (\N) (\N) (\N)/, regex_periodo()))) {
       prezzo_energia[0]=@;
-      { energia_attiva[0]=@; _tot_consumi+=@; }
+      energia_attiva[0]=@;
       spesa_materia_energia+=trunc(@,2);
     }
-    step(captures_num(@,format(/Energia - F2 - Periodo $0 Euro\/kWh (\N) (\N) (\N)/,_periodo))) {
+    step(captures_num(@,format(/Energia - F2 - Periodo $0 Euro\/kWh (\N) (\N) (\N)/, regex_periodo()))) {
       prezzo_energia[1]=@;
-      { energia_attiva[1]=@; _tot_consumi+=@; }
+      energia_attiva[1]=@;
       spesa_materia_energia+=trunc(@,2);
     }
-    step(captures_num(@,format(/Energia - F3 - Periodo $0 Euro\/kWh (\N) (\N) (\N)/,_periodo))) {
+    step(captures_num(@,format(/Energia - F3 - Periodo $0 Euro\/kWh (\N) (\N) (\N)/, regex_periodo()))) {
       prezzo_energia[2]=@;
-      { energia_attiva[2]=@; _tot_consumi+=@; }
+      energia_attiva[2]=@;
       spesa_materia_energia+=trunc(@,2);
     }
-    foreach(matches(@,format(/Perdite di rete - F[1-3] - Periodo $0 Euro\/kWh \N (\N \N)/,_periodo))) {
+    foreach(matches(@,format(/Perdite di rete - F[1-3] - Periodo $0 Euro\/kWh \N (\N \N)/, regex_periodo()))) {
       step(captures_num(@,/(\N) (\N)/)) {
-        _tot_perdite_rete+=@; spesa_materia_energia+=@;
+        perdite_di_rete+=@;
+        spesa_materia_energia+=@;
       }
     }
-    foreach(matches(@,format(/Dispacciamento - Periodo ($0 Euro\/kWh \N)/,_periodo_generic))) {
+    foreach(matches(@,format(/Dispacciamento - Periodo ($0 Euro\/kWh \N)/, regex_periodo_generic()))) {
       if(check_periodo()) {
         disp_var=search_num(@,/Euro\/kWh (\N)/);
-        spesa_materia_energia+=trunc(disp_var * (_tot_consumi + _tot_perdite_rete),2);
+        spesa_materia_energia+=trunc(disp_var * (sum(energia_attiva) + perdite_di_rete),2);
       }
     }
   }
@@ -256,7 +261,7 @@ with(global _dettaglio) {
       }
     }
     trasporto_gestione+=calc_totale_parziale();
-    potenza[0:3]=search_num(@,format(/Quota Potenza - trasporto - Periodo $0 Euro\/kW\/mese \N (\N)/,_periodo));
+    potenza[0:3]=search_num(@,format(/Quota Potenza - trasporto - Periodo $0 Euro\/kW\/mese \N (\N)/, regex_periodo()));
 
     penale_reattiva_inf75=calc_penale_reattiva(0.33,"Tra il 33 % ed il 75 %");
     penale_reattiva_sup75=calc_penale_reattiva(0.75,"Oltre il 75 %");
@@ -278,7 +283,7 @@ with(global _dettaglio) {
       }
     }
     if(contains(@,"Accisa sull'energia elettrica")) {
-      accise+=trunc(_tot_consumi * 0.0125,2);
+      accise+=trunc(sum(energia_attiva) * 0.0125,2);
     }
   }
   imponibile = spesa_materia_energia + trasporto_gestione + oneri + accise;
@@ -292,33 +297,33 @@ with(global _dettaglio) {
 ### Page 4
 ### Rect 0.05161290322580646 0.14481185860889398 0.18870967741935485 0.030786773090079815
 ### Spacers
-p+global next_page;
-p+global off_dettaglio;
+p+$next_page;
+p+$off_dettaglio;
 ### End Spacers
 ### Script
-if(!global calc_conguaglio) {
+if(!$calc_conguaglio) {
   if(mese_fattura != mese_fine) {
-    global calc_mese++;
+    $calc_mese++;
     nexttable();
     goto nome_fornitore;
   } else if(mese_inizio_conguaglio) {
-    global calc_conguaglio = 1;
-    global calc_mese = 0;
+    $calc_conguaglio = 1;
+    $calc_mese = 0;
     nexttable();
     goto nome_fornitore;
   }
 } else if(mese_fattura != mese_fine_conguaglio) {
-  global calc_mese++;
+  $calc_mese++;
   nexttable();
   goto nome_fornitore;
 }
 if(@ == "DATI FORNITURA") {
-  global calc_conguaglio = 0;
-  global calc_mese = 0;
-  global next_page += 1 + global off_dettaglio;
-  global off_dettaglio = 0;
+  $calc_conguaglio = 0;
+  $calc_mese = 0;
+  $next_page += 1 + $off_dettaglio;
+  $off_dettaglio = 0;
+  clear $dettaglio;
   nexttable();
-  clear global _dettaglio;
   goto cerca_dettaglio;
 }
 ### End Script
