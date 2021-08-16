@@ -208,7 +208,7 @@ with($dettaglio) {
       energia_attiva[2]=@;
     }
     with(between(@,"Altri importi materia energia", "Totale altri importi materia energia")) {
-      with(matches(@, $regex_periodo)) {
+      with(str(matches(@, $regex_periodo))) {
         pcv=search_num(@,/Commercializzazione vendita .*\u20ac\/cliente\/ mese (\N)/);
         dispacciamento=search_num(@,/Dispacciamento .*\u20ac\/kWh (\N)/);
         sbilanciamento=search_num(@,/Corrispettivo di Sbilanciamento .+\u20ac\/kWh (\N)/);
@@ -223,7 +223,7 @@ with($dettaglio) {
       potenza[0:3]=search_num(@,/kW (\N)/);
     }
     with(between(@,"Quota energia")) {
-      with(matches(@, $regex_periodo)) {
+      with(str(matches(@, $regex_periodo))) {
         penale_reattiva_inf75=search_num(@,/entro il 75% .*\u20ac\/kVarh \N \N (\N)/);
         penale_reattiva_sup75=search_num(@,/oltre il 75% .*\u20ac\/kVarh \N \N (\N)/);
       }

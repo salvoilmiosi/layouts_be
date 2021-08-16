@@ -194,7 +194,7 @@ with($dettaglio) {
         }
       }
     }
-    with(matches(@,format(/Importo $0\n((?:\s+.+\n)+)/, $periodo))) {
+    with(str(matches(@,format(/Importo $0\n((?:\s+.+\n)+)/, $periodo)))) {
       spesa_materia_energia+=sum(matches_num(@,/.+ (\N)/));
     }
     foreach(matches(@,/Importo (dal \d\d\.\d\d\.\d\d\d\d al \d\d\.\d\d\.\d\d\d\d \u20ac.+)/)) {
