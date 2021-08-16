@@ -78,21 +78,21 @@ data_fattura=search_date(@,"%d/%m/%Y");
 ### Page 1
 ### Rect 0.048863639999999986 0.37829003371900827 0.4227273 0.05476781752066118
 ### Script
-function parse_periodo(str_periodo) {
-  if(ismatch(str_periodo,/\d+\s*-\s*\d+ \w+\. \d+/)) { # es. 01-31 gen 2021
+function parse_periodo($str_periodo) {
+  if(ismatch($str_periodo,/\d+\s*-\s*\d+ \w+\. \d+/)) { # es. 01-31 gen 2021
     return list(
-      search_date(str_periodo, "%b. %Y"),
-      search_date(str_periodo, "%b. %Y"));
-  } else if(ismatch(str_periodo,/\d+ \w+\.\s*-\s*\d+ \w+\. \d+/)) { # es. 01 gen.-31 mar. 2021
-    $items=captures(str_periodo,/\d+ (\w+)\.\s*-\s*\d+ (\w+)\. (\d+)/);
+      search_date($str_periodo, "%b. %Y"),
+      search_date($str_periodo, "%b. %Y"));
+  } else if(ismatch($str_periodo,/\d+ \w+\.\s*-\s*\d+ \w+\. \d+/)) { # es. 01 gen.-31 mar. 2021
+    $items=captures($str_periodo,/\d+ (\w+)\.\s*-\s*\d+ (\w+)\. (\d+)/);
     return list(
       date(format("$0 $1", $items[0], $items[2]), "%b %Y"),
       date(format("$0 $1", $items[1], $items[2]), "%b %Y"));
-  } else if(ismatch(str_periodo,/\d+ \w+\. \d+\s*-\s*\d+ \w+ \d+/)) { # es. 01 dic. 2020-31 gen. 2021
+  } else if(ismatch($str_periodo,/\d+ \w+\. \d+\s*-\s*\d+ \w+ \d+/)) { # es. 01 dic. 2020-31 gen. 2021
     return list(
-      first_day(search_date(str_periodo,"%d %b. %Y",/(\D)\s*-\s*\D/)),
-      first_day(search_date(str_periodo,"%d %b. %Y",/\D\s*-\s*(\D)/)));
-  } else if(str_periodo) {
+      first_day(search_date($str_periodo,"%d %b. %Y",/(\D)\s*-\s*\D/)),
+      first_day(search_date($str_periodo,"%d %b. %Y",/\D\s*-\s*(\D)/)));
+  } else if($str_periodo) {
     error("Italpower: Formato Periodo Non Valido", global ERRORE_PERIODO_INVALIDO);
   }
 }
@@ -192,11 +192,11 @@ function calc_totale_parziale(@) {
   }
   return $ret;
 }
-function calc_penale_reattiva(@, percent_reattiva, format_str) {
+function calc_penale_reattiva(@, $percent_reattiva, $format_str) {
   for($i=0; $i<3; $i++) {
-    foreach(matches(@,format(/Energia Reattiva \($2\) - F$1 - Periodo ($0 Euro\/kVarh \N)/,_periodo_generic, $i+1, format_str))) {
+    foreach(matches(@,format(/Energia Reattiva \($2\) - F$1 - Periodo ($0 Euro\/kVarh \N)/,_periodo_generic, $i+1, $format_str))) {
       if(check_periodo()) {
-        $ret+=trunc(max(0, energia_reattiva[$i] - energia_attiva[$i] * percent_reattiva) *
+        $ret+=trunc(max(0, energia_reattiva[$i] - energia_attiva[$i] * $percent_reattiva) *
           search_num(@,/Euro\/kVarh (\N)/),2);
       }
     }
