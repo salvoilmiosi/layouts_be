@@ -63,9 +63,9 @@ codice_pod=search(@,/POD (.+)/);
 ### Rect 0.33843675 0.0045636054 0.3142627 0.019395322
 ### Script
 mese_fattura=search_date(@,"%B %Y");
-mese_fine=search_date(@,"%B %Y",/\D - (\D)/);
-if(mese_fine) {
-  if(mese_fine < mese_fattura) {
+$mese_fine=search_date(@,"%B %Y",/\D - (\D)/);
+if($mese_fine) {
+  if($mese_fine < mese_fattura) {
     error("Edison: Periodo Non Valido", global ERRORE_PERIODO_INVALIDO);
   }
   mese_fattura=month_add(mese_fattura, $calc_mese);
@@ -142,8 +142,8 @@ with(replace(@,"\u2212","-")) {
 ### Page 4
 ### Rect 0.2610798 0.046750285 0.0467365 0.030786773
 ### Script
-if(mese_fine) {
-  if(mese_fattura != mese_fine) {
+if($mese_fine) {
+  if(mese_fattura != $mese_fine) {
     $calc_mese++;
     nexttable();
     goto nome_fornitore;

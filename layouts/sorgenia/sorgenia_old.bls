@@ -106,8 +106,8 @@ p+$off_allegati;
 ### End Spacers
 ### Script
 mese_fattura=search_date(@,"%B %Y");
-mese_fine=search_date(@,"%B %Y",/\D\/(\D)/);
-if(mese_fine < mese_fattura) {
+$mese_fine=search_date(@,"%B %Y",/\D\/(\D)/);
+if($mese_fine < mese_fattura) {
   error("Sorgenia: Periodo Non Valido", global ERRORE_PERIODO_INVALIDO);
 }
 mese_fattura=month_add(mese_fattura, $calc_mese);
@@ -160,8 +160,8 @@ p+$off_allegati;
 ### End Spacers
 ### Script
 import "parsing_dettaglio";
-if(mese_fine) {
-  if(mese_fattura != mese_fine) {
+if($mese_fine) {
+  if(mese_fattura != $mese_fine) {
     $calc_mese++;
     nexttable();
     goto nome_fornitore;

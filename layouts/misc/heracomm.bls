@@ -117,12 +117,12 @@ totale_fattura=search_num(@,/Totale bolletta\/contratto (\N)/);
 ### Script
 with($dettaglio) {
   with(between(@,conditional(contains(@,"Quadro di dettaglio"),"Quadro di dettaglio","Elementi di dettaglio"),"\n")) {
-    mese_inizio=first_day(search_date(@,"%d.%m.%Y",/dal (\D) al \D/));
-    mese_fine=first_day(search_date(@,"%d.%m.%Y",/dal \D al (\D)/));
-    if(mese_fine < mese_inizio) {
+    $mese_inizio=first_day(search_date(@,"%d.%m.%Y",/dal (\D) al \D/));
+    $mese_fine=first_day(search_date(@,"%d.%m.%Y",/dal \D al (\D)/));
+    if($mese_fine < $mese_inizio) {
       error("Heracomm: Periodo Non Valido", global ERRORE_PERIODO_INVALIDO);
     }
-    mese_fattura=month_add(mese_inizio, $calc_mese);
+    mese_fattura=month_add($mese_inizio, $calc_mese);
   }
   $periodo=format(/dal \d\d\.\d\d\.\d\d\d\d al \d\d\.$0/,date_format(mese_fattura,"%m.%Y"));
   $lettura_fine=date_format(last_day(mese_fattura),"%d\\.%m\\.%Y");
@@ -252,7 +252,7 @@ with($dettaglio) {
 ### Page 4
 ### Rect 0.3773412702120966 0.06426464259653104 0.027093787866044883 0.03737960254547193
 ### Script
-if(mese_fattura != mese_fine) {
+if(mese_fattura != $mese_fine) {
   $calc_mese++;
   nexttable();
   goto nome_fornitore;

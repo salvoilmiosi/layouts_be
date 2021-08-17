@@ -197,8 +197,8 @@ p+$next_page;
 if($spacer_multipod) {
   if(@ == "Dati di fornitura") {
     $next_page++;
-    clear $dettaglio;
     nexttable();
+    clear $dettaglio;
     goto nome_fornitore;
   }
 }

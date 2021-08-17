@@ -72,8 +72,8 @@ indirizzo_fornitura=totitle(singleline(search(@,/\ndi ([^]+?\d{5}.+)/)));
 ### Rect 0.07358871 0.4846066 0.31149194 0.023517672
 ### Script
 mese_fattura=search_date(@,"%B %Y");
-mese_fine=search_date(@,"%B %Y",/\D\/(\D)/);
-if(mese_fine < mese_fattura) {
+$mese_fine=search_date(@,"%B %Y",/\D\/(\D)/);
+if($mese_fine < mese_fattura) {
   error("Sorgenia: Periodo Non Valido", global ERRORE_PERIODO_INVALIDO);
 }
 mese_fattura=month_add(mese_fattura, $calc_mese);
@@ -105,8 +105,8 @@ totale_fattura = +@;
 ### Rect 0.26032954 0.030786771 0.057603687 0.04479557
 ### Script
 import "parsing_dettaglio_gas";
-if(mese_fine) {
-  if(mese_fattura != mese_fine) {
+if($mese_fine) {
+  if(mese_fattura != $mese_fine) {
     $calc_mese++;
     nexttable();
     goto nome_fornitore;

@@ -142,12 +142,12 @@ with($dettaglio) {
   codice_pod=search(@,/CODICE POD ([0-9A-Z]+)/);
   indirizzo_fornitura=totitle(singleline(search(@,/FORNIAMO ENERGIA IN\n([^]+?\d{5}.+)/)));
 
-  mese_inizio=first_day(search_date(@,"%d.%m.%Y",/PERIODO (\D) - \D/));
-  mese_fine=first_day(search_date(@,"%d.%m.%Y",/PERIODO \D - (\D)/));
-  if(mese_fine < mese_inizio) {
+  $mese_inizio=first_day(search_date(@,"%d.%m.%Y",/PERIODO (\D) - \D/));
+  $mese_fine=first_day(search_date(@,"%d.%m.%Y",/PERIODO \D - (\D)/));
+  if($mese_fine < $mese_inizio) {
     error("Axpo: Periodo Non Valido", global ERRORE_PERIODO_INVALIDO);
   }
-  mese_fattura=month_add(mese_inizio, $calc_mese);
+  mese_fattura=month_add($mese_inizio, $calc_mese);
   $mese=date_format(mese_fattura,"%m\\.%Y");
 
   iva=search(@,/(\d+%)\n/);
@@ -242,7 +242,7 @@ p+$next_page;
 p+$off_dettaglio;
 ### End Spacers
 ### Script
-if(mese_fattura != mese_fine) {
+if(mese_fattura != $mese_fine) {
   # Prossima tabella multimese
   $calc_mese++;
   nexttable();
@@ -253,8 +253,8 @@ if(@ == "DATI FORNITURA") {
   $calc_mese = 0;
   $next_page += 1 + $off_dettaglio;
   $off_dettaglio = 0;
-  clear $dettaglio;
   nexttable();
+  clear $dettaglio;
   goto cerca_dettaglio;
 }
 ### End Script

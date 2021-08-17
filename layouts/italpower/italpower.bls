@@ -98,16 +98,16 @@ function parse_periodo($str_periodo) {
 }
 
 step(parse_periodo(search(@,/Periodo fatturato (.+)/))) {
-  mese_inizio=@;
-  mese_fine=@;
+  $mese_inizio=@;
+  $mese_fine=@;
 }
 
 step(parse_periodo(search(@,/Periodo conguagliato (.+)/))) {
-  mese_inizio_conguaglio=@;
-  mese_fine_conguaglio=@;
+  $mese_inizio_conguaglio=@;
+  $mese_fine_conguaglio=@;
 }
 
-mese_fattura=month_add(conditional($calc_conguaglio, mese_inizio_conguaglio, mese_inizio), $calc_mese);
+mese_fattura=month_add(conditional($calc_conguaglio, $mese_inizio_conguaglio, $mese_inizio), $calc_mese);
 ### End Script
 ### End Box
 
@@ -302,17 +302,17 @@ p+$off_dettaglio;
 ### End Spacers
 ### Script
 if(!$calc_conguaglio) {
-  if(mese_fattura != mese_fine) {
+  if(mese_fattura != $mese_fine) {
     $calc_mese++;
     nexttable();
     goto nome_fornitore;
-  } else if(mese_inizio_conguaglio) {
+  } else if($mese_inizio_conguaglio) {
     $calc_conguaglio = 1;
     $calc_mese = 0;
     nexttable();
     goto nome_fornitore;
   }
-} else if(mese_fattura != mese_fine_conguaglio) {
+} else if(mese_fattura != $mese_fine_conguaglio) {
   $calc_mese++;
   nexttable();
   goto nome_fornitore;
@@ -322,8 +322,8 @@ if(@ == "DATI FORNITURA") {
   $calc_mese = 0;
   $next_page += 1 + $off_dettaglio;
   $off_dettaglio = 0;
-  clear $dettaglio;
   nexttable();
+  clear $dettaglio;
   goto cerca_dettaglio;
 }
 ### End Script

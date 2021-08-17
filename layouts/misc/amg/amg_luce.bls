@@ -105,13 +105,13 @@ potenza[0:3]=search_num(@,/Potenza Disponibile (\N) kW/);
 ### Script
 if(ismatch(@,/\w+\. - \w+\. \d{4}/)) {
   $items = captures_num(@,/(\w+)\. - (\w+)\. (\d{4})/);
-  mese_inizio=date(format("$0 $1", $items[0], $items[2]), "%b %Y");
-  mese_fine=date(format("$0 $1", $items[1], $items[2]), "%b %Y");
-  mese_fattura=month_add(mese_inizio, $calc_mese);
+  $mese_inizio=date(format("$0 $1", $items[0], $items[2]), "%b %Y");
+  $mese_fine=date(format("$0 $1", $items[1], $items[2]), "%b %Y");
+  mese_fattura=month_add($mese_inizio, $calc_mese);
 } else {
   error("AMG: Formato Periodo Errato", global ERRORE_PERIODO_INVALIDO);
 }
-if(mese_inizio > mese_fine) {
+if($mese_inizio > $mese_fine) {
   error("AMG: Formato Periodo Errato", global ERRORE_PERIODO_INVALIDO);
 }
 $mese=date_format(mese_fattura,"%m/%Y");
@@ -218,7 +218,7 @@ with($dettaglio) {
 ### Page 4
 ### Rect 0.15343915343915343 0.014967259120673527 0.035714285714285726 0.025257249766136577
 ### Script
-if(mese_fattura != mese_fine) {
+if(mese_fattura != $mese_fine) {
   $calc_mese++;
   nexttable();
   goto nome_fornitore;
