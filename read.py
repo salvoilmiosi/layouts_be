@@ -11,12 +11,14 @@ import sys
 if sys.platform == 'win32':
     os.system('color')
 
+script_dir = Path(__file__).parent
+
 parser = ArgumentParser()
-parser.add_argument('input_directory')
-parser.add_argument('output_file')
-parser.add_argument('--pybls', default=Path(__file__).resolve().parent.parent / 'out/bin')
-parser.add_argument('-s', '--script', default=Path(__file__).resolve().parent / 'layouts/controllo.bls')
-parser.add_argument('-e', '--errorlist', default=Path(__file__).resolve().parent / 'layouts/errors.lst')
+parser.add_argument('-i', '--input-path', type=Path, default = script_dir / 'work/fatture')
+parser.add_argument('-o', '--output-path', type=Path, default = script_dir / 'work/letture')
+parser.add_argument('--pybls', type=Path, default = script_dir / '../out/bin')
+parser.add_argument('-s', '--script', type=Path, default = script_dir / 'layouts/controllo.bls')
+parser.add_argument('-e', '--errorlist', type=Path, default = script_dir / 'layouts/errors.lst')
 parser.add_argument('-f', '--force-read', action='store_true')
 parser.add_argument('-c', '--cached', action='store_true')
 parser.add_argument('-y', '--filter-year', type=int, default=0)
@@ -24,13 +26,10 @@ parser.add_argument('-j', '--nthreads', type=int, default=cpu_count())
 parser.add_argument('-t', '--timeout', type=float, default=10.0)
 args = parser.parse_args()
 
-os.environ['PATH'] = str(args.pybls) + os.pathsep + os.environ['PATH']
-sys.path.insert(0, str(args.pybls))
+os.environ['PATH'] = str(args.pybls.resolve()) + os.pathsep + os.environ['PATH']
+sys.path.insert(0, str(args.pybls.resolve()))
 
 import pybls
-
-input_directory = Path(args.input_directory).resolve()
-output_file = Path(args.output_file)
 
 def check_conguagli(results):
     sorted_data = []
@@ -38,7 +37,7 @@ def check_conguagli(results):
     for x in results:
         data = {'filename': x['filename'], 'errcode': x['errcode'], 'values': []}
         if 'layouts' in x:
-            data['layouts'] = x['layouts']
+            data['layouts'] = [str(Path(f).resolve()) for f in x['layouts']]
         if 'error' in x:
             data['error'] = x['error']
             error_data.append(data.copy())
@@ -79,9 +78,9 @@ def read_pdf(pdf_file):
     except:
         ret = {'errcode': -6, 'error': 'Errore di Sistema'}
 
-    ret['filename'] = str(pdf_file)
+    ret['filename'] = str(pdf_file.resolve())
     
-    rel_path = pdf_file.relative_to(input_directory)
+    rel_path = pdf_file.relative_to(args.input_path)
     if ret['errcode'] == 0:
         if 'notes' in ret:
             print('\033[33m{0} ### {1}\033[0m'.format(rel_path, ', '.join(ret['notes']))) # yellow
@@ -98,25 +97,36 @@ def lastmodified(f):
     return datetime.fromtimestamp(Path(f).stat().st_mtime)
 
 if __name__ == '__main__':
-    in_files = [f for f in input_directory.rglob('*.pdf') if lastmodified(f).year >= args.filter_year]
+    keep_file = lambda f : lastmodified(f).year >= args.filter_year
+    path_to_json = lambda d : args.output_path / (Path(d).relative_to(args.input_path).parts[0] + '.json')
+
+    if args.output_path.is_dir():
+        files_dict = {path_to_json(d) : [f for f in d.rglob('*.pdf') if keep_file(f)] \
+            for d in args.input_path.iterdir() if d.is_dir()}
+    else:
+        files_dict = {args.output_path : [f for f in args.input_path.rglob('*.pdf') if keep_file(f)]}
 
     results = []
     files = []
 
-    # Rilegge i vecchi file solo se il layout e' stato ricompilato
-    if not args.force_read and output_file.exists():
-        with open(output_file, 'r') as file:
-            in_data = json.load(file)
-
-        for pdf_file in in_files:
-            skip = False
-            for old_obj in filter(lambda x : x['filename'] == str(pdf_file), in_data):
-                if 'layouts' in old_obj and all(lastmodified(f) < lastmodified(output_file) for f in old_obj['layouts'] + [pdf_file]):
-                    results.append(old_obj)
-                    skip = True
-            if not skip: files.append(pdf_file)
+    if args.force_read:
+        for fs in files_dict.values():
+            files += fs
     else:
-        files = in_files
+        for output_file, in_files in files_dict.items():
+            if output_file.exists():
+                with open(output_file, 'r') as file:
+                    in_data = json.load(file)
+                
+                for pdf_file in in_files:
+                    skip = False
+                    for old_obj in filter(lambda x : Path(x['filename']) == pdf_file.resolve(), in_data):
+                        if 'layouts' in old_obj and all(lastmodified(f) < lastmodified(output_file) for f in old_obj['layouts'] + [pdf_file]):
+                            results.append(old_obj)
+                            skip = True
+                    if not skip: files.append(pdf_file)
+            else:
+                files += in_files
 
     if files:
         with Pool(min(len(files), args.nthreads)) as pool:
@@ -124,5 +134,13 @@ if __name__ == '__main__':
 
     results = check_conguagli(results)
 
-    with open(output_file, 'w') as file:
-        json.dump(results, file, indent=4)
+    if args.output_path.is_dir():
+        ordered_results = {f : [] for f in files_dict.keys()}
+        for r in results:
+            ordered_results[path_to_json(r['filename'])].append(r)
+        for k,v in ordered_results.items():
+            with open(k, 'w') as file:
+                json.dump(v, file, indent=4)
+    else:
+        with open(args.output_path, 'w') as file:
+            json.dump(results, file, indent=4)

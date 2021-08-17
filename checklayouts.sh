@@ -1,10 +1,10 @@
 #!/bin/bash
 
-cd "$(dirname "${BASH_SOURCE[0]}")"
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
-IN_DIR=layouts
+IN_DIR=layouts_be/layouts
 
 for f in $(find "$IN_DIR" -name *.bls); do
     echo -e "\033[32m$(realpath --relative-to="$IN_DIR" "$f")\033[0m"
-    ../out/bin/blsdump "$f" > /dev/null
+    out/bin/blsdump "$f" > /dev/null
 done
