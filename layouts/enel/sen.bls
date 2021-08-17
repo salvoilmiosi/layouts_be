@@ -102,14 +102,14 @@ data_fattura=search_date(@,"%d.%m.%Y",/Del (\D)/);
 ### Page 1
 ### Rect 0.29827663 0.4100217 0.20267215 0.040712774
 ### Script
-mese_fattura=search_date(@,"%b.%Y");
+$mese_inizio=search_date(@,"%b.%Y");
 $mese_fine=search_date(@,"%b.%Y",/\D - (\D)/);
 if($mese_fine) {
-  if($mese_fine < mese_fattura) {
+  if($mese_fine < $mese_inizio) {
     error("SEN: Periodo Non Valido", global ERRORE_PERIODO_INVALIDO);
   }
-  mese_fattura=month_add(mese_fattura, $calc_mese);
 }
+mese_fattura=month_add($mese_inizio, $calc_mese);
 $mese=date_format(mese_fattura,"%m/%y");
 ### End Script
 ### End Box

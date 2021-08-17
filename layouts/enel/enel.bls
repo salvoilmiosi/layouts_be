@@ -119,14 +119,14 @@ data_scadenza=search_date(@,"%d/%m/%Y",/Entro il (\D)/);
 ### Page 1
 ### Rect 0.27988616 0.4306124 0.22106262 0.020122074
 ### Script
-mese_fattura=search_date(@,"%b. %Y");
+$mese_inizio=search_date(@,"%b. %Y");
 $mese_fine=search_date(@,"%b. %Y",/\D - (\D)/);
 if($mese_fine) {
-  if($mese_fine < mese_fattura) {
+  if($mese_fine < $mese_inizio) {
     error("Enel: Periodo Non Valido", global ERRORE_PERIODO_INVALIDO);
   }
-  mese_fattura=month_add(mese_fattura, $calc_mese);
 }
+mese_fattura=month_add($mese_inizio, $calc_mese);
 ### End Script
 ### End Box
 
