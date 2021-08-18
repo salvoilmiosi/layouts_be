@@ -198,12 +198,12 @@ function calc_totale_parziale(@) {
   }
   return $ret;
 }
-function calc_penale_reattiva(@, $percent_reattiva, $format_str) {
+function calc_penale_reattiva(@, $percent_min, $percent_max, $format_str) {
   for($i=0; $i<3; $i++) {
     foreach(matches(@,format(/Energia Reattiva \($2\) - F$1 - Periodo ($0 Euro\/kVarh \N)/, regex_periodo_generic(), $i+1, $format_str))) {
       if(check_periodo()) {
-        $ret+=trunc(max(0, energia_reattiva[$i] - energia_attiva[$i] * $percent_reattiva) *
-          search_num(@,/Euro\/kVarh (\N)/),2);
+        $ret+=trunc(clamp(energia_reattiva[$i] - energia_attiva[$i] * $percent_min, 0, energia_attiva[$i] * ($percent_max - $percent_min))
+          * search_num(@,/Euro\/kVarh (\N)/),2);
       }
     }
   }
@@ -263,8 +263,8 @@ with($dettaglio) {
     trasporto_gestione+=calc_totale_parziale();
     potenza[0:3]=search_num(@,format(/Quota Potenza - trasporto - Periodo $0 Euro\/kW\/mese \N (\N)/, regex_periodo()));
 
-    penale_reattiva_inf75=calc_penale_reattiva(0.33,"Tra il 33 % ed il 75 %");
-    penale_reattiva_sup75=calc_penale_reattiva(0.75,"Oltre il 75 %");
+    penale_reattiva_inf75=calc_penale_reattiva(0.33, 0.75, "Tra il 33 % ed il 75 %");
+    penale_reattiva_sup75=calc_penale_reattiva(0.75, 1, "Oltre il 75 %");
 
     trasporto_gestione+=penale_reattiva_inf75 + penale_reattiva_sup75;
   }
