@@ -142,7 +142,7 @@ iva=search(@,/IVA.* (\N%)/);
 
 ### Box Consumi Rilevati
 ### Mode LAYOUT
-### Flags PAGE
+### Flags PAGE 
 ### Page 2
 ### Rect 0.057569835 0.42134714 0.6868947 0.095169425
 ### Script
@@ -152,7 +152,7 @@ if(!contains(@, $inizio_dettaglio)) {
   $inizio_dettaglio=date_format(mese_fattura,"%d/%m/%Y");
   $fine_dettaglio=date_format(last_day(mese_fattura),"%d/%m/%Y");
 }
-if(!contains(@,"Energia attiva")) {
+if(contains(@,"Energia attiva")) {
   step(captures_num(@,format(/$0 (\N) (\N) (\N)/, $fine_dettaglio))) {
     energia_attiva_rilevata[0]=@;
     energia_attiva_rilevata[1]=@;
