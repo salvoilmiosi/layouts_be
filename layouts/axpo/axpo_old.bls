@@ -160,18 +160,9 @@ with(between($dettaglio,date_format(mese_fattura,"%B %Y"),/\n.+?TOT\. \u20ac/)) 
 
   imponibile=search_num(@,/TOT\. \u20ac (\N)/);
 
-  step(captures_num(@,/Prezzo Energia (?:F1|PEAK) (\N) kWh (\N)/)) {
-    energia_attiva[0]=@;
-    prezzo_energia[0]=@;
-  }
-  step(captures_num(@,/Prezzo Energia (?:F2|OFFPEAK) (\N) kWh (\N)/)) {
-    energia_attiva[1]=@;
-    prezzo_energia[1]=@;
-  }
-  step(captures_num(@,/Prezzo Energia F3 (\N) kWh (\N)/)) {
-    energia_attiva[2]=@;
-    prezzo_energia[2]=@;
-  }
+  (energia_attiva[0], prezzo_energia[0]) = captures_num(@,/Prezzo Energia (?:F1|PEAK) (\N) kWh (\N)/);
+  (energia_attiva[1], prezzo_energia[1]) = captures_num(@,/Prezzo Energia (?:F2|OFFPEAK) (\N) kWh (\N)/);
+  (energia_attiva[2], prezzo_energia[2]) = captures_num(@,/Prezzo Energia F3 (\N) kWh (\N)/);
 
   pcv=search_num(@,/Prezzo Commercializzazione e Vendita .+\u20ac (\N)/);
   sbilanciamento=search_num(@,/Gestione sbilanciamento \N kWh (\N)/);

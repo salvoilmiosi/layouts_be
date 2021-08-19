@@ -159,22 +159,11 @@ with($dettaglio) {
     pcv=sum(matches_num(search(@,/Prezzo Commercializzazione Vendita\n((dal.+\n)+)/),
       format(/al \d\d\.$0 euro\/\w+ \N \N (\N)/, $mese)));
     with(search(@,/Prezzo (?:Energia|Indicizzato)\n((dal.+\n)+)/)) {
-      step(calc_prezzo_energia(format(/$0 (?:F1|PEAK)/, $mese))) {
-        prezzo_energia[0]=@;
-        energia_attiva[0]=@;
-      }
-      step(calc_prezzo_energia(format(/$0 (?:F2|OFFPEAK)/, $mese))) {
-        prezzo_energia[1]=@;
-        energia_attiva[1]=@;
-      }
-      step(calc_prezzo_energia(format(/$0 F3/, $mese))) {
-        prezzo_energia[2]=@;
-        energia_attiva[2]=@;
-      }
-      step(calc_prezzo_energia($mese)) {
-        prezzo_energia=@;
-        energia_attiva=@;
-      }
+      (prezzo_energia[0], energia_attiva[0]) = calc_prezzo_energia(format(/$0 (?:F1|PEAK)/, $mese));
+      (prezzo_energia[1], energia_attiva[1]) = calc_prezzo_energia(format(/$0 (?:F2|OFFPEAK)/, $mese));
+      (prezzo_energia[2], energia_attiva[2]) = calc_prezzo_energia(format(/$0 F3/, $mese));
+
+      (prezzo_energia, energia_attiva) = calc_prezzo_energia($mese);
     }
   }
   with(between(@,"SCONTI","Subtotale")) {
@@ -219,11 +208,8 @@ with(between(@,"CONSUMI E LETTURE","Consumi fatturati negli ultimi 12 mesi")) {
     $header=table_header(@,/Consumi fatturati kWh(?: Consumi fatturati kWh)?/,"Energia Reattiva");
     foreach(matches(@,format(/(.+ - \d\d\.$0.+)/, $mese))) {
       step(table_row(@, $header)) {
-        step(captures_num(@,/(\N) (\N) (\N)/)) {
-          energia_attiva_rilevata[0]+=@;
-          energia_attiva_rilevata[1]+=@;
-          energia_attiva_rilevata[2]+=@;
-        }
+        (energia_attiva_rilevata[0], energia_attiva_rilevata[1], energia_attiva_rilevata[2])
+          += captures_num(@,/(\N) (\N) (\N)/);
         energia_reattiva += +@;
       }
     }

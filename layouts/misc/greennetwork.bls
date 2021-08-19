@@ -121,15 +121,11 @@ imponibile=search_num(@,/(\N)/);
 p+$off_allegati;
 ### End Spacers
 ### Script
-step(captures_num(@,format(/\d\d\/$0 \d\d\/$0 Consumi \w+ \N (\N) (\N) (\N) \N (\N) (\N) (\N) (\N)/,date_format(mese_fattura,"%m/%Y")))) {
-  energia_attiva_rilevata[0]=@;
-  energia_attiva_rilevata[1]=@;
-  energia_attiva_rilevata[2]=@;
-  energia_reattiva[0]=@;
-  energia_reattiva[1]=@;
-  energia_reattiva[2]=@;
-  potenza[0:3]=@;
-}
+(
+  energia_attiva_rilevata[0], energia_attiva_rilevata[1], energia_attiva_rilevata[2],
+  energia_reattiva[0], energia_reattiva[1], energia_reattiva[2],
+  potenza[0:3]
+) = captures_num(@,format(/\d\d\/$0 \d\d\/$0 Consumi \w+ \N (\N) (\N) (\N) \N (\N) (\N) (\N) (\N)/,date_format(mese_fattura,"%m/%Y")));
 ### End Script
 ### End Box
 
@@ -155,18 +151,12 @@ p+$off_allegati;
 ### Script
 $mese=date_format(mese_fattura,"%m/%Y");
 with(search(@,/Componente di Generazione.+\n((Dal.+\n)+)/)) {
-  step(captures_num(@,format(/F1 .+\d\d\/$0 \u20ac\/kWh (\N) (\N) kWh/, $mese))) {
-    prezzo_energia[0]=@;
-    energia_attiva[0]=@;
-  }
-  step(captures_num(@,format(/F2 .+\d\d\/$0 \u20ac\/kWh (\N) (\N) kWh/, $mese))) {
-    prezzo_energia[1]=@;
-    energia_attiva[1]=@;
-  }
-  step(captures_num(@,format(/F3 .+\d\d\/$0 \u20ac\/kWh (\N) (\N) kWh/, $mese))) {
-    prezzo_energia[2]=@;
-    energia_attiva[2]=@;
-  }
+  (prezzo_energia[0], energia_attiva[0])
+    = captures_num(@,format(/F1 .+\d\d\/$0 \u20ac\/kWh (\N) (\N) kWh/, $mese));
+  (prezzo_energia[1], energia_attiva[1])
+   = captures_num(@,format(/F2 .+\d\d\/$0 \u20ac\/kWh (\N) (\N) kWh/, $mese));
+  (prezzo_energia[2], energia_attiva[2])
+   = captures_num(@,format(/F3 .+\d\d\/$0 \u20ac\/kWh (\N) (\N) kWh/, $mese));
 }
 pcv=search_num(search(@,/Prezzo commercializzazione vendita.+\n((Dal.+\n)+)/),
   format(/\d\d\/$0 .+ $mese (\N)/, $mese));

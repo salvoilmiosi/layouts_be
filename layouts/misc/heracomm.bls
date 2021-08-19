@@ -130,51 +130,27 @@ with($dettaglio) {
     date_format(last_day(month_add(mese_fattura,-1)),"%d\\.%m\\.%Y"),
     date_format(mese_fattura,"01\\.%m\\.%Y"));
   with(between(@,"energia attiva (kWh)","consumo rilevato energia")) {
-    step(captures_num(@,format(/$0 (\N) (\N) (\N) Lettura Rilevata/, $lettura_fine))) {
-      energia_attiva_rilevata[0]=@;
-      energia_attiva_rilevata[1]=@;
-      energia_attiva_rilevata[2]=@;
-    }
-    step(captures_num(@,format(/$0 (\N) (\N) (\N) Lettura Rilevata/, $lettura_inizio))) {
-      energia_attiva_rilevata[0] -= +@;
-      energia_attiva_rilevata[1] -= +@;
-      energia_attiva_rilevata[2] -= +@;
-    }
+    (energia_attiva_rilevata[0], energia_attiva_rilevata[1], energia_attiva_rilevata[2])
+      = captures_num(@,format(/$0 (\N) (\N) (\N) Lettura Rilevata/, $lettura_fine));
+    (energia_attiva_rilevata[0], energia_attiva_rilevata[1], energia_attiva_rilevata[2])
+      -= captures_num(@,format(/$0 (\N) (\N) (\N) Lettura Rilevata/, $lettura_inizio));
   }
   with(between(@,"energia reattiva (kVARh)","consumo rilevato energia")) {
-    step(captures_num(@,format(/$0 (\N) (\N) (\N) Lettura Rilevata/, $lettura_fine))) {
-      energia_reattiva[0]=@;
-      energia_reattiva[1]=@;
-      energia_reattiva[2]=@;
-    }
-    step(captures_num(@,format(/$0 (\N) (\N) (\N) Lettura Rilevata/, $lettura_inizio))) {
-      energia_reattiva[0] -= +@;
-      energia_reattiva[1] -= +@;
-      energia_reattiva[2] -= +@;
-    }
+    (energia_reattiva[0], energia_reattiva[1], energia_reattiva[2])
+      = captures_num(@,format(/$0 (\N) (\N) (\N) Lettura Rilevata/, $lettura_fine));
+    (energia_reattiva[0], energia_reattiva[1], energia_reattiva[2])
+      -= captures_num(@,format(/$0 (\N) (\N) (\N) Lettura Rilevata/, $lettura_inizio));
   }
   with(between(@,"potenza (kW)","...........")) {
-    step(captures_num(@,format(/$0 (\N) (\N) (\N) Lettura Rilevata/, $lettura_fine))) {
-      potenza[0]=@;
-      potenza[1]=@;
-      potenza[2]=@;
-    }
+    (potenza[0], potenza[1], potenza[2])
+      = captures_num(@,format(/$0 (\N) (\N) (\N) Lettura Rilevata/, $lettura_fine));
   }
   with(between(@,"Totale servizi di Vendita","...........")) {
     with(between(@,conditional(contains(@,"Prezzo Netto"),"Prezzo Netto","Prezzo dell'energia"),"Perdite di Rete")) {
       with(search(@,format(/Importo $0\n((?:\s+.+\n)+)/, $periodo))) {
-        step(captures_num(@,/fascia F1 \u20ac\/kWh (\N) (\N) kWh/)) {
-          prezzo_energia[0]=@;
-          energia_attiva[0]=@;
-        }
-        step(captures_num(@,/fascia F2 \u20ac\/kWh (\N) (\N) kWh/)) {
-          prezzo_energia[1]=@;
-          energia_attiva[1]=@;
-        }
-        step(captures_num(@,/fascia F3 \u20ac\/kWh (\N) (\N) kWh/)) {
-          prezzo_energia[2]=@;
-          energia_attiva[2]=@;
-        }
+        (prezzo_energia[0], energia_attiva[0]) = captures_num(@,/fascia F1 \u20ac\/kWh (\N) (\N) kWh/);
+        (prezzo_energia[1], energia_attiva[1]) = captures_num(@,/fascia F2 \u20ac\/kWh (\N) (\N) kWh/);
+        (prezzo_energia[2], energia_attiva[2]) = captures_num(@,/fascia F3 \u20ac\/kWh (\N) (\N) kWh/);
       }
     }
     $totale_consumi=sum(energia_attiva);

@@ -22,18 +22,12 @@ function calc_prezzo_energia(@, $expr) {
 with(global dettaglio) {
   with(between(@,"CONSUMI e RICALCOLI","CONSUMI ULTIMI 13 MESI")) {
     with(between(@,"ENERGIA ATTIVA","ENERGIA REATTIVA")) {
-      step(captures_num(@,format(/$0 \w+\*? (\N) (\N) (\N)/,date_format(mese_fattura,"%b - %y")))) {
-        energia_attiva_rilevata[0]=@;
-        energia_attiva_rilevata[1]=@;
-        energia_attiva_rilevata[2]=@;
-      }
+      (energia_attiva_rilevata[0], energia_attiva_rilevata[1], energia_attiva_rilevata[2])
+        = captures_num(@,format(/$0 \w+\*? (\N) (\N) (\N)/,date_format(mese_fattura,"%b - %y")));
     }
     with(between(@,"ENERGIA REATTIVA")) {
-      step(captures_num(@,format(/$0 (\N) (\N) (\N)/,date_format(mese_fattura,"%b - %y")))) {
-        energia_reattiva[0]=@;
-        energia_reattiva[1]=@;
-        energia_reattiva[2]=@;
-      }
+      (energia_reattiva[0], energia_reattiva[1], energia_reattiva[2])
+        = captures_num(@,format(/$0 (\N) (\N) (\N)/,date_format(mese_fattura,"%b - %y")));
     }
   }
   
@@ -45,22 +39,11 @@ with(global dettaglio) {
     spesa_materia_energia=search_num(@,/DETTAGLIO DELLA SPESA PER (?:L\u2019ENERGIA ELETTRICA|LA MATERIA ENERGIA)[^]+?(\N) DETTAGLIO/);
     trasporto_gestione=search_num(@,/DETTAGLIO DELLA SPESA PER (?:IL TRASPORTO, GESTIONE DEL CONTATORE|TRASPORTO ENERGIA, GESTIONE CONTATORE) E ONERI DI SISTEMA[^]+?(\N) IMPOSTE/);
 
-    step(calc_prezzo_energia(/(?:F1|Picco|Ore Giorno)/)) {
-      prezzo_energia[0]=@;
-      energia_attiva[0]=@;
-    }
-    step(calc_prezzo_energia(/(?:F2|Fuori Picco|Ore Notte)/)) {
-      prezzo_energia[1]=@;
-      energia_attiva[1]=@;
-    }
-    step(calc_prezzo_energia(/F3/)) {
-      prezzo_energia[2]=@;
-      energia_attiva[2]=@;
-    }
-    step(calc_prezzo_energia(/(?:energia(?: monorario)?|Luce)/)) {
-      prezzo_energia=@;
-      energia_attiva=@;
-    }
+    (prezzo_energia[0], energia_attiva[0]) = calc_prezzo_energia(/(?:F1|Picco|Ore Giorno)/);
+    (prezzo_energia[1], energia_attiva[1]) = calc_prezzo_energia(/(?:F2|Fuori Picco|Ore Notte)/);
+    (prezzo_energia[2], energia_attiva[2]) = calc_prezzo_energia(/F3/);
+    
+    (prezzo_energia, energia_attiva) = calc_prezzo_energia(/(?:energia(?: monorario)?|Luce)/);
 
     sbilanciamento=search_num(@,/Incremento prezzo euro\/kWh (\N)/);
 

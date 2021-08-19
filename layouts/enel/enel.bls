@@ -153,28 +153,16 @@ if(!contains(@, $inizio_dettaglio)) {
   $fine_dettaglio=date_format(last_day(mese_fattura),"%d/%m/%Y");
 }
 if(contains(@,"Energia attiva")) {
-  step(captures_num(@,format(/$0 (\N) (\N) (\N)/, $fine_dettaglio))) {
-    energia_attiva_rilevata[0]=@;
-    energia_attiva_rilevata[1]=@;
-    energia_attiva_rilevata[2]=@;
-  }
-  step(captures_num(@,format(/$0 (\N) (\N) (\N)/, $inizio_dettaglio))) {
-    energia_attiva_rilevata[0]-=@;
-    energia_attiva_rilevata[1]-=@;
-    energia_attiva_rilevata[2]-=@;
-  }
+  (energia_attiva_rilevata[0], energia_attiva_rilevata[1], energia_attiva_rilevata[2])
+    = captures_num(@,format(/$0 (\N) (\N) (\N)/, $fine_dettaglio));
+  (energia_attiva_rilevata[0], energia_attiva_rilevata[1], energia_attiva_rilevata[2])
+    -= captures_num(@,format(/$0 (\N) (\N) (\N)/, $inizio_dettaglio));
 }
 if(contains(@,"Energia reattiva")) {
-  step(captures_num(@,format(/$0 \N \N \N (\N) (\N) (\N)/, $fine_dettaglio))) {
-    energia_reattiva[0]=@;
-    energia_reattiva[1]=@;
-    energia_reattiva[2]=@;
-  }
-  step(captures_num(@,format(/$0 \N \N \N (\N) (\N) (\N)/, $inizio_dettaglio))) {
-    energia_reattiva[0]-=@;
-    energia_reattiva[1]-=@;
-    energia_reattiva[2]-=@;
-  }
+  (energia_reattiva[0], energia_reattiva[1], energia_reattiva[2])
+    = captures_num(@,format(/$0 \N \N \N (\N) (\N) (\N)/, $fine_dettaglio));
+  (energia_reattiva[0], energia_reattiva[1], energia_reattiva[2])
+    -= captures_num(@,format(/$0 \N \N \N (\N) (\N) (\N)/, $inizio_dettaglio));
 }
 ### End Script
 ### End Box
@@ -189,24 +177,14 @@ $regex_periodo=format(/(.+ dal \d\d\/\d\d\/\d\d al $0[^]+?)(?=\n.+ dal \d\d|Tota
 with($dettaglio) {
   with(between(@,"SPESA PER L'ENERGIA", "Totale spesa per l'energia")) {
     spesa_materia_energia=sum(matches_num(matches(@, $regex_periodo),/.+ (\N)/));
-    step(captures_num(search(search(@, /Energia (?:fascia F1|ore picco|mese)\n([^]+?)Totale energia/),
-      $regex_periodo),/\u20ac\/kWh (\N) (\N)/))
-    {
-      prezzo_energia[0]=@;
-      energia_attiva[0]=@;
-    }
-    step(captures_num(search(search(@, /Energia (?:fascia F2|ore fuori picco)\n([^]+?)Totale energia/),
-      $regex_periodo),/\u20ac\/kWh (\N) (\N)/))
-    {
-      prezzo_energia[1]=@;
-      energia_attiva[1]=@;
-    }
-    step(captures_num(search(search(@, /Energia fascia F3\n([^]+?)Totale energia/),
-      $regex_periodo),/\u20ac\/kWh (\N) (\N)/))
-    {
-      prezzo_energia[2]=@;
-      energia_attiva[2]=@;
-    }
+    
+    (prezzo_energia[0], energia_attiva[0]) = captures_num(search(search(@,
+      /Energia (?:fascia F1|ore picco|mese)\n([^]+?)Totale energia/), $regex_periodo),/\u20ac\/kWh (\N) (\N)/);
+    (prezzo_energia[1], energia_attiva[1]) = captures_num(search(search(@,
+      /Energia (?:fascia F2|ore fuori picco)\n([^]+?)Totale energia/), $regex_periodo),/\u20ac\/kWh (\N) (\N)/);
+    (prezzo_energia[2], energia_attiva[2]) = captures_num(search(search(@,
+      /Energia fascia F3\n([^]+?)Totale energia/), $regex_periodo),/\u20ac\/kWh (\N) (\N)/);
+
     with(between(@,"Altri importi materia energia", "Totale altri importi materia energia")) {
       with(str(matches(@, $regex_periodo))) {
         pcv=search_num(@,/Commercializzazione vendita .*\u20ac\/cliente\/ mese (\N)/);

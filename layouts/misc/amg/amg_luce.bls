@@ -126,11 +126,8 @@ $mese=date_format(mese_fattura,"%m/%Y");
 ### Script
 with(between(@,"DETTAGLIO LETTURE","DETTAGLIO ALTRE PARTITE")) {
   foreach(matches(@,format(/\d\d\/$0 (.+)/, $mese))) {
-    step(captures_num(@,/(\N) (\N) (\N) Effettivi/)) {
-      energia_attiva_rilevata[0] += +@;
-      energia_attiva_rilevata[1] += +@;
-      energia_attiva_rilevata[2] += +@;
-    }
+    (energia_attiva_rilevata[0], energia_attiva_rilevata[1], energia_attiva_rilevata[2])
+      = captures_num(@,/(\N) (\N) (\N) Effettivi/);
   }
 }
 ### End Script

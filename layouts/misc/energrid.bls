@@ -91,14 +91,10 @@ p+$off_pod;
 ### End Spacers
 ### Script
 with(between(@,"RIEPILOGO CONSUMI PRIMO ADDEBITO","TOTALE (Salvo conguagli, errori e omissioni)")) {
-  step(captures_num(@,format(/\d\d\/$0 Consumi Fatturati (\N) (\N) (\N) \N (\N) (\N) (\N)/, $mese))) {
-    energia_attiva_rilevata[0]=@;
-    energia_attiva_rilevata[1]=@;
-    energia_attiva_rilevata[2]=@;
-    energia_reattiva[0]=@;
-    energia_reattiva[1]=@;
-    energia_reattiva[2]=@;
-  }
+  (
+    energia_attiva_rilevata[0], energia_attiva_rilevata[1], energia_attiva_rilevata[2],
+    energia_reattiva[0], energia_reattiva[1], energia_reattiva[2]
+  ) = captures_num(@,format(/\d\d\/$0 Consumi Fatturati (\N) (\N) (\N) \N (\N) (\N) (\N)/, $mese));
 }
 with(between(@,"DETTAGLIO IMPOSTE","TOTALE (Salvo conguagli, errori e omissioni)")) {
   accise=search_num(@,format(/Imposta erariale.+ al \d\d\/$0 Euro\/kWh \N \N (\N)/, $mese));
@@ -137,18 +133,12 @@ p+$off_dettaglio;
 with(between(@,"DETTAGLIO IMPORTI","TOTALE (Salvo conguagli, errori e omissioni)")) {
   with(between(@,"Spese per la materia energia","Spese per trasporto")) {
     spesa_materia_energia=search_num(@,/(\N)/);
-    step(captures_num(@,format(/Componente di Generazione fascia F1 .+ al \d\d\/$0 Euro\/kWh (\N) (\N)/, $mese))) {
-      prezzo_energia[0]=@;
-      energia_attiva[0]=@;
-    }
-    step(captures_num(@,format(/Componente di Generazione fascia F2 .+ al \d\d\/$0 Euro\/kWh (\N) (\N)/, $mese))) {
-      prezzo_energia[1]=@;
-      energia_attiva[1]=@;
-    }
-    step(captures_num(@,format(/Componente di Generazione fascia F3 .+ al \d\d\/$0 Euro\/kWh (\N) (\N)/, $mese))) {
-      prezzo_energia[2]=@;
-      energia_attiva[2]=@;
-    }
+    (prezzo_energia[0], energia_attiva[0])
+      = captures_num(@,format(/Componente di Generazione fascia F1 .+ al \d\d\/$0 Euro\/kWh (\N) (\N)/, $mese));
+    (prezzo_energia[1], energia_attiva[1])
+      = captures_num(@,format(/Componente di Generazione fascia F2 .+ al \d\d\/$0 Euro\/kWh (\N) (\N)/, $mese));
+    (prezzo_energia[2], energia_attiva[2])
+      = captures_num(@,format(/Componente di Generazione fascia F3 .+ al \d\d\/$0 Euro\/kWh (\N) (\N)/, $mese));
   }
   with(between(@,"Spese per trasporto","Spese per oneri")) {
     trasporto_gestione=search_num(@,/(\N)/);

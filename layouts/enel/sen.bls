@@ -147,21 +147,13 @@ ragione_sociale=totitle(search(@,/(.+)/));
 ### Rect 0.03711486845965273 0.038112792295081965 0.68683654 0.9167617
 ### Script
 with(between(@,/(?:Consumi rilevati|Dettaglio dei consumi)/,"INFORMAZIONI PER I CLIENTI")) {
-  $header=table_header(@,/F1/,/F2/,/F3/,/F1/,/F2/,/F3/,/F1 F2 F3/,/F1/,/F2/,/F3/);
-  step(nums(table_row(
-    search(@,format(/dal \d\d\.\d\d\.\d\d\d\d\n(.+) al \d\d\.$0/,
-      date_format(mese_fattura,"%m\\.%Y"))), $header))) {
-    energia_attiva_rilevata[0]=@;
-    energia_attiva_rilevata[1]=@;
-    energia_attiva_rilevata[2]=@;
-    energia_reattiva[0]=@;
-    energia_reattiva[1]=@;
-    energia_reattiva[2]=@;
-    ;
-    potenza[0]=@;
-    potenza[1]=@;
-    potenza[2]=@;
-  }
+  (
+    energia_attiva_rilevata[0], energia_attiva_rilevata[1], energia_attiva_rilevata[2],
+    energia_reattiva[0], energia_reattiva[1], energia_reattiva[2],
+    $skip,
+    potenza[0], potenza[1], potenza[2]
+  ) = nums(table_row(search(@,format(/dal \d\d\.\d\d\.\d\d\d\d\n(.+) al \d\d\.$0/, date_format(mese_fattura,"%m\\.%Y"))),
+      table_header(@,/F1/,/F2/,/F3/,/F1/,/F2/,/F3/,/F1 F2 F3/,/F1/,/F2/,/F3/)));
 }
 ### End Script
 ### End Box
@@ -179,18 +171,9 @@ with($dettaglio) {
     spesa_materia_energia+=sum(matches_num(matches(@,
       format(/dal \d\d\/\d\d\/\d\d\d\d al \d\d\/0([^]+?)(dal|Totale|$)/, $mese_abbr)),/(\N)(?:\n|$)/));
     with(search(@,format(/(In F1 dal \d\d\/\d\d\/\d\d\d\d al \d\d\/$0 [^]+?)(dal|Totale|$)/, $mese_abbr))) {   
-      step(captures_num(@,/F1.+\/kWh (\N) kWh (\N)/)) {
-        prezzo_energia[0]=@;
-        energia_attiva[0]=@;
-      }
-      step(captures_num(@,/F2.+\/kWh (\N) kWh (\N)/)) {
-        prezzo_energia[1]=@;
-        energia_attiva[1]=@;
-      }
-      step(captures_num(@,/F3.+\/kWh (\N) kWh (\N)/)) {
-        prezzo_energia[2]=@;
-        energia_attiva[2]=@;
-      }
+      (prezzo_energia[0], energia_attiva[0]) = captures_num(@,/F1.+\/kWh (\N) kWh (\N)/);
+      (prezzo_energia[1], energia_attiva[1]) = captures_num(@,/F2.+\/kWh (\N) kWh (\N)/);
+      (prezzo_energia[2], energia_attiva[2]) = captures_num(@,/F3.+\/kWh (\N) kWh (\N)/);
     }
   }
   with(between(@,"SPESA PER IL TRASPORTO","TOTALE SPESA PER IL TRASPORTO")) {
