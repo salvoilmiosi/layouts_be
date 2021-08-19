@@ -117,8 +117,8 @@ totale_fattura=search_num(@,/Totale bolletta\/contratto (\N)/);
 ### Script
 with($dettaglio) {
   with(between(@,conditional(contains(@,"Quadro di dettaglio"),"Quadro di dettaglio","Elementi di dettaglio"),"\n")) {
-    $mese_inizio=first_day(search_date(@,"%d.%m.%Y",/dal (\D) al \D/));
-    $mese_fine=first_day(search_date(@,"%d.%m.%Y",/dal \D al (\D)/));
+    $mese_inizio=search_month(@,"%d.%m.%Y",/dal (\D) al \D/);
+    $mese_fine=search_month(@,"%d.%m.%Y",/dal \D al (\D)/);
     if($mese_fine < $mese_inizio) {
       error("Heracomm: Periodo Non Valido", global ERRORE_PERIODO_INVALIDO);
     }

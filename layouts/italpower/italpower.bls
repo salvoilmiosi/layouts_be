@@ -90,8 +90,8 @@ function parse_periodo($str_periodo) {
       date(format("$0 $1", $items[1], $items[2]), "%b %Y"));
   } else if(ismatch($str_periodo,/\d+ \w+\. \d+\s*-\s*\d+ \w+ \d+/)) { # es. 01 dic. 2020-31 gen. 2021
     return list(
-      first_day(search_date($str_periodo,"%d %b. %Y",/(\D)\s*-\s*\D/)),
-      first_day(search_date($str_periodo,"%d %b. %Y",/\D\s*-\s*(\D)/)));
+      search_month($str_periodo,"%d %b. %Y",/(\D)\s*-\s*\D/),
+      search_month($str_periodo,"%d %b. %Y",/\D\s*-\s*(\D)/));
   } else if($str_periodo) {
     error("Italpower: Formato Periodo Non Valido", global ERRORE_PERIODO_INVALIDO);
   }

@@ -54,8 +54,8 @@ fornitore="Estra";
 ### Script
 numero_fattura=search(@,/Fattura N\u00b0 (\d+)/);
 data_fattura=search_date(@,"%d.%m.%Y",/del (\D)/);
-$mese_inizio=first_day(search_date(@,"%d.%m.%Y",/(\D) - \D/));
-$mese_fine=first_day(search_date(@,"%d.%m.%Y",/\D - (\D)/));
+$mese_inizio=search_month(@,"%d.%m.%Y",/(\D) - \D/);
+$mese_fine=search_month(@,"%d.%m.%Y",/\D - (\D)/);
 if($mese_fine < $mese_inizio) {
   error("Estra: Periodo Non Valido", global ERRORE_PERIODO_INVALIDO);
 }

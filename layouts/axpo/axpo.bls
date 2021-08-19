@@ -142,8 +142,8 @@ with($dettaglio) {
   codice_pod=search(@,/CODICE POD ([0-9A-Z]+)/);
   indirizzo_fornitura=totitle(singleline(search(@,/FORNIAMO ENERGIA IN\n([^]+?\d{5}.+)/)));
 
-  $mese_inizio=first_day(search_date(@,"%d.%m.%Y",/PERIODO (\D) - \D/));
-  $mese_fine=first_day(search_date(@,"%d.%m.%Y",/PERIODO \D - (\D)/));
+  $mese_inizio=search_month(@,"%d.%m.%Y",/PERIODO (\D) - \D/);
+  $mese_fine=search_month(@,"%d.%m.%Y",/PERIODO \D - (\D)/);
   if($mese_fine < $mese_inizio) {
     error("Axpo: Periodo Non Valido", global ERRORE_PERIODO_INVALIDO);
   }

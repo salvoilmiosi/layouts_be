@@ -48,7 +48,7 @@ data_fattura=search_date(@,"%d/%m/%Y",/del (\D)/);
 ### Script
 data_scadenza=search_date(@,"%d/%m/%Y",/Scadenza fattura: (\D)/);
 
-mese_fattura=first_day(search_date(@,"%d/%m/%Y",/\D - (\D)/));
+mese_fattura=search_month(@,"%d/%m/%Y",/\D - (\D)/);
 if(!mese_fattura) {
   error("EnerGrid: Mese Fattura Mancante", global ERRORE_PERIODO_INVALIDO);
 }

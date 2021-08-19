@@ -19,7 +19,7 @@ fornitore="Lenergia";
 numero_cliente=search(@,/Codice Cliente: (.+)\n/);
 numero_fattura=search(@,/fattura n\. (\N) /);
 data_fattura=search_date(@,"%d/%m/%Y",/fattura n\. \N del (\D)/);
-mese_fattura=first_day(search_date(@,"%d/%m/%Y",/Periodo \D - (\D)/));
+mese_fattura=search_month(@,"%d/%m/%Y",/Periodo \D - (\D)/);
 $mese=date_format(mese_fattura,"%m/%Y");
 ### End Script
 ### End Box
