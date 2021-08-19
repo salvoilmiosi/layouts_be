@@ -127,10 +127,10 @@ numero_cliente=search(@,/CODICE CLIENTE (.+)\n/);
 ### Script
 function calc_prezzo_energia(@, $expr) {
   foreach(matches(@,format(/al \d\d.$0 Euro\/kWh (\N \N \N)/, $expr))) {
-    step(captures_num(@,/(\N) (\N) (\N)/)) {
-      $tot_unitario=@;
-      $tot_kwh+=@;
-      $tot_prezzo+=@;
+    with(captures_num(@,/(\N) (\N) (\N)/)) {
+      $tot_unitario=@[0];
+      $tot_kwh+=@[1];
+      $tot_prezzo+=@[2];
     }
     $i++;
   }
@@ -207,10 +207,10 @@ with(between(@,"CONSUMI E LETTURE","Consumi fatturati negli ultimi 12 mesi")) {
   foreach(matches(@,/(.*Periodo \(dal - al\).+\n.+(?:\n.*\d{2}.\d{2}.\d{4}.+)+)/)) {
     $header=table_header(@,/Consumi fatturati kWh(?: Consumi fatturati kWh)?/,"Energia Reattiva");
     foreach(matches(@,format(/(.+ - \d\d\.$0.+)/, $mese))) {
-      step(table_row(@, $header)) {
+      with(table_row(@, $header)) {
         (energia_attiva_rilevata[0], energia_attiva_rilevata[1], energia_attiva_rilevata[2])
-          += captures_num(@,/(\N) (\N) (\N)/);
-        energia_reattiva += +@;
+          += captures_num(@[0],/(\N) (\N) (\N)/);
+        energia_reattiva += +@[1];
       }
     }
   }

@@ -8,10 +8,10 @@
 ### Script
 function calc_prezzo_energia(@, $expr) {
   foreach(matches(@,format(/Prezzo $0 euro\/kWh (\N \N \N)/, $expr))) {
-    step(captures_num(@,/(\N) (\N) (\N)/)) {
-      $tot_unitario=@;
-      $tot_kwh+=@;
-      $tot_prezzo+=@;
+    with(captures_num(@,/(\N) (\N) (\N)/)) {
+      $tot_unitario=@[0];
+      $tot_kwh+=@[1];
+      $tot_prezzo+=@[2];
     }
     $i++;
   }

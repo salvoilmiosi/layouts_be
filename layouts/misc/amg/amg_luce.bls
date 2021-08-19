@@ -104,9 +104,10 @@ potenza[0:3]=search_num(@,/Potenza Disponibile (\N) kW/);
 ### Rect 0.020737327188940113 0.3651181744091279 0.46889400921658986 0.030154849225753844
 ### Script
 if(ismatch(@,/\w+\. - \w+\. \d{4}/)) {
-  $items = captures_num(@,/(\w+)\. - (\w+)\. (\d{4})/);
-  $mese_inizio=date(format("$0 $1", $items[0], $items[2]), "%b %Y");
-  $mese_fine=date(format("$0 $1", $items[1], $items[2]), "%b %Y");
+  with(captures_num(@,/(\w+)\. - (\w+)\. (\d{4})/)) {
+    $mese_inizio=date(format("$0 $1", @[0], @[2]), "%b %Y");
+    $mese_fine=date(format("$0 $1", @[1], @[2]), "%b %Y");
+  }
   mese_fattura=month_add($mese_inizio, $calc_mese);
 } else {
   error("AMG: Formato Periodo Errato", global ERRORE_PERIODO_INVALIDO);
@@ -172,9 +173,9 @@ with($dettaglio) {
     }
     foreach(matches(@,format(/Comp\. PED F123 ($0 \N \u20ac\/kWh \N) kWh/, $regex_periodo))) {
       if(check_periodo()) {
-        step(captures_num(@,/(\N) \u20ac\/kWh (\N)/)) {
-          prezzo_energia = @;
-          energia_attiva += @;
+        with(captures_num(@,/(\N) \u20ac\/kWh (\N)/)) {
+          prezzo_energia = @[0];
+          energia_attiva += @[1];
         }
       }
     }
