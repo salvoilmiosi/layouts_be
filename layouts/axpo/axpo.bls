@@ -159,11 +159,11 @@ with($dettaglio) {
     pcv=sum(matches_num(search(@,/Prezzo Commercializzazione Vendita\n((dal.+\n)+)/),
       format(/al \d\d\.$0 euro\/\w+ \N \N (\N)/, $mese)));
     with(search(@,/Prezzo (?:Energia|Indicizzato)\n((dal.+\n)+)/)) {
-      (prezzo_energia[0], energia_attiva[0]) = calc_prezzo_energia(format(/$0 (?:F1|PEAK)/, $mese));
-      (prezzo_energia[1], energia_attiva[1]) = calc_prezzo_energia(format(/$0 (?:F2|OFFPEAK)/, $mese));
-      (prezzo_energia[2], energia_attiva[2]) = calc_prezzo_energia(format(/$0 F3/, $mese));
+      (prezzo_energia[0], energia_attiva[0]) = calc_prezzo_energia(@, format(/$0 (?:F1|PEAK)/, $mese));
+      (prezzo_energia[1], energia_attiva[1]) = calc_prezzo_energia(@, format(/$0 (?:F2|OFFPEAK)/, $mese));
+      (prezzo_energia[2], energia_attiva[2]) = calc_prezzo_energia(@, format(/$0 F3/, $mese));
 
-      (prezzo_energia, energia_attiva) = calc_prezzo_energia($mese);
+      (prezzo_energia, energia_attiva) = calc_prezzo_energia(@, $mese);
     }
   }
   with(between(@,"SCONTI","Subtotale")) {

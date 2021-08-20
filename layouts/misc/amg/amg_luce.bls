@@ -146,17 +146,17 @@ function check_periodo(@) {
 }
 function calc_parziale(@) {
   foreach(matches(@,format(/($0 \N \u20ac\/cliente\/giorni \N giorni \N)/, $regex_periodo))) {
-    if(check_periodo()) {
+    if(check_periodo(@)) {
       $ret+=search_num(@,/(\N)$/);
     }
   }
   foreach(matches(@,format(/($0 \N) \u20ac\/cliente\/mese/, $regex_periodo))) {
-    if(check_periodo()) {
+    if(check_periodo(@)) {
       $ret+=search_num(@,/(\N)$/);
     }
   }
   foreach(matches(@,format(/($0 \N \u20ac\/kWh \N kWh \N)/, $regex_periodo))) {
-    if(check_periodo()) {
+    if(check_periodo(@)) {
       $ret+=search_num(@,/(\N)$/);
     }
   }
@@ -166,42 +166,42 @@ $regex_periodo=/\d\d\/\d\d\/\d\d\d\d - \d\d\/\d\d\/\d\d\d\d/;
 with($dettaglio) {
   with(between(@,"Spesa per la Materia Prima Energia","Spesa per il trasporto")) {
     foreach(matches(@,format(/Comp\. PCV ($0 \N) \u20ac\/cliente\/mese/, $regex_periodo))) {
-      if(check_periodo()) {
+      if(check_periodo(@)) {
         pcv=search_num(@,/(\N)$/);
         break;
       }
     }
     foreach(matches(@,format(/Comp\. PED F123 ($0 \N \u20ac\/kWh \N) kWh/, $regex_periodo))) {
-      if(check_periodo()) {
+      if(check_periodo(@)) {
         with(captures_num(@,/(\N) \u20ac\/kWh (\N)/)) {
           prezzo_energia = @[0];
           energia_attiva += @[1];
         }
       }
     }
-    spesa_materia_energia+=calc_parziale();
+    spesa_materia_energia+=calc_parziale(@);
   }
   with(between(@,"Spesa per il trasporto","Spesa per Oneri")) {
     foreach(matches(@,format(/($0 \N \u20ac\/kW\/mese \N kW)/, $regex_periodo))) {
-      if(check_periodo()) {
+      if(check_periodo(@)) {
         potenza[0:3]=search_num(@,/(\N) kW/);
         trasporto_gestione+=trunc(search_num(@,/(\N) \u20ac\/kW\/mese/) * potenza,2);
       }
     }
     foreach(matches(@,format(/($0 \N \u20ac\/kW\/giorni \N kW\/giorni \N)/, $regex_periodo))) {
-      if(check_periodo()) {
+      if(check_periodo(@)) {
         potenza[0:3]=search_num(@,/(\N) kW/);
         trasporto_gestione=search_num(@,/(\N)$/);
       }
     }
-    trasporto_gestione+=calc_parziale();
+    trasporto_gestione+=calc_parziale(@);
   }
   with(between(@,"Spesa per Oneri","Imposte")) {
-    oneri=calc_parziale();
+    oneri=calc_parziale(@);
   }
   with(between(@,"Imposte","ALTRI IMPORTI")) {
     foreach(matches(@,format(/Imposta Erariale ($0 \N \u20ac\/kWh \N kWh \N)/, $regex_periodo))) {
-      if(check_periodo()) {
+      if(check_periodo(@)) {
         accise=search_num(@,/(\N)$/);
       }
     }
