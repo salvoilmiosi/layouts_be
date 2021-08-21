@@ -114,8 +114,8 @@ data_scadenza=search_date(@,"%d.%m.%Y",/entro il (\D)/);
 p+$off_allegato;
 ### End Spacers
 ### Script
-numero_fattura=search(@,/N\. fattura (\N)/);
-data_fattura=search_date(@,"%d.%m.%Y",/N\. fattura \N del (\D)/);
+numero_fattura=search(@,/N\. fattura (\d+)/);
+data_fattura=search_date(@,"%d.%m.%Y",/N\. fattura \d+ del (\D)/);
 numero_cliente=search(@,/CODICE CLIENTE (.+)\n/);
 ### End Script
 ### End Box
@@ -126,7 +126,7 @@ numero_cliente=search(@,/CODICE CLIENTE (.+)\n/);
 ### Rect 0.21504012 0.053452756 0.04193318 0.029393759
 ### Script
 function calc_prezzo_energia(@, $expr) {
-  foreach(matches(@,format(/al \d\d.$0 Euro\/kWh (\N \N \N)/, $expr))) {
+  foreach(matches(@,format(/al \d\d.$0 Euro\/kWh ($1 $1 $1)/, $expr, number_regex()))) {
     with(captures_num(@,/(\N) (\N) (\N)/)) {
       $tot_unitario=@[0];
       $tot_kwh+=@[1];
@@ -139,7 +139,7 @@ function calc_prezzo_energia(@, $expr) {
 }
 
 with($dettaglio) {
-  codice_pod=search(@,/CODICE POD ([0-9A-Z]+)/);
+  codice_pod=search(@,/CODICE POD (\w+)/);
   indirizzo_fornitura=totitle(singleline(search(@,/FORNIAMO ENERGIA IN\n([^]+?\d{5}.+)/)));
 
   $mese_inizio=search_month(@,"%d.%m.%Y",/PERIODO (\D) - \D/);

@@ -27,7 +27,7 @@ fornitore="Edison";
 ### Page 1
 ### Rect 0.33843675 0.02457326 0.31240317 0.018429944
 ### Script
-numero_fattura=search(@,/Fattura N\u00b0 (\N)/);
+numero_fattura=search(@,/Fattura N\u00b0 (\d+)/);
 data_fattura=search_date(@,"%d %B %Y");
 ### End Script
 ### End Box
@@ -45,7 +45,7 @@ ragione_sociale=totitle(search(@,/Spettabile\n(.+)/));
 ### Rect 0.33843675 0.10610382 0.29814664 0.10952653
 ### Script
 indirizzo_fornitura=totitle(singleline(search(@,/Punto di fornitura\n(.+\n.+)/)));
-potenza[0:3]=search(@,/Potenza impegnata: (\N) kW/);
+potenza[0:3]=search_num(@,/Potenza impegnata: (\N) kW/);
 ### End Script
 ### End Box
 
@@ -106,7 +106,7 @@ with(replace(@,"\u2212","-")) {
   (prezzo_energia[2], energia_attiva[2])
     = captures_num(@,format(/Componente energia - F3 .+ al \d\d\/$0 \u20ac\/kWh (\N) (\N) kWh/, $mese));
   potenza[0:3]=search_num(@,format(/Quota potenza .+ al \d\d\/$0 \u20ac\/kW\/mese \N (\N) kW/, $mese));
-  iva=search(@,/IVA (\N%)/);
+  iva=search(@,/IVA (\d+%)/);
   with(between(@,"Spesa per l'energia","Spesa per il trasporto")) {
     spesa_materia_energia=sum(matches_num(@,format(/Dal .+ al \d\d\/$0.+ (\N) \u20ac/, $mese)));
   }

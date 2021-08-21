@@ -128,11 +128,11 @@ with($dettaglio) {
 ### Page 1
 ### Rect 0.5064516 0.53105414 0.45645162 0.18005697
 ### Script
-foreach(matches(@,/(IVA \N% su imponibile di \u20ac \N)/)) {
+foreach(matches(@,/(IVA \d+% su imponibile di \u20ac .+)/)) {
   $imp=search_num(@,/imponibile di \u20ac (\N)/);
   if($imp > coalesce(imponibile,0)) {
     imponibile = $imp;
-    iva=search(@,/IVA (\d\d%)/);
+    iva=search(@,/IVA (\d+%)/);
   }
 }
 ### End Script

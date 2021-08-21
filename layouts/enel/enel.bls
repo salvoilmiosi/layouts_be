@@ -101,7 +101,7 @@ codice_pod=search(@,/CODICE POD (\w+)/);
 ### Page 1
 ### Rect 0.27857563 0.38391757 0.21629238 0.030719101
 ### Script
-numero_fattura=search(@,/N\. Fattura (\N)/);
+numero_fattura=search(@,/N\. Fattura (\d+)/);
 data_fattura=search_date(@,"%d/%m/%Y",/Del (\D)/);
 ### End Script
 ### End Box
@@ -136,7 +136,7 @@ mese_fattura=month_add($mese_inizio, $calc_mese);
 ### Rect 0.043979228 0.67284954 0.6890491 0.16947563
 ### Script
 cts=search_num(@,/CORRISPETTIVO TARIFFARIO SPECIFICO.+ (\N)/);
-iva=search(@,/IVA.* (\N%)/);
+iva=search(@,/IVA.* (\d+%)/);
 ### End Script
 ### End Box
 
@@ -208,7 +208,7 @@ with($dettaglio) {
     }
   }
   with(between(@,"SPESA ONERI DI SISTEMA", "Totale spesa oneri di sistema")) {
-    foreach(matches(@,format(/al 0([^]+?)(dal|Totale|$)/, $fine_periodo))) {
+    foreach(matches(@,format(/al $0([^]+?)(dal|Totale|$)/, $fine_periodo))) {
       oneri+=search_num(@,/mesi.?1 (\N)/);
       oneri+=search_num(@,/\/kWh \N \N (\N)/);
     }

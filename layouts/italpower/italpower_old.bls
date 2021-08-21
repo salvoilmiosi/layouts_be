@@ -50,7 +50,7 @@ p+$off_allegato;
 ### End Spacers
 ### Script
 totale_fattura=search_num(@,/Totale Fattura \u20ac (\N)/);
-iva=search(@,/IVA (\N%)/);
+iva=search(@,/IVA (\d+%)/);
 ### End Script
 ### End Box
 

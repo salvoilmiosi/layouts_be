@@ -7,7 +7,7 @@
 ### Rect 0 0 0 0
 ### Script
 function calc_prezzo_energia(@, $expr) {
-  foreach(matches(@,format(/Prezzo $0 euro\/kWh (\N \N \N)/, $expr))) {
+  foreach(matches(@,format(/Prezzo $0 euro\/kWh ($1 $1 $1)/, $expr, number_regex()))) {
     with(captures_num(@,/(\N) (\N) (\N)/)) {
       $tot_unitario=@[0];
       $tot_kwh+=@[1];
@@ -32,7 +32,7 @@ with(global dettaglio) {
   }
   
   cts=sum(matches_num(@,/Corrispettivo Tariffario Specifico dal \d\d\/\d\d\/\d\d\d\d al \d\d\/\d\d\/\d\d\d\d (\N)/));
-  iva=search(@,/Iva (\N%)/);
+  iva=search(@,/Iva (\d+%)/);
 
   with(rbetween(@,date_format(mese_fattura,"%B %Y"),/FORNITURA DI .+\n/)) {
     pcv=search_num(@,/PCV euro\/cliente\/mese \N \N (\N)/);

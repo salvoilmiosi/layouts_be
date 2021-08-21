@@ -120,7 +120,7 @@ $mese=date_format(mese_fattura,"%m/%y");
 ### Rect 0.05043084 0.6717093 0.6890491 0.29750395
 ### Script
 cts=search_num(@,/CORRISPETTIVO TARIFFARIO SPECIFICO.+ (\N)/);
-iva=search(@,/IVA.* (\N%)/);
+iva=search(@,/IVA.* (\d+%)/);
 ### End Script
 ### End Box
 
@@ -190,7 +190,7 @@ with($dettaglio) {
     }
   }
   with(between(@,"IMPOSTE ED IVA","TOTALE IMPOSTE ED IVA")) {
-    iva=search(@,/IVA (\N%)/);
+    iva=search(@,/IVA (\d+%)/);
     accise=search_num(search(@,/ACCISA SULL'ENERGIA ELETTRICA\n((dal.+\n)+)/),
       format(/al \d\d\/$0.+ (\N)/, $mese_abbr));
   }

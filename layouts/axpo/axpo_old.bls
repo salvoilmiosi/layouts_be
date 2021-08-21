@@ -26,7 +26,7 @@ fornitore="Axpo";
 ### Page 1
 ### Rect 0.03548387 0.18015963 0.47258064 0.033067275
 ### Script
-numero_fattura=search(@,/Fattura N\u00b0 (\N)/);
+numero_fattura=search(@,/Fattura N\u00b0 (\d+)/);
 data_fattura=search_date(@,"%d.%m.%Y",/del (\D)/);
 ### End Script
 ### End Box
@@ -60,7 +60,7 @@ totale_fattura = +@;
 ### Page 1
 ### Rect 0.021505376 0.10642341 0.49462366 0.06176359
 ### Script
-numero_cliente=search(@,/Codice Cliente: (\N)/);
+numero_cliente=search(@,/Codice Cliente: (\d+)/);
 ragione_sociale=totitle(search(@,/.+\n(.+)\n/));
 partita_iva=search(@,/Part\.IVA (.+)\n/);
 ### End Script
@@ -86,7 +86,7 @@ if(contains(@,"Dati di fornitura")) {
 ### Page 1
 ### Rect 0.06617039400000002 0.3263163991448119 0.42907363 0.2335468
 ### Script
-iva=search(@,/IVA (\N%)/);
+iva=search(@,/IVA (\d+%)/);
 if(!$spacer_multipod) {
   spesa_materia_energia=search_num(@,/(?:Corrispettivi energia|Spese per l'energia) (\N) \u20ac/);
   trasporto_gestione=search_num(@,/(?:Trasporto|Spesa per trasporto, gestione contatore e oneri di sistema) (\N) \u20ac/);

@@ -98,7 +98,7 @@ with(between(@,"RIEPILOGO CONSUMI PRIMO ADDEBITO","TOTALE (Salvo conguagli, erro
 }
 with(between(@,"DETTAGLIO IMPOSTE","TOTALE (Salvo conguagli, errori e omissioni)")) {
   accise=search_num(@,format(/Imposta erariale.+ al \d\d\/$0 Euro\/kWh \N \N (\N)/, $mese));
-  iva=percent(search(@,/(\N) %/));
+  iva=percent(search(@,/(\d+) %/));
 }
 ### End Script
 ### End Box
