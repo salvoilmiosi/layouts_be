@@ -46,7 +46,7 @@ ragione_sociale=totitle(search(@,/(.+)/));
 ### Script
 codice_pod=search(@,/POD \(Punto di prelievo\): (.+)/);
 indirizzo_fornitura=totitle(singleline(search(@,/Indirizzo di fornitura:\n([^]+?\d{5}.+)/)));
-potenza[0:3]=search_num(@,/(\N) kW di potenza impegnata/);
+potenza=repeated(search_num(@,/(\N) kW di potenza impegnata/), 3);
 ### End Script
 ### End Box
 
@@ -104,7 +104,7 @@ with(rbetween(@,date_format(mese_fattura,"%B %Y"),/FORNITURA DI .+/)) {
   (prezzo_energia[1], energia_attiva[1]) = captures_num(@,/Prezzo F2 euro\/kWh (\N) (\N)/);
   (prezzo_energia[2], energia_attiva[2]) = captures_num(@,/Prezzo F3 euro\/kWh (\N) (\N)/);
   trasporto_gestione=search_num(@,/SERVIZI DI RETE (\N)/);
-  potenza[0:3]=search_num(@,/Quota Potenza euro\/kW\/mese \N (\N)/);
+  potenza=repeated(search_num(@,/Quota Potenza euro\/kW\/mese \N (\N)/), 3);
   accise=search_num(@,/Imposta erariale \(fino a .+ kWh\) euro\/kWh \N \N (\N)/);
   imponibile=search_num(@,/(\N)$/);
 }

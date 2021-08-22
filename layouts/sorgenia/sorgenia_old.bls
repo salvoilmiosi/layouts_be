@@ -146,7 +146,7 @@ totale_fattura=search_num(@,/(\N) \u20ac/);
 p+$off_allegati;
 ### End Spacers
 ### Script
-potenza[0:3]=search_num(@,/Potenza impegnata: (\N)/);
+potenza=repeated(search_num(@,/Potenza impegnata: (\N)/), 3);
 ### End Script
 ### End Box
 

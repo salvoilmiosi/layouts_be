@@ -76,7 +76,7 @@ fornitore="Enel Energia";
 ### Rect 0.04623656 0.1717978 0.41827956 0.16039528
 ### Script
 indirizzo_fornitura=totitle(singleline(search(@,/Forniamo energia in ([^]+?\d{5}.+)\n/)));
-potenza[0:3]=search_num(@,/(?:Potenza contrattualmente impegnata|Livello massimo di potenza) (\N)/);
+potenza=repeated(search_num(@,/(?:Potenza contrattualmente impegnata|Livello massimo di potenza) (\N)/), 3);
 ### End Script
 ### End Box
 
@@ -196,7 +196,7 @@ with($dettaglio) {
       trasporto_gestione+=sum(matches_num(@,/mesi.?1 (\N)/));
       trasporto_gestione+=sum(matches_num(@,/\/kWh \N \N (\N)/));
       trasporto_gestione+=sum(matches_num(@,/\/kVarh \N \N (\N)/));
-      potenza[0:3]=search_num(@,/kW (\N)/);
+      potenza=repeated(search_num(@,/kW (\N)/), 3);
     }
     with(between(@,"Quota energia")) {
       with(str(matches(@, $regex_periodo))) {

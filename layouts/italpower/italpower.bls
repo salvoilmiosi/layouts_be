@@ -136,7 +136,7 @@ p+$next_page;
 ### End Spacers
 ### Script
 codice_pod=search(@,/NUMERO POD: (\w+)/);
-potenza[0:3]=search_num(@,/Potenza impegnata: (\N) kW/);
+potenza=repeated(search_num(@,/Potenza impegnata: (\N) kW/), 3);
 ### End Script
 ### End Box
 
@@ -249,7 +249,7 @@ with($dettaglio) {
       }
     }
     trasporto_gestione+=calc_totale_parziale(@);
-    potenza[0:3]=search_num(@,format(/Quota Potenza - trasporto - Periodo $0 Euro\/kW\/mese \N (\N)/, regex_periodo()));
+    potenza=repeated(search_num(@,format(/Quota Potenza - trasporto - Periodo $0 Euro\/kW\/mese \N (\N)/, regex_periodo())), 3);
 
     penale_reattiva_inf75=calc_penale_reattiva(@, 0.33, 0.75, "Tra il 33 % ed il 75 %");
     penale_reattiva_sup75=calc_penale_reattiva(@, 0.75, 1, "Oltre il 75 %");

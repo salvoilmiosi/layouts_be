@@ -124,7 +124,7 @@ p+$off_allegati;
 with(captures_num(@,format(/\d\d\/$0 \d\d\/$0 Consumi \w+ \N (\N) (\N) (\N) \N (\N) (\N) (\N) (\N)/,date_format(mese_fattura,"%m/%Y")))) {
   energia_attiva_rilevata = range(@,0,3);
   energia_reattiva = range(@,3,3);
-  potenza[0:3] = @[6];
+  potenza = repeated(@[6],3);
 }
 ### End Script
 ### End Box

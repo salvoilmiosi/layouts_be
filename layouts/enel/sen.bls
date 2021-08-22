@@ -76,7 +76,7 @@ fornitore=coalesce(global fornitore,"SEN");
 ### Rect 0.052688174 0.1687363 0.45327735 0.17021497
 ### Script
 indirizzo_fornitura=totitle(singleline(search(@,/Forniamo energia in ([^]+?\d{5}.+)\n/)));
-potenza[0:3]=search_num(@,/(?:Potenza contrattualmente impegnata|Livello massimo di potenza) (\N)/);
+potenza=repeated(search_num(@,/(?:Potenza contrattualmente impegnata|Livello massimo di potenza) (\N)/), 3);
 ### End Script
 ### End Box
 
@@ -180,7 +180,7 @@ with($dettaglio) {
     with(str(matches(@,format(/dal \d\d\/\d\d\/\d\d\d\d al \d\d\/0([^]+?)(dal|Totale|$)/, $mese_abbr)))) {
       trasporto_gestione+=sum(matches_num(@,/(\N)(?:\n|$)/));
     }
-    potenza[0:3]=search_num(@,format(/QUOTA POTENZA\n$0.+ kW (\N) mesi \N/, $mese_full));
+    potenza=repeated(search_num(@,format(/QUOTA POTENZA\n$0.+ kW (\N) mesi \N/, $mese_full)), 3);
   }
   with(between(@,"SPESA PER ONERI DI SISTEMA","TOTALE SPESA PER ONERI")) {
     oneri=sum(matches_num(@,format(/$0[^]+?mesi \N (\N)/, $mese_full)));

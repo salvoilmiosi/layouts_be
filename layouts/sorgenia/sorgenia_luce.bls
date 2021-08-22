@@ -103,7 +103,7 @@ totale_fattura = +@;
 ### Page 2
 ### Rect 0.6946011 0.085518815 0.26752618 0.05359179
 ### Script
-potenza[0:3]=search_num(@,/Potenza impegnata: (\N)/);
+potenza=repeated(search_num(@,/Potenza impegnata: (\N)/), 3);
 ### End Script
 ### End Box
 

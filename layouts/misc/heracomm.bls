@@ -92,7 +92,7 @@ data_scadenza=search_date(@,"%d.%m.%Y",/Scadenza (\D)/);
 ragione_sociale=totitle(search(@,/Intestata a (.+)/));
 numero_cliente=search(@,/Codice cliente (\d+)/);
 indirizzo_fornitura=totitle(singleline(search(@,/Servizio fornito in ([^]+?)\.+/)));
-potenza[0:3]=search_num(@,/Potenza disponibile: (\N) kW/);
+potenza=repeated(search_num(@,/Potenza disponibile: (\N) kW/), 3);
 codice_pod=search(@,/POD \(Punto di prelievo\): (\w+)/);
 ### End Script
 ### End Box

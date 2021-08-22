@@ -77,7 +77,7 @@ p+$off_pod;
 ### Script
 indirizzo_fornitura=totitle(singleline(search(@,/Indirizzo di fornitura: ([^]+?\d{5}.+)\n/)));
 codice_pod=search(@,/POD(?: \(punto di prelievo\)|:) (\w+)/);
-potenza[0:3]=search_num(@,/Potenza contrattuale: (\N) kW/);
+potenza=repeated(search_num(@,/Potenza contrattuale: (\N) kW/), 3);
 ### End Script
 ### End Box
 

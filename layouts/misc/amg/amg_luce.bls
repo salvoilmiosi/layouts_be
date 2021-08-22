@@ -94,7 +94,7 @@ indirizzo_fornitura=totitle(singleline(search(@,/Indirizzo Fornitura ([^]+\d{5}.
 ### Page 1
 ### Rect 0.5125 0.721285140562249 0.4602272727272728 0.21124497991967872
 ### Script
-potenza[0:3]=search_num(@,/Potenza Disponibile (\N) kW/);
+potenza=repeated(search_num(@,/Potenza Disponibile (\N) kW/), 3);
 ### End Script
 ### End Box
 
@@ -183,13 +183,13 @@ with($dettaglio) {
   with(between(@,"Spesa per il trasporto","Spesa per Oneri")) {
     foreach(matches(@,format(/($0 .+ \u20ac\/kW\/mese .+ kW)/, $regex_periodo))) {
       if(check_periodo(@)) {
-        potenza[0:3]=search_num(@,/(\N) kW/);
+        potenza=repeated(search_num(@,/(\N) kW/), 3);
         trasporto_gestione+=trunc(search_num(@,/(\N) \u20ac\/kW\/mese/) * potenza,2);
       }
     }
     foreach(matches(@,format(/($0 .+ \u20ac\/kW\/giorni .+ kW\/giorni .+)/, $regex_periodo))) {
       if(check_periodo(@)) {
-        potenza[0:3]=search_num(@,/(\N) kW/);
+        potenza=repeated(search_num(@,/(\N) kW/), 3);
         trasporto_gestione+=search_num(@,/giorni (\N)/);
       }
     }

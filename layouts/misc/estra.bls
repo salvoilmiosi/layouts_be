@@ -87,7 +87,7 @@ data_scadenza=search_date(@,"%d.%m.%Y",/entro il (\D)/);
 ### Rect 0.045161292 0.11516534 0.45806453 0.15507412
 ### Script
 codice_pod=search(@,/POD \(Punto di prelievo\) (\w+)/);
-potenza[0:3]=search_num(@,/Potenza impegnata (\N) kW/);
+potenza=repeated(search_num(@,/Potenza impegnata (\N) kW/), 3);
 indirizzo_fornitura=totitle(singleline(search(@,/Indirizzo di fornitura ([^]+?\d{5}.+)/)));
 ### End Script
 ### End Box
@@ -121,7 +121,7 @@ with($dettaglio) {
   }
   with(between(@,"TOTALE TRASPORTO E GESTIONE CONTATORE","TOTALE ONERI DI SISTEMA")) {
     trasporto_gestione=sum(matches_num(@,format(/$0 .+ (\N) \N/, $periodo)));
-    potenza[0:3]=search_num(@,format(/Quota potenza $0 \u20ac\/kW \N (\N)/, $periodo));
+    potenza=repeated(search_num(@,format(/Quota potenza $0 \u20ac\/kW \N (\N)/, $periodo)), 3);
   }
   with(between(@,"TOTALE ONERI DI SISTEMA","TOTALE ALTRE IMPOSTE")) {
     oneri=sum(matches_num(@,format(/$0 .+ (\N) \N/, $periodo)));

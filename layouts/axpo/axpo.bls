@@ -172,7 +172,7 @@ with($dettaglio) {
   with(between(@,"SPESA PER IL TRASPORTO","Subtotale")) {
     trasporto_gestione=sum(matches_num(@,format(/dal \d\d\.\d\d\.\d\d\d\d al \d\d\.$0.+ (\N) \d+%/, $mese)));
     with(between(@,"QUOTA POTENZA","QUOTA ENERGIA")) {
-      potenza[0:3]=sum(matches_num(@,format(/al \d\d\.$0 Euro\/kW \N (\N)/, $mese)));
+      potenza=repeated(sum(matches_num(@,format(/al \d\d\.$0 Euro\/kW \N (\N)/, $mese))), 3);
     }
 
     penale_reattiva_inf75=sum(matches_num(search(@,/Energia Reattiva entro 75%\n((dal.+\n)+)/),

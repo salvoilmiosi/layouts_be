@@ -107,8 +107,8 @@ with($dettaglio) {
     = captures_num(search(@,/Energia in Off-Peak\n((Dal.+\n)+)/), format(/al \d\d\/$0 \u20ac\/kWh (\N) (\N)/, $mese));
 
   trasporto_gestione=search_num(@,/TOTALE SERVIZI DI RETE (\N)/);
-  potenza[0:3]=search_num(search(@,/Quota Potenza\n((Dal.+\n)+)/),
-    format(/al \d\d\/$0 \u20ac\/kW \N (\N)/, $mese));
+  potenza=repeated(search_num(search(@,/Quota Potenza\n((Dal.+\n)+)/),
+    format(/al \d\d\/$0 \u20ac\/kW \N (\N)/, $mese)), 3);
   foreach(matches(@,/Energia Reattiva F[1-3] 75%-100%\n((Dal.+\n)+)/)) {
     penale_reattiva_inf75+=search_num(@,format(/al \d\d\/$0 \u20ac\/kVARh \N \N (\N)/, $mese));
   }

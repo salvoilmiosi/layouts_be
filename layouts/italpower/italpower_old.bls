@@ -132,7 +132,7 @@ penale_reattiva_inf75=search_num(@,/reattiva entro 75% .+ Euro \N (\N)/);
 penale_reattiva_sup75=search_num(@,/reattiva oltre 75% .+ Euro \N (\N)/);
 imponibile=search_num(@,/Totale periodo (\N)/);
 pcv=search_num(@,/PCV .+Euro (\N)/);
-potenza[0:3]=search_num(@,/Trasporto Quota Potenza \u20ac\/kW (\N)/);
+potenza=repeated(search_num(@,/Trasporto Quota Potenza \u20ac\/kW (\N)/), 3);
 ### End Script
 ### End Box
 
