@@ -151,11 +151,11 @@ p+$off_allegati;
 ### Script
 $mese=date_format(mese_fattura,"%m/%Y");
 with(search(@,/Componente di Generazione.+\n((Dal.+\n)+)/)) {
-  (prezzo_energia[0], energia_attiva[0])
+  tie(prezzo_energia[0], energia_attiva[0])
     = captures_num(@,format(/F1 .+\d\d\/$0 \u20ac\/kWh (\N) (\N) kWh/, $mese));
-  (prezzo_energia[1], energia_attiva[1])
+  tie(prezzo_energia[1], energia_attiva[1])
    = captures_num(@,format(/F2 .+\d\d\/$0 \u20ac\/kWh (\N) (\N) kWh/, $mese));
-  (prezzo_energia[2], energia_attiva[2])
+  tie(prezzo_energia[2], energia_attiva[2])
    = captures_num(@,format(/F3 .+\d\d\/$0 \u20ac\/kWh (\N) (\N) kWh/, $mese));
 }
 pcv=search_num(search(@,/Prezzo commercializzazione vendita.+\n((Dal.+\n)+)/),

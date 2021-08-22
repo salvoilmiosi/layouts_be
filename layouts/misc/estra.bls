@@ -111,11 +111,11 @@ with($dettaglio) {
   with(between(@,"TOTALE MATERIA ENERGIA","TOTALE TRASPORTO E GESTIONE CONTATORE")) {
     spesa_materia_energia=sum(matches_num(@,format(/$0 .+ (\N) \N/, $periodo)));
     pcv=search_num(@,format(/Commercializzazione vendita $0 \u20ac\/POD\/mese \N \N (\N)/, $periodo));
-    (prezzo_energia[0], energia_attiva[0])
+    tie(prezzo_energia[0], energia_attiva[0])
       = captures_num(@,format(/Energia F1 $0 \u20ac\/kWh (\N) (\N)/, $periodo));
-    (prezzo_energia[1], energia_attiva[1])
+    tie(prezzo_energia[1], energia_attiva[1])
       = captures_num(@,format(/Energia F2 $0 \u20ac\/kWh (\N) (\N)/, $periodo));
-    (prezzo_energia[2], energia_attiva[2])
+    tie(prezzo_energia[2], energia_attiva[2])
       = captures_num(@,format(/Energia F3 $0 \u20ac\/kWh (\N) (\N)/, $periodo));
     sbilanciamento=search_num(@,format(/Sbilanciamento $0 \u20ac\/kWh (\N)/, $periodo));
   }

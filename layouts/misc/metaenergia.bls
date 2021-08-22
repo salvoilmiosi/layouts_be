@@ -101,9 +101,9 @@ with($dettaglio) {
 
   spesa_materia_energia=search_num(@,/TOTALE SERVIZI DI VENDITA (\N)/);
 
-  (prezzo_energia[0], energia_attiva[0])
+  tie(prezzo_energia[0], energia_attiva[0])
     = captures_num(search(@,/Energia in Peak\n((Dal.+\n)+)/), format(/al \d\d\/$0 \u20ac\/kWh (\N) (\N)/, $mese));
-  (prezzo_energia[1], energia_attiva[1])
+  tie(prezzo_energia[1], energia_attiva[1])
     = captures_num(search(@,/Energia in Off-Peak\n((Dal.+\n)+)/), format(/al \d\d\/$0 \u20ac\/kWh (\N) (\N)/, $mese));
 
   trasporto_gestione=search_num(@,/TOTALE SERVIZI DI RETE (\N)/);

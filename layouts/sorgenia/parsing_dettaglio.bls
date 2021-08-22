@@ -35,11 +35,11 @@ with(global dettaglio) {
     spesa_materia_energia=search_num(@,/DETTAGLIO DELLA SPESA PER (?:L\u2019ENERGIA ELETTRICA|LA MATERIA ENERGIA)[^]+?(\N) DETTAGLIO/);
     trasporto_gestione=search_num(@,/DETTAGLIO DELLA SPESA PER (?:IL TRASPORTO, GESTIONE DEL CONTATORE|TRASPORTO ENERGIA, GESTIONE CONTATORE) E ONERI DI SISTEMA[^]+?(\N) IMPOSTE/);
 
-    (prezzo_energia[0], energia_attiva[0]) = calc_prezzo_energia(@, /(?:F1|Picco|Ore Giorno)/);
-    (prezzo_energia[1], energia_attiva[1]) = calc_prezzo_energia(@, /(?:F2|Fuori Picco|Ore Notte)/);
-    (prezzo_energia[2], energia_attiva[2]) = calc_prezzo_energia(@, /F3/);
+    tie(prezzo_energia[0], energia_attiva[0]) = calc_prezzo_energia(@, /(?:F1|Picco|Ore Giorno)/);
+    tie(prezzo_energia[1], energia_attiva[1]) = calc_prezzo_energia(@, /(?:F2|Fuori Picco|Ore Notte)/);
+    tie(prezzo_energia[2], energia_attiva[2]) = calc_prezzo_energia(@, /F3/);
     
-    (prezzo_energia, energia_attiva) = calc_prezzo_energia(@, /(?:energia(?: monorario)?|Luce)/);
+    tie(prezzo_energia, energia_attiva) = calc_prezzo_energia(@, /(?:energia(?: monorario)?|Luce)/);
 
     sbilanciamento=search_num(@,/Incremento prezzo euro\/kWh (\N)/);
 

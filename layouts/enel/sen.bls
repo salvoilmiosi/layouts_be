@@ -170,9 +170,9 @@ with($dettaglio) {
     spesa_materia_energia+=sum(matches_num(matches(@,
       format(/dal \d\d\/\d\d\/\d\d\d\d al \d\d\/0([^]+?)(dal|Totale|$)/, $mese_abbr)),/(\N)(?:\n|$)/));
     with(search(@,format(/(In F1 dal \d\d\/\d\d\/\d\d\d\d al \d\d\/$0 [^]+?)(dal|Totale|$)/, $mese_abbr))) {   
-      (prezzo_energia[0], energia_attiva[0]) = captures_num(@,/F1.+\/kWh (\N) kWh (\N)/);
-      (prezzo_energia[1], energia_attiva[1]) = captures_num(@,/F2.+\/kWh (\N) kWh (\N)/);
-      (prezzo_energia[2], energia_attiva[2]) = captures_num(@,/F3.+\/kWh (\N) kWh (\N)/);
+      tie(prezzo_energia[0], energia_attiva[0]) = captures_num(@,/F1.+\/kWh (\N) kWh (\N)/);
+      tie(prezzo_energia[1], energia_attiva[1]) = captures_num(@,/F2.+\/kWh (\N) kWh (\N)/);
+      tie(prezzo_energia[2], energia_attiva[2]) = captures_num(@,/F3.+\/kWh (\N) kWh (\N)/);
     }
   }
   with(between(@,"SPESA PER IL TRASPORTO","TOTALE SPESA PER IL TRASPORTO")) {

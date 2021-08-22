@@ -98,8 +98,8 @@ function parse_periodo(@) {
   }
 }
 
-($mese_inizio, $mese_fine) = parse_periodo(search(@,/Periodo fatturato (.+)/));
-($mese_inizio_conguaglio, $mese_fine_conguaglio) = parse_periodo(search(@,/Periodo conguagliato (.+)/));
+tie($mese_inizio, $mese_fine) = parse_periodo(search(@,/Periodo fatturato (.+)/));
+tie($mese_inizio_conguaglio, $mese_fine_conguaglio) = parse_periodo(search(@,/Periodo conguagliato (.+)/));
 
 mese_fattura=month_add(conditional($calc_conguaglio, $mese_inizio_conguaglio, $mese_inizio), $calc_mese);
 ### End Script
@@ -152,7 +152,10 @@ p+$next_page;
 with(between(@,"RIEPILOGO LETTURE E CONSUMI","CONSUMI FATTURATI")) {
   $header=table_header(@,/Dal Al/,/Consumi/,/Consumi/);
   foreach(captures(@,format(/(.+\d\d\/$0 F1.+)\n(.+F2.+)\n(.+F3.+)/,date_format(mese_fattura,"%m/%Y")))) {
-    ($skip, energia_attiva_rilevata[], energia_reattiva[]) = nums(table_row(@, $header));
+    with(nums(table_row(@, $header))) {
+      energia_attiva_rilevata[]=@[0];
+      energia_reattiva[]=@[1];
+    }
   }
 }
 ### End Script
@@ -233,7 +236,7 @@ with($dettaglio) {
       spesa_materia_energia+=trunc(@[2],2);
     }
     foreach(matches(@,format(/Perdite di rete - F[1-3] - Periodo $0 Euro\/kWh $1 ($1 $1)/, regex_periodo(), number_regex()))) {
-      (perdite_di_rete, spesa_materia_energia) += captures_num(@,/(\N) (\N)/);
+      tie(perdite_di_rete, spesa_materia_energia) += captures_num(@,/(\N) (\N)/);
     }
     foreach(matches(@,format(/Dispacciamento - Periodo ($0 Euro\/kWh .+)/, regex_periodo_generic()))) {
       if(check_periodo(@)) {

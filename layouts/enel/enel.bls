@@ -176,11 +176,11 @@ with($dettaglio) {
   with(between(@,"SPESA PER L'ENERGIA", "Totale spesa per l'energia")) {
     spesa_materia_energia=sum(matches_num(matches(@, $regex_periodo),/.+ (\N)/));
     
-    (prezzo_energia[0], energia_attiva[0]) = captures_num(search(search(@,
+    tie(prezzo_energia[0], energia_attiva[0]) = captures_num(search(search(@,
       /Energia (?:fascia F1|ore picco|mese)\n([^]+?)Totale energia/), $regex_periodo),/\u20ac\/kWh (\N) (\N)/);
-    (prezzo_energia[1], energia_attiva[1]) = captures_num(search(search(@,
+    tie(prezzo_energia[1], energia_attiva[1]) = captures_num(search(search(@,
       /Energia (?:fascia F2|ore fuori picco)\n([^]+?)Totale energia/), $regex_periodo),/\u20ac\/kWh (\N) (\N)/);
-    (prezzo_energia[2], energia_attiva[2]) = captures_num(search(search(@,
+    tie(prezzo_energia[2], energia_attiva[2]) = captures_num(search(search(@,
       /Energia fascia F3\n([^]+?)Totale energia/), $regex_periodo),/\u20ac\/kWh (\N) (\N)/);
 
     with(between(@,"Altri importi materia energia", "Totale altri importi materia energia")) {

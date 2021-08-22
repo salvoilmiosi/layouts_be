@@ -145,9 +145,9 @@ with($dettaglio) {
   with(between(@,"Totale servizi di Vendita","...........")) {
     with(between(@,conditional(contains(@,"Prezzo Netto"),"Prezzo Netto","Prezzo dell'energia"),"Perdite di Rete")) {
       with(search(@,format(/Importo $0\n((?:\s+.+\n)+)/, $periodo))) {
-        (prezzo_energia[0], energia_attiva[0]) = captures_num(@,/fascia F1 \u20ac\/kWh (\N) (\N) kWh/);
-        (prezzo_energia[1], energia_attiva[1]) = captures_num(@,/fascia F2 \u20ac\/kWh (\N) (\N) kWh/);
-        (prezzo_energia[2], energia_attiva[2]) = captures_num(@,/fascia F3 \u20ac\/kWh (\N) (\N) kWh/);
+        tie(prezzo_energia[0], energia_attiva[0]) = captures_num(@,/fascia F1 \u20ac\/kWh (\N) (\N) kWh/);
+        tie(prezzo_energia[1], energia_attiva[1]) = captures_num(@,/fascia F2 \u20ac\/kWh (\N) (\N) kWh/);
+        tie(prezzo_energia[2], energia_attiva[2]) = captures_num(@,/fascia F3 \u20ac\/kWh (\N) (\N) kWh/);
       }
     }
     $totale_consumi=sum(energia_attiva);

@@ -99,11 +99,11 @@ potenza=captures_num(@,format(/\d\d\/$0 Potenza kW (\N) (\N) (\N)/, $mese));
 p+$page_offset;
 ### End Spacers
 ### Script
-(prezzo_energia[0], energia_attiva[0])
+tie(prezzo_energia[0], energia_attiva[0])
   = captures_num(@,format(/Indice mese di competenza F1 .+ \d\d\/$0 \u20ac\/kWh (\N) (\N)/, $mese));
-(prezzo_energia[1], energia_attiva[1])
+tie(prezzo_energia[1], energia_attiva[1])
   = captures_num(@,format(/Indice mese di competenza F2 .+ \d\d\/$0 \u20ac\/kWh (\N) (\N)/, $mese));
-(prezzo_energia[2], energia_attiva[2])
+tie(prezzo_energia[2], energia_attiva[2])
   = captures_num(@,format(/Indice mese di competenza F3 .+ \d\d\/$0 \u20ac\/kWh (\N) (\N)/, $mese));
 
 pcv=search_num(@,format(/PCV .+ \d\d\/$0 \u20ac\/Pdp\/mese \N \N (\N)/, $mese));

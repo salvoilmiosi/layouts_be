@@ -133,11 +133,11 @@ p+$off_dettaglio;
 with(between(@,"DETTAGLIO IMPORTI","TOTALE (Salvo conguagli, errori e omissioni)")) {
   with(between(@,"Spese per la materia energia","Spese per trasporto")) {
     spesa_materia_energia=search_num(@,/(\N)/);
-    (prezzo_energia[0], energia_attiva[0])
+    tie(prezzo_energia[0], energia_attiva[0])
       = captures_num(@,format(/Componente di Generazione fascia F1 .+ al \d\d\/$0 Euro\/kWh (\N) (\N)/, $mese));
-    (prezzo_energia[1], energia_attiva[1])
+    tie(prezzo_energia[1], energia_attiva[1])
       = captures_num(@,format(/Componente di Generazione fascia F2 .+ al \d\d\/$0 Euro\/kWh (\N) (\N)/, $mese));
-    (prezzo_energia[2], energia_attiva[2])
+    tie(prezzo_energia[2], energia_attiva[2])
       = captures_num(@,format(/Componente di Generazione fascia F3 .+ al \d\d\/$0 Euro\/kWh (\N) (\N)/, $mese));
   }
   with(between(@,"Spese per trasporto","Spese per oneri")) {

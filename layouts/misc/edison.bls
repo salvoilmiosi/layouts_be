@@ -98,11 +98,11 @@ energia_attiva_rilevata=captures_num(replace(@,"\u2212","-"),format(/\w+ \d\d\/\
 ### Rect 0.013715775 0.0849123 0.96867657 0.8248623
 ### Script
 with(replace(@,"\u2212","-")) {
-  (prezzo_energia[0], energia_attiva[0])
+  tie(prezzo_energia[0], energia_attiva[0])
     = captures_num(@,format(/Componente energia - F1 .+ al \d\d\/$0 \u20ac\/kWh (\N) (\N) kWh/, $mese));
-  (prezzo_energia[1], energia_attiva[1])
+  tie(prezzo_energia[1], energia_attiva[1])
     = captures_num(@,format(/Componente energia - F2 .+ al \d\d\/$0 \u20ac\/kWh (\N) (\N) kWh/, $mese));
-  (prezzo_energia[2], energia_attiva[2])
+  tie(prezzo_energia[2], energia_attiva[2])
     = captures_num(@,format(/Componente energia - F3 .+ al \d\d\/$0 \u20ac\/kWh (\N) (\N) kWh/, $mese));
   potenza=repeated(search_num(@,format(/Quota potenza .+ al \d\d\/$0 \u20ac\/kW\/mese \N (\N) kW/, $mese)), 3);
   iva=search(@,/IVA (\d+%)/);
