@@ -130,14 +130,14 @@ with($dettaglio) {
     date_format(last_day(month_add(mese_fattura,-1)),"%d\\.%m\\.%Y"),
     date_format(mese_fattura,"01\\.%m\\.%Y"));
   with(between(@,"energia attiva (kWh)","consumo rilevato energia")) {
-    energia_attiva_rilevata = captures_num(@,format(/$0 (\N) (\N) (\N) Lettura Rilevata/, $lettura_fine));
-    (energia_attiva_rilevata[0], energia_attiva_rilevata[1], energia_attiva_rilevata[2])
-      -= captures_num(@,format(/$0 (\N) (\N) (\N) Lettura Rilevata/, $lettura_inizio));
+    energia_attiva_rilevata = zip_sub(
+      captures_num(@,format(/$0 (\N) (\N) (\N) Lettura Rilevata/, $lettura_fine)),
+      captures_num(@,format(/$0 (\N) (\N) (\N) Lettura Rilevata/, $lettura_inizio)));
   }
   with(between(@,"energia reattiva (kVARh)","consumo rilevato energia")) {
-    energia_reattiva = captures_num(@,format(/$0 (\N) (\N) (\N) Lettura Rilevata/, $lettura_fine));
-    (energia_reattiva[0], energia_reattiva[1], energia_reattiva[2])
-      -= captures_num(@,format(/$0 (\N) (\N) (\N) Lettura Rilevata/, $lettura_inizio));
+    energia_reattiva = zip_sub(
+      captures_num(@,format(/$0 (\N) (\N) (\N) Lettura Rilevata/, $lettura_fine)),
+      captures_num(@,format(/$0 (\N) (\N) (\N) Lettura Rilevata/, $lettura_inizio)));
   }
   with(between(@,"potenza (kW)","...........")) {
     potenza = captures_num(@,format(/$0 (\N) (\N) (\N) Lettura Rilevata/, $lettura_fine));
