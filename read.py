@@ -20,6 +20,7 @@ parser.add_argument('--pybls', type=Path, default = script_dir / '../out/bin')
 parser.add_argument('-s', '--script', type=Path, default = script_dir / 'layouts/controllo.bls')
 parser.add_argument('-e', '--errorlist', type=Path, default = script_dir / 'layouts/errors.lst')
 parser.add_argument('-f', '--force-read', action='store_true')
+parser.add_argument('-q', '--quiet', action='store_true')
 parser.add_argument('-y', '--filter-year', type=int, default=0)
 parser.add_argument('-j', '--nthreads', type=int, default=cpu_count())
 parser.add_argument('-t', '--timeout', type=float, default=10.0)
@@ -78,17 +79,18 @@ def read_pdf(pdf_file):
         ret = {'errcode': -6, 'error': 'Errore di Sistema'}
 
     ret['filename'] = str(pdf_file)
-    
-    rel_path = pdf_file.relative_to(args.input_path)
-    if ret['errcode'] == 0:
-        if 'notes' in ret:
-            print('\033[33m{0} ### {1}\033[0m'.format(rel_path, ', '.join(ret['notes']))) # yellow
+
+    if not args.quiet:
+        rel_path = pdf_file.relative_to(args.input_path)
+        if ret['errcode'] == 0:
+            if 'notes' in ret:
+                print('\033[33m{0} ### {1}\033[0m'.format(rel_path, ', '.join(ret['notes']))) # yellow
+            else:
+                print(rel_path)
+        elif ret['errcode'] > 0:
+            print('\033[31m{0} ### {1}: {2}\033[0m'.format(rel_path, errcodes[ret['errcode']], ret['error'])) # red
         else:
-            print(rel_path)
-    elif ret['errcode'] > 0:
-        print('\033[31m{0} ### {1}: {2}\033[0m'.format(rel_path, errcodes[ret['errcode']], ret['error'])) # red
-    else:
-        print('\033[35m{0} ### {1}\033[0m'.format(rel_path, ret['error'])) # magenta
+            print('\033[35m{0} ### {1}\033[0m'.format(rel_path, ret['error'])) # magenta
 
     return ret
 
