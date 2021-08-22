@@ -205,11 +205,11 @@ p+$next_page;
 ### Script
 with(between(@,"CONSUMI E LETTURE","Consumi fatturati negli ultimi 12 mesi")) {
   foreach(matches(@,/(.*Periodo \(dal - al\).+\n.+(?:\n.*\d{2}.\d{2}.\d{4}.+)+)/)) {
-    $header=table_header(@,/Consumi fatturati kWh(?: Consumi fatturati kWh)?/,"Energia Reattiva");
+    $header=table_header(@,"Periodo",/Consumi fatturati kWh(?: Consumi fatturati kWh)?/,"Energia Reattiva");
     foreach(matches(@,format(/(.+ - \d\d\.$0.+)/, $mese))) {
       with(table_row(@, $header)) {
-        energia_attiva_rilevata = zip_add(energia_attiva_rilevata, captures_num(@[0],/(\N) (\N) (\N)/));
-        energia_reattiva += +@[1];
+        energia_attiva_rilevata = zip_add(energia_attiva_rilevata, captures_num(@[1],/(\N) (\N) (\N)/));
+        energia_reattiva += +@[2];
       }
     }
   }

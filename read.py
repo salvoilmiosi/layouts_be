@@ -78,7 +78,7 @@ def read_pdf(pdf_file):
     except:
         ret = {'errcode': -6, 'error': 'Errore di Sistema'}
 
-    ret['filename'] = str(pdf_file)
+    ret['filename'] = str(pdf_file.resolve())
 
     if not args.quiet:
         rel_path = pdf_file.relative_to(args.input_path)
@@ -99,13 +99,13 @@ def lastmodified(f):
 
 if __name__ == '__main__':
     keep_file = lambda f : lastmodified(f).year >= args.filter_year
-    path_to_json = lambda d : args.output_path / (Path(d).relative_to(args.input_path).parts[0] + '.json')
+    path_to_json = lambda p : args.output_path / (Path(p).resolve().relative_to(args.input_path.resolve()).parts[0] + '.json')
 
     if args.output_path.is_dir():
-        files_dict = {path_to_json(d) : [f.resolve() for f in d.rglob('*.pdf') if keep_file(f)] \
+        files_dict = {path_to_json(d) : [f for f in d.rglob('*.pdf') if keep_file(f)] \
             for d in args.input_path.iterdir() if d.is_dir()}
     else:
-        files_dict = {args.output_path : [f.resolve() for f in args.input_path.rglob('*.pdf') if keep_file(f)]}
+        files_dict = {args.output_path : [f for f in args.input_path.rglob('*.pdf') if keep_file(f)]}
 
     results = []
     files = []
@@ -117,13 +117,13 @@ if __name__ == '__main__':
         for output_file, in_files in files_dict.items():
             if output_file.exists():
                 with open(output_file, 'r') as file:
-                    data_dict = {f : [] for f in in_files}
+                    data_dict = {f.resolve() : [] for f in in_files}
                     for x in json.load(file):
                         p = Path(x['filename'])
                         if p in data_dict: data_dict[p].append(x)
                 
                 for pdf_file in in_files:
-                    old_data = data_dict[pdf_file]
+                    old_data = data_dict[pdf_file.resolve()]
                     if old_data and all('layouts' in old_obj and all(\
                         lastmodified(f) < lastmodified(output_file) for f in old_obj['layouts'] + [pdf_file]) \
                             for old_obj in old_data):

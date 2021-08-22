@@ -56,7 +56,7 @@ potenza=repeated(search_num(@,/(\N) kW di potenza impegnata/), 3);
 ### Rect 0.26176625 0.5822756 0.23662084 0.025235059
 ### Script
 if(ismatch(@,/\w+ - \w+ \d{4}/)) {
-  with(captures_num(@,/(\w+) - (\w+) (\d{4})/)) {
+  with(captures(@,/(\w+) - (\w+) (\d{4})/)) {
     $mese_inizio=date(format("$0 $1", @[0], @[2]), "%b %Y");
     $mese_fine=date(format("$0 $1", @[1], @[2]), "%b %Y");
   }
