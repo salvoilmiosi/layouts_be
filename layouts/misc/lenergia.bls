@@ -84,12 +84,9 @@ codice_pod=search(@,/Codice punto di erogazione \(POD\): ([a-zA-Z0-9]+)/);
 ### Page 2
 ### Rect 0.035119668 0.2005698 0.92351717 0.6100175
 ### Script
-(energia_attiva_rilevata[0], energia_attiva_rilevata[1], energia_attiva_rilevata[2])
-  = captures_num(@,format(/\d\d\/$0 Energia Attiva kWh (\N) (\N) (\N)/, $mese));
-(energia_reattiva[0], energia_reattiva[1], energia_reattiva[2])
-  = captures_num(@,format(/\d\d\/$0 Energia Reattiva kvarh (\N) (\N) (\N)/, $mese));
-(potenza[0], potenza[1], potenza[2])
-  = captures_num(@,format(/\d\d\/$0 Potenza kW (\N) (\N) (\N)/, $mese));
+energia_attiva_rilevata=captures_num(@,format(/\d\d\/$0 Energia Attiva kWh (\N) (\N) (\N)/, $mese));
+energia_reattiva=captures_num(@,format(/\d\d\/$0 Energia Reattiva kvarh (\N) (\N) (\N)/, $mese));
+potenza=captures_num(@,format(/\d\d\/$0 Potenza kW (\N) (\N) (\N)/, $mese));
 ### End Script
 ### End Box
 

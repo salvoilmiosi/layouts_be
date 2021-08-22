@@ -91,10 +91,10 @@ p+$off_pod;
 ### End Spacers
 ### Script
 with(between(@,"RIEPILOGO CONSUMI PRIMO ADDEBITO","TOTALE (Salvo conguagli, errori e omissioni)")) {
-  (
-    energia_attiva_rilevata[0], energia_attiva_rilevata[1], energia_attiva_rilevata[2],
-    energia_reattiva[0], energia_reattiva[1], energia_reattiva[2]
-  ) = captures_num(@,format(/\d\d\/$0 Consumi Fatturati (\N) (\N) (\N) \N (\N) (\N) (\N)/, $mese));
+  with(captures_num(@,format(/\d\d\/$0 Consumi Fatturati (\N) (\N) (\N) \N (\N) (\N) (\N)/, $mese))) {
+    energia_attiva_rilevata = range(@,0,3);
+    energia_reattiva = range(@,3,3);
+  }
 }
 with(between(@,"DETTAGLIO IMPOSTE","TOTALE (Salvo conguagli, errori e omissioni)")) {
   accise=search_num(@,format(/Imposta erariale.+ al \d\d\/$0 Euro\/kWh \N \N (\N)/, $mese));

@@ -121,11 +121,11 @@ imponibile=search_num(@,/(\N)/);
 p+$off_allegati;
 ### End Spacers
 ### Script
-(
-  energia_attiva_rilevata[0], energia_attiva_rilevata[1], energia_attiva_rilevata[2],
-  energia_reattiva[0], energia_reattiva[1], energia_reattiva[2],
-  potenza[0:3]
-) = captures_num(@,format(/\d\d\/$0 \d\d\/$0 Consumi \w+ \N (\N) (\N) (\N) \N (\N) (\N) (\N) (\N)/,date_format(mese_fattura,"%m/%Y")));
+with(captures_num(@,format(/\d\d\/$0 \d\d\/$0 Consumi \w+ \N (\N) (\N) (\N) \N (\N) (\N) (\N) (\N)/,date_format(mese_fattura,"%m/%Y")))) {
+  energia_attiva_rilevata = range(@,0,3);
+  energia_reattiva = range(@,3,3);
+  potenza[0:3] = @[6];
+}
 ### End Script
 ### End Box
 

@@ -97,10 +97,8 @@ indirizzo_fornitura=totitle(singleline(search(@,/Indirizzo di fornitura ([^]+?\d
 ### Page 2
 ### Rect 0.053225808 0.31470925 0.92419356 0.64766246
 ### Script
-with(between(@,"CONSUMI FATTURATI","RIEPILOGO IMPOSTE E IVA")) {
-  (energia_attiva_rilevata[0], energia_attiva_rilevata[1], energia_attiva_rilevata[2])
-    = captures_num(@,format(/Effettivi $0 \N (\N) (\N) (\N)/, $periodo));
-}
+energia_attiva_rilevata=captures_num(between(@,"CONSUMI FATTURATI","RIEPILOGO IMPOSTE E IVA"),
+  format(/Effettivi $0 \N (\N) (\N) (\N)/, $periodo));
 ### End Script
 ### End Box
 

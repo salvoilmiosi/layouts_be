@@ -152,7 +152,7 @@ p+$next_page;
 with(between(@,"RIEPILOGO LETTURE E CONSUMI","CONSUMI FATTURATI")) {
   $header=table_header(@,/Dal Al/,/Consumi/,/Consumi/);
   foreach(captures(@,format(/(.+\d\d\/$0 F1.+)\n(.+F2.+)\n(.+F3.+)/,date_format(mese_fattura,"%m/%Y")))) {
-    ($skip, energia_attiva_rilevata[0], energia_reattiva[0]) = nums(table_row(@, $header));
+    ($skip, energia_attiva_rilevata[], energia_reattiva[]) = nums(table_row(@, $header));
   }
 }
 ### End Script

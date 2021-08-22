@@ -153,14 +153,12 @@ if(!contains(@, $inizio_dettaglio)) {
   $fine_dettaglio=date_format(last_day(mese_fattura),"%d/%m/%Y");
 }
 if(contains(@,"Energia attiva")) {
-  (energia_attiva_rilevata[0], energia_attiva_rilevata[1], energia_attiva_rilevata[2])
-    = captures_num(@,format(/$0 (\N) (\N) (\N)/, $fine_dettaglio));
+  energia_attiva_rilevata=captures_num(@,format(/$0 (\N) (\N) (\N)/, $fine_dettaglio));
   (energia_attiva_rilevata[0], energia_attiva_rilevata[1], energia_attiva_rilevata[2])
     -= captures_num(@,format(/$0 (\N) (\N) (\N)/, $inizio_dettaglio));
 }
 if(contains(@,"Energia reattiva")) {
-  (energia_reattiva[0], energia_reattiva[1], energia_reattiva[2])
-    = captures_num(@,format(/$0 \N \N \N (\N) (\N) (\N)/, $fine_dettaglio));
+  energia_reattiva=captures_num(@,format(/$0 \N \N \N (\N) (\N) (\N)/, $fine_dettaglio));
   (energia_reattiva[0], energia_reattiva[1], energia_reattiva[2])
     -= captures_num(@,format(/$0 \N \N \N (\N) (\N) (\N)/, $inizio_dettaglio));
 }

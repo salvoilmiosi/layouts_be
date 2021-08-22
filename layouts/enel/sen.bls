@@ -147,13 +147,12 @@ ragione_sociale=totitle(search(@,/(.+)/));
 ### Rect 0.03711486845965273 0.038112792295081965 0.68683654 0.9167617
 ### Script
 with(between(@,/(?:Consumi rilevati|Dettaglio dei consumi)/,"INFORMAZIONI PER I CLIENTI")) {
-  (
-    energia_attiva_rilevata[0], energia_attiva_rilevata[1], energia_attiva_rilevata[2],
-    energia_reattiva[0], energia_reattiva[1], energia_reattiva[2],
-    $skip,
-    potenza[0], potenza[1], potenza[2]
-  ) = nums(table_row(search(@,format(/dal \d\d\.\d\d\.\d\d\d\d\n(.+) al \d\d\.$0/, date_format(mese_fattura,"%m\\.%Y"))),
-      table_header(@,/F1/,/F2/,/F3/,/F1/,/F2/,/F3/,/F1 F2 F3/,/F1/,/F2/,/F3/)));
+  with(nums(table_row(search(@,format(/dal \d\d\.\d\d\.\d\d\d\d\n(.+) al \d\d\.$0/, date_format(mese_fattura,"%m\\.%Y"))),
+      table_header(@,/F1/,/F2/,/F3/,/F1/,/F2/,/F3/,/F1 F2 F3/,/F1/,/F2/,/F3/)))) {
+    energia_attiva_rilevata = range(@,0,3);
+    energia_reattiva = range(@,3,3);
+    potenza = range(@,7,3);
+  }
 }
 ### End Script
 ### End Box

@@ -96,10 +96,8 @@ if (!(ate() || contains(@,"Comunicazioni finali"))) {
 ### Rect 0.3080384 0.08228446 0.04617861 0.029602662
 ### Script
 with($dettaglio) {
-  (energia_attiva_rilevata[0], energia_attiva_rilevata[1], energia_attiva_rilevata[2])
-    = captures_num(search(@,/Energia attiva \(kWh\)\n((Dal.+\n)+)/), format(/al \d\d\/$0 \w+ (\N) (\N) (\N)/, $mese));
-  (energia_reattiva[0], energia_reattiva[1], energia_reattiva[2])
-    = captures_num(search(@,/Energia reattiva \(kVARh\)\n((Dal.+\n)+)/), format(/al \d\d\/$0 \w+ (\N) (\N) (\N)/, $mese));
+  energia_attiva_rilevata=captures_num(search(@,/Energia attiva \(kWh\)\n((Dal.+\n)+)/), format(/al \d\d\/$0 \w+ (\N) (\N) (\N)/, $mese));
+  energia_reattiva=captures_num(search(@,/Energia reattiva \(kVARh\)\n((Dal.+\n)+)/), format(/al \d\d\/$0 \w+ (\N) (\N) (\N)/, $mese));
 
   spesa_materia_energia=search_num(@,/TOTALE SERVIZI DI VENDITA (\N)/);
 

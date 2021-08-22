@@ -102,12 +102,9 @@ p+$off_allegato;
 p+$page_offset;
 ### End Spacers
 ### Script
-(energia_attiva_rilevata[0], energia_attiva_rilevata[1], energia_attiva_rilevata[2])
-  = captures_num(@,/Misura (\N) (\N) (\N)/);
-(potenza[0], potenza[1], potenza[2])
-  = captures_num(@,/Potenza \(kW\) (\N) (\N) (\N)/);
-(energia_reattiva[0], energia_reattiva[1], energia_reattiva[2])
-  = captures_num(@,/Energia Reattiva \(kVar\) (\N) (\N) (\N)/);
+energia_attiva_rilevata=captures_num(@,/Misura (\N) (\N) (\N)/);
+potenza=captures_num(@,/Potenza \(kW\) (\N) (\N) (\N)/);
+energia_reattiva=captures_num(@,/Energia Reattiva \(kVar\) (\N) (\N) (\N)/);
 ### End Script
 ### End Box
 

@@ -97,8 +97,7 @@ totale_fattura=search_num(@,/euro (\N)/);
 ### Rect 0.0315568 0.02850627 0.9274193 0.91467947
 ### Script
 with(rbetween(@,date_format(mese_fattura,"%B %Y"),/FORNITURA DI .+/)) {
-  (energia_attiva_rilevata[0], energia_attiva_rilevata[1], energia_attiva_rilevata[2])
-    = captures_num(@,/CONSUMI EFFETTIVI \(kWh\) (\N) (\N) (\N)/);
+  energia_attiva_rilevata=captures_num(@,/CONSUMI EFFETTIVI \(kWh\) (\N) (\N) (\N)/);
   spesa_materia_energia=search_num(@,/SERVIZI DI VENDITA (\N)/);
   pcv=search_num(@,/PCV euro\/cliente\/mese \N \N (\N)/);
   (prezzo_energia[0], energia_attiva[0]) = captures_num(@,/Prezzo F1 euro\/kWh (\N) (\N)/);

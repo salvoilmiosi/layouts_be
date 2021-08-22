@@ -21,14 +21,10 @@ function calc_prezzo_energia(@, $expr) {
 
 with(global dettaglio) {
   with(between(@,"CONSUMI e RICALCOLI","CONSUMI ULTIMI 13 MESI")) {
-    with(between(@,"ENERGIA ATTIVA","ENERGIA REATTIVA")) {
-      (energia_attiva_rilevata[0], energia_attiva_rilevata[1], energia_attiva_rilevata[2])
-        = captures_num(@,format(/$0 \w+\*? (\N) (\N) (\N)/,date_format(mese_fattura,"%b - %y")));
-    }
-    with(between(@,"ENERGIA REATTIVA")) {
-      (energia_reattiva[0], energia_reattiva[1], energia_reattiva[2])
-        = captures_num(@,format(/$0 (\N) (\N) (\N)/,date_format(mese_fattura,"%b - %y")));
-    }
+    energia_attiva_rilevata=captures_num(between(@,"ENERGIA ATTIVA","ENERGIA REATTIVA"),
+      format(/$0 \w+\*? (\N) (\N) (\N)/,date_format(mese_fattura,"%b - %y")));
+    energia_reattiva=captures_num(between(@,"ENERGIA REATTIVA"),
+      format(/$0 (\N) (\N) (\N)/,date_format(mese_fattura,"%b - %y")));
   }
   
   cts=sum(matches_num(@,/Corrispettivo Tariffario Specifico dal \d\d\/\d\d\/\d\d\d\d al \d\d\/\d\d\/\d\d\d\d (\N)/));
