@@ -14,7 +14,7 @@ if sys.platform == 'win32':
 script_dir = Path(__file__).parent
 
 parser = ArgumentParser()
-parser.add_argument('-i', '--input-path', type=Path, default = script_dir / 'work/fatture')
+parser.add_argument('input_path', nargs='?', type=Path, default = script_dir / 'work/fatture')
 parser.add_argument('-o', '--output-path', type=Path, default = script_dir / 'work/letture')
 parser.add_argument('--pybls', type=Path, default = script_dir / '../out/bin')
 parser.add_argument('-s', '--script', type=Path, default = script_dir / 'layouts/controllo.bls')
