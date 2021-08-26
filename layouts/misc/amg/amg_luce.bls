@@ -139,7 +139,7 @@ with(between(@,"DETTAGLIO LETTURE","DETTAGLIO ALTRE PARTITE")) {
 ### Rect 0.10449735449735449 0.01216089803554724 0.041005291005291 0.02806361085126286
 ### Script
 function check_periodo(@) {
-  return date_between(mese_fattura,
+  return isbetween(mese_fattura,
     search_date(@,"%d/%m/%Y",/(\D) - \D/),
     search_date(@,"%d/%m/%Y",/\D - (\D)/));
 }

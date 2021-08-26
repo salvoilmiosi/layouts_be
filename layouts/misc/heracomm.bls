@@ -161,7 +161,7 @@ with($dettaglio) {
     }
     with(between(@,"Sbilanciamento")) {
       foreach(matches(@,/Sbilanciamento ((?:Importo.+\n)+)/)) {
-        if(date_between(mese_fattura,search_date(@,"%d.%m.%Y",/dal (\D) al \D/),search_date(@,"%d.%m.%Y",/dal \D al (\D)/))) {
+        if(isbetween(mese_fattura,search_date(@,"%d.%m.%Y",/dal (\D) al \D/),search_date(@,"%d.%m.%Y",/dal \D al (\D)/))) {
           sbilanciamento=search_num(@,/\u20ac\/kWh (\N)/);
           break;
         }
@@ -171,7 +171,7 @@ with($dettaglio) {
       spesa_materia_energia+=sum(matches_num(@,/.+ (\N)/));
     }
     foreach(matches(@,/Importo (dal \d\d\.\d\d\.\d\d\d\d al \d\d\.\d\d\.\d\d\d\d \u20ac.+)/)) {
-      if(date_between(mese_fattura,search_date(@,"%d.%m.%Y",/dal (\D) al \D/),search_date(@,"%d.%m.%Y",/dal \D al (\D)/))) {
+      if(isbetween(mese_fattura,search_date(@,"%d.%m.%Y",/dal (\D) al \D/),search_date(@,"%d.%m.%Y",/dal \D al (\D)/))) {
         spesa_materia_energia+=trunc(search_num(@,/\u20ac\/kWh (\N)/) * $totale_consumi, 2);
         spesa_materia_energia+=trunc(search_num(@,/\u20ac\/cliente\/mese (\N)/), 2);
       }
@@ -180,7 +180,7 @@ with($dettaglio) {
   with(between(@,"Totale servizi di Rete","...........")) {
     with(between(@,"QUOTA FISSA", "QUOTA POTENZA")) {
       foreach(matches(@,/Importo (dal \d\d\.\d\d\.\d\d\d\d al \d\d\.\d\d\.\d\d\d\d .+)/)) {
-        if(date_between(mese_fattura,search_date(@,"%d.%m.%Y",/dal (\D) al \D/),search_date(@,"%d.%m.%Y",/dal \D al (\D)/))) {
+        if(isbetween(mese_fattura,search_date(@,"%d.%m.%Y",/dal (\D) al \D/),search_date(@,"%d.%m.%Y",/dal \D al (\D)/))) {
           trasporto_gestione+=trunc(abs(search_num(@,/\u20ac\/cliente\/mese (\N)/)) * $mul_nota_credito, 2);
           break;
         }
@@ -198,7 +198,7 @@ with($dettaglio) {
         return $ret;
       }
       foreach(matches(@,/Importo (dal \d\d\.\d\d\.\d\d\d\d al \d\d\.\d\d\.\d\d\d\d\n.+)/)) {
-        if(date_between(mese_fattura,search_date(@,"%d.%m.%Y",/dal (\D) al \D/),search_date(@,"%d.%m.%Y",/dal \D al (\D)/))) {
+        if(isbetween(mese_fattura,search_date(@,"%d.%m.%Y",/dal (\D) al \D/),search_date(@,"%d.%m.%Y",/dal \D al (\D)/))) {
           trasporto_gestione+=trunc(search_num(@,/\u20ac\/kWh (\N)/) * $totale_consumi, 2);
           prezzo_inf75=search_num(@,/Corrispettivi energia reattiva entro 75% \u20ac\/kVARh (\N)/);
           if(prezzo_inf75) {

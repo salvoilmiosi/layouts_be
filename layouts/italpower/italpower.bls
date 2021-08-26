@@ -173,7 +173,7 @@ function regex_periodo_generic() {
   return /\d{2}\/\d{2}\/\d{4}\s*-\s*\d{2}\/\d{2}\/\d{4}/;
 }
 function check_periodo(@) {
-  return date_between(mese_fattura,
+  return isbetween(mese_fattura,
     search_date(@,"%d/%m/%Y",/(\D)\s*-\s*\D/),
     search_date(@,"%d/%m/%Y",/\D\s*-\s*(\D)/));
 }
