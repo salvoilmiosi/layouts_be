@@ -128,7 +128,7 @@ with($dettaglio) {
 ### Script
 foreach(matches(@,/(IVA \d+% su imponibile di \u20ac .+)/)) {
   $imp=search_num(@,/imponibile di \u20ac (\N)/);
-  if($imp > coalesce(imponibile,0)) {
+  if($imp > imponibile) {
     imponibile = $imp;
     iva=search(@,/IVA (\d+%)/);
   }
