@@ -5,10 +5,9 @@ from datetime import date
 from openpyxl import Workbook
 from openpyxl.utils import get_column_letter
 from openpyxl.styles import PatternFill, Border, Side
+import blsconfig
 import sys
 import json
-import time
-import os
 
 class TableValue:
     def __init__(self, title, value, index=0, type='str', number_format='', column_width=None):
@@ -144,7 +143,7 @@ def export_file(input_file):
     wb.save(input_file.with_suffix('.xlsx'))
     print(input_file)
 
-in_path = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).parent / 'work/letture'
+in_path = Path(sys.argv[1]) if len(sys.argv) > 1 else blsconfig.read_output_path
 
 if __name__ == '__main__':
     if in_path.is_dir():

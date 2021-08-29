@@ -4,6 +4,7 @@ from multiprocessing import Pool, cpu_count
 from pathlib import Path
 from datetime import date, datetime
 from argparse import ArgumentParser
+import blsconfig
 import json
 import os
 import sys
@@ -11,25 +12,16 @@ import sys
 if sys.platform == 'win32':
     os.system('color')
 
-script_dir = Path(__file__).parent
-
 parser = ArgumentParser()
-parser.add_argument('input_path', nargs='?', type=Path, default = script_dir / 'work/fatture')
-parser.add_argument('-o', '--output-path', type=Path, default = script_dir / 'work/letture')
-parser.add_argument('--pybls', type=Path, default = script_dir / '../out/bin')
-parser.add_argument('-s', '--script', type=Path, default = script_dir / 'layouts/controllo.bls')
-parser.add_argument('-e', '--errorlist', type=Path, default = script_dir / 'layouts/errors.lst')
+parser.add_argument('input_path', nargs='?', type=Path, default = blsconfig.pdfs_path)
+parser.add_argument('-o', '--output-path', type=Path, default = blsconfig.read_output_path)
+parser.add_argument('-s', '--script', type=Path, default = blsconfig.control_script_path)
 parser.add_argument('-f', '--force-read', action='store_true')
 parser.add_argument('-q', '--quiet', action='store_true')
 parser.add_argument('-y', '--filter-year', type=int, default=0)
 parser.add_argument('-j', '--nthreads', type=int, default=cpu_count())
 parser.add_argument('-t', '--timeout', type=float, default=10.0)
 args = parser.parse_args()
-
-os.environ['PATH'] = str(args.pybls.resolve()) + os.pathsep + os.environ['PATH']
-sys.path.insert(0, str(args.pybls.resolve()))
-
-import pybls
 
 def check_conguagli(results):
     sorted_data = []
@@ -69,12 +61,12 @@ def check_conguagli(results):
 
     return sorted_data + error_data
 
-with open(args.errorlist, 'r') as file:
+with open(blsconfig.control_script_path.parent / 'errors.lst', 'r') as file:
     errcodes = [line.strip() for line in file.readlines()]
 
 def read_pdf(pdf_file):
     try:
-        ret = pybls.execbls(args.script, input_pdf=pdf_file, timeout=args.timeout)
+        ret = blsconfig.execbls(args.script, input_pdf=pdf_file, timeout=args.timeout)
     except:
         ret = {'errcode': -6, 'error': 'Errore di Sistema'}
 

@@ -1,16 +1,14 @@
 #!/usr/bin/env python
 
 import json
-import os
+import blsconfig
 from pathlib import Path
 from datetime import date
 from dateutil.relativedelta import relativedelta
 
-input_directory = Path(__file__).parent / 'work/letture'
-
 clienti = {}
 
-for f in input_directory.glob('*.json'):
+for f in blsconfig.read_output_path.glob('*.json'):
     with open(f, 'r') as file:
         data = json.load(file)
 

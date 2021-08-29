@@ -2,26 +2,23 @@
 
 from pathlib import Path
 from datetime import date
+import blsconfig
 import json
 import shutil
 import os
 
-clienti_json = Path(__file__).parent / 'clienti.json'
-dir_letture = Path(__file__).parent / 'work/letture'
-
-with open(clienti_json, 'r') as file:
+with open(Path(__file__).parent / 'clienti.json', 'r') as file:
     clienti = json.load(file)
 
-root_dir = Path(clienti['dir'])
 for k,v in clienti['clients'].items():
     try:
-        with open(dir_letture / (k + ".json"), 'r') as file:
+        with open(blsconfig.read_output_path / (k + ".json"), 'r') as file:
             in_lettura = json.load(file)
     except FileNotFoundError:
         continue
 
     for f in in_lettura:
-        filename = root_dir
+        filename = blsconfig.google_drive_dir
         if 'dir' in v:
             filename /= v['dir']
         try:

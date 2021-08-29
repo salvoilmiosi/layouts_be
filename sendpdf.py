@@ -1,22 +1,23 @@
 #!/usr/bin/env python
 
+import blsconfig
 import login_be
 import json
+import sys
 import os
 from pathlib import Path
 from datetime import date
 
-os.system('color')
+if sys.platform == 'win32':
+    os.system('color')
 
 session = login_be.login_be()
 
 getFattureRes = session.post(login_be.address + '/zelda/fornitura.ws', verify=False, data={'f':'getFatture'})
 getFatture = json.loads(getFattureRes.text)['body']['getFatture']
 
-input_directory = Path(__file__).parent / 'work/letture'
-
 letture = []
-for f in input_directory.rglob('*.json'):
+for f in blsconfig.read_output_path.rglob('*.json'):
     with open(f, 'r') as file:
         letture.extend(json.load(file))
 

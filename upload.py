@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 
+import blsconfig
 import login_be
 import json
 import sys
 import os
 from pathlib import Path
-from getpass import getpass
 from datetime import date
 
-os.system('color')
+if sys.platform == 'win32':
+    os.system('color')
 
-in_path = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).parent / 'work/letture'
+in_path = Path(sys.argv[1]) if len(sys.argv) > 1 else blsconfig.read_output_path
 
 def filter_and_upload(f, do_upload = True):
     with open(f, 'r') as file:
