@@ -26,10 +26,10 @@ else:
                 if line[:equals] == name: return line[equals+1:]
         return None
 
-pybls_path = str(Path(getconfig('PyBlsPath')).resolve())
-os.environ['PATH'] = pybls_path + os.pathsep + os.environ['PATH']
-sys.path.insert(0, pybls_path)
-execbls = __import__("pybls").execbls
+pybls_path = Path(getconfig('PyBlsPath')).resolve()
+os.environ['PATH'] = str(pybls_path.parent) + os.pathsep + os.environ['PATH']
+sys.path.insert(0, str(pybls_path.parent))
+execbls = __import__(pybls_path.stem).execbls
 
 control_script_path = Path(getconfig('ControlScriptFilename'))
 pdfs_path = Path(getconfig('PdfsPath'))
