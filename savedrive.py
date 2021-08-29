@@ -10,6 +10,8 @@ import os
 with open(Path(__file__).parent / 'clienti.json', 'r') as file:
     clienti = json.load(file)
 
+root_dir = blsconfig.google_drive_dir / clienti['dir']
+
 for k,v in clienti['clients'].items():
     try:
         with open(blsconfig.read_output_path / (k + ".json"), 'r') as file:
@@ -18,7 +20,7 @@ for k,v in clienti['clients'].items():
         continue
 
     for f in in_lettura:
-        filename = blsconfig.google_drive_dir
+        filename = root_dir
         if 'dir' in v:
             filename /= v['dir']
         try:
