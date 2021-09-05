@@ -228,13 +228,13 @@ p+$off_dettaglio;
 ### End Spacers
 ### Script
 if(mese_fattura != $mese_fine) {
-  # Prossima tabella multimese
+  // Prossima tabella multimese
   $calc_mese++;
   nexttable();
   goto nome_fornitore;
 }
 if(@ == "DATI FORNITURA") {
-  # Prossima tabella multipod
+  // Prossima tabella multipod
   $calc_mese = 0;
   $next_page += 1 + $off_dettaglio;
   $off_dettaglio = 0;
