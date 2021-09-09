@@ -5,8 +5,12 @@
 ### Page 1
 ### Rect 0 0 0 0
 ### Script
-foreach(lines(readfile("errors.lst"))) {
-    global ["ERRORE_" + @] = curindex();
+function lines(@) {
+    return foreach(split(@,"\n")) if(!isempty(trim(@))) trim(@);
+}
+
+foreach(enumerate(lines(readfile("errors.lst")))) {
+    global ["ERRORE_" + @[1]] = @[0];
 }
 ### End Script
 ### End Box
