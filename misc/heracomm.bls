@@ -30,7 +30,7 @@ p+$off_dettaglio;
 rotate+$rotation;
 ### End Spacers
 ### Script
-$mul_nota_credito=conditional(contains(@,"Importo a credito"),-1,1);
+$mul_nota_credito=contains(@,"Importo a credito") ? -1 : 1;
 ### End Script
 ### End Box
 
@@ -116,7 +116,7 @@ totale_fattura=search_num(@,/Totale bolletta\/contratto (\N)/);
 ### Rect 0.34734598900075014 0.06527792929611916 0.028054298642533948 0.03457106274007682
 ### Script
 with($dettaglio) {
-  with(between(@,conditional(contains(@,"Quadro di dettaglio"),"Quadro di dettaglio","Elementi di dettaglio"),"\n")) {
+  with(between(@,contains(@,"Quadro di dettaglio") ? "Quadro di dettaglio" : "Elementi di dettaglio","\n")) {
     $mese_inizio=search_month(@,"%d.%m.%Y",/dal (\D) al \D/);
     $mese_fine=search_month(@,"%d.%m.%Y",/dal \D al (\D)/);
     if($mese_fine < $mese_inizio) {
@@ -143,7 +143,7 @@ with($dettaglio) {
     potenza = captures_num(@,format(/$0 (\N) (\N) (\N) Lettura Rilevata/, $lettura_fine));
   }
   with(between(@,"Totale servizi di Vendita","...........")) {
-    with(between(@,conditional(contains(@,"Prezzo Netto"),"Prezzo Netto","Prezzo dell'energia"),"Perdite di Rete")) {
+    with(between(@,contains(@,"Prezzo Netto") ? "Prezzo Netto" : "Prezzo dell'energia","Perdite di Rete")) {
       with(search(@,format(/Importo $0\n((?:\s+.+\n)+)/, $periodo))) {
         tie(prezzo_energia[0], energia_attiva[0]) = captures_num(@,/fascia F1 \u20ac\/kWh (\N) (\N) kWh/);
         tie(prezzo_energia[1], energia_attiva[1]) = captures_num(@,/fascia F2 \u20ac\/kWh (\N) (\N) kWh/);

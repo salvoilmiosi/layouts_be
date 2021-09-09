@@ -101,7 +101,7 @@ function parse_periodo(@) {
 tie($mese_inizio, $mese_fine) = parse_periodo(search(@,/Periodo fatturato (.+)/));
 tie($mese_inizio_conguaglio, $mese_fine_conguaglio) = parse_periodo(search(@,/Periodo conguagliato (.+)/));
 
-mese_fattura=month_add(conditional($calc_conguaglio, $mese_inizio_conguaglio, $mese_inizio), $calc_mese);
+mese_fattura=month_add($calc_conguaglio ? $mese_inizio_conguaglio : $mese_inizio, $calc_mese);
 ### End Script
 ### End Box
 
