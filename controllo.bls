@@ -5,11 +5,7 @@
 ### Page 1
 ### Rect 0 0 0 0
 ### Script
-function lines(@) {
-    return foreach(split(@,"\n")) if(!isempty(trim(@))) trim(@);
-}
-
-foreach(enumerate(lines(readfile("errors.lst")))) {
+foreach(enumerate(foreach(split(readfile("errors.lst"),"\n")) if(!isempty(trim(@))) trim(@))) {
     global ["ERRORE_" + @[1]] = @[0];
 }
 ### End Script
@@ -40,19 +36,7 @@ else if(contains(@,"HERA COMM s.r.l")) import "misc/heracomm";
 else if(contains(@,"AMG GAS S.R.L.")) import "misc/amg/controllo";
 else if(!ate()) { $page_controllo++; goto controllo_layout; }
 else error("Nessun Layout", global ERRORE_NON_IMPLEMENTATO);
-### End Script
-### End Box
 
-### Box Controllo Dati Mancanti
-### Flags NOREAD
-### Page 1
-### Rect 0 0 0 0
-### Script
-foreach(lines(readfile("required.lst"))) {
-    for(firsttable();;nexttable()) {
-        if(![@]) error(format("Dati Mancanti: $0", @), global ERRORE_DATI_MANCANTI);
-        if (islasttable()) break;
-    }
-}
+import "required";
 ### End Script
 ### End Box

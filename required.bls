@@ -1,0 +1,16 @@
+### Box Controllo Dati Mancanti
+### Flags NOREAD
+### Page 1
+### Rect 0 0 0 0
+### Script
+for(firsttable();;nexttable()) {
+	if(isnull(fornitore)) error("Fornitore Mancante", global ERRORE_DATI_MANCANTI);
+	if(isnull(numero_fattura)) error("Numero Fattura Mancante", global ERRORE_DATI_MANCANTI);
+	if(isnull(mese_fattura)) error("Mese Fattura Mancante", global ERRORE_DATI_MANCANTI);
+	if(isnull(data_fattura)) error("Data Fattura Mancante", global ERRORE_DATI_MANCANTI);
+	if(isnull(codice_pod) && isnull(codice_pdr)) error("Codice Fornitura Mancante", global ERRORE_DATI_MANCANTI);
+	
+	if (islasttable()) break;
+}
+### End Script
+### End Box
