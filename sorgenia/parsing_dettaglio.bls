@@ -40,8 +40,10 @@ with(global dettaglio) {
     tie(prezzo_energia[2], energia_attiva[2]) = calc_prezzo_energia(@, /F3/);
     
     tie(prezzo_energia, energia_attiva) = calc_prezzo_energia(@, /(?:energia(?: monorario)?|Luce)/);
+    tie(prezzo_energia, energia_attiva) = calc_prezzo_energia(@, /PUN Orario/);
 
     sbilanciamento=search_num(@,/Incremento prezzo euro\/kWh (\N)/);
+    sbilanciamento=search_num(@,/Fee euro\/kWh (\N)/);
 
     imponibile=search_num(@,/FORNITURA DI.+ (\N)/);
 

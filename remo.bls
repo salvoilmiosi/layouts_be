@@ -1,0 +1,365 @@
+### Bill Layout Script
+### Language it_IT
+
+### Box Verifica
+### Flags TRIM
+### Page 1
+### Rect 0.04926108374384237 0.22419928825622776 0.7044334975369457 0.20462633451957296
+### Script
+if(singleline(@) != "RE.M. . Retail Energy Market utlook")
+  error("Layout non valido", global ERRORE_LAYOUT_INVALIDO);
+### End Script
+### End Box
+
+### Box Mese
+### Page 1
+### Rect 0.39285714285714285 0.6886120996441281 0.35098522167487683 0.07651245551601427
+### Script
+global mese_front = search_month(@,"%B %Y");
+global num_mesi = 1;
+
+function mese_small() {
+  return date_format(mese_dati,"%b-%y");
+}
+function mese_small2() {
+  return date_format(mese_dati,"%b-%Y");
+}
+function mese_big() {
+  return date_format(mese_dati,"%B-%y");
+}
+### End Script
+### End Box
+
+### Box Seleziona mese
+### Flags NOREAD
+### Page 1
+### Rect 0.7527749747729566 0.6895043731778425 0.05348133198789096 0.06997084548104959
+### Goto Label loop
+### Script
+global calc_mese ++;
+mese_dati = month_add(global mese_front, -global calc_mese);
+### End Script
+### End Box
+
+### Box PUN
+### Mode LAYOUT
+### Page 5
+### Rect 0.4753694581280788 0.09786476868327403 0.45689655172413796 0.400355871886121
+### Script
+tie(pun_f0, pun_f1, pun_f2, pun_f3, pun_peak, pun_offpeak, pun_f23) =
+  captures_num(@,format(/$0 (\N) (\N) (\N) (\N) (\N) (\N) (\N)/, mese_small()));
+### End Script
+### End Box
+
+### Box PCV Altri Usi
+### Mode LAYOUT
+### Page 7
+### Rect 0.3448275862068966 0.16370106761565836 0.584975369458128 0.5907473309608541
+### Script
+pcv_au = search_num(@,format(/$0 \u20ac (\N)/, mese_small()));
+### End Script
+### End Box
+
+### Box PCV Domestici
+### Mode LAYOUT
+### Page 8
+### Rect 0.08866995073891626 0.1494661921708185 0.8177339901477833 0.5444839857651246
+### Script
+pcv_dom = search_num(@, format(/$0 \u20ac (\N)/, mese_small()));
+### End Script
+### End Box
+
+### Box PCV IP
+### Mode LAYOUT
+### Page 9
+### Rect 0.25862068965517243 0.18149466192170818 0.45812807881773393 0.5693950177935944
+### Script
+pcv_ip = search_num(@, format(/$0 \u20ac (\N)/, mese_small()));
+### End Script
+### End Box
+
+### Box Dispacciamento
+### Mode LAYOUT
+### Page 10
+### Rect 0.019704433497536946 0.1708185053380783 0.9248768472906405 0.5676156583629893
+### Script
+tie(
+  dispacciamento_msd,
+  dispacciamento_mod_eolico,
+  dispacciamento_unita_essenziali,
+  dispacciamento_terna,
+  dispacciamento_capacita_produttiva,
+  dispacciamento_interrompibili,
+  dispacciamento_rst1,
+  dispacciamento_rst2,
+  dispacciamento_csal,
+  dispacciamento_bt,
+  dispacciamento_mt,
+  dispacciamento_totale
+) = captures_num(@, format(/$0 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1/, mese_big(), "\u20ac (\\N)"));
+### End Script
+### End Box
+
+### Box Oneri euro/mese BTA1-2-3
+### Mode LAYOUT
+### Page 13
+### Rect 0.036945812807881784 0.16370106761565836 0.9285714285714285 0.20462633451957296
+### Script
+tie(oneri_bta1_fissa, oneri_bta2_fissa, oneri_bta3_fissa)
+  = captures_num(@, format(/$0 \N \N \N \u20ac\s*(\N) \N \N \N \u20ac\s*(\N) \N \N \N \u20ac\s*(\N)/, mese_small2()));
+### End Script
+### End Box
+
+### Box Oneri euro/mese BTA4-5-6
+### Mode LAYOUT
+### Page 13
+### Rect 0.03817733990147776 0.37722419928825623 0.9285714285714285 0.20462633451957296
+### Script
+tie(oneri_bta4_fissa, oneri_bta5_fissa, oneri_bta6_fissa)
+  = captures_num(@, format(/$0 \N \N \N \u20ac\s*(\N) \N \N \N \u20ac\s*(\N) \N \N \N \u20ac\s*(\N)/, mese_small2()));
+### End Script
+### End Box
+
+### Box Oneri euro/mese MTA
+### Mode LAYOUT
+### Page 13
+### Rect 0.03817733990147776 0.6281138790035588 0.9285714285714285 0.20462633451957296
+### Script
+tie(oneri_mta1_fissa, oneri_mta2_fissa, oneri_mta3_fissa)
+  = captures_num(@, format(/$0 \N \N \N \u20ac\s*(\N) \N \N \N \u20ac\s*(\N) \N \N \N \u20ac\s*(\N)/, mese_small2()));
+### End Script
+### End Box
+
+### Box Oneri euro/kW/mese BTA1-2-3
+### Mode LAYOUT
+### Page 14
+### Rect 0.029556650246305417 0.16903914590747332 0.9347290640394089 0.22241992882562278
+### Script
+tie(oneri_bta1_potenza, oneri_bta2_potenza, oneri_bta3_potenza)
+  = captures_num(@, format(/$0 \N \N \N \u20ac\s*(\N) \N \N \N \u20ac\s*(\N) \N \N \N \u20ac\s*(\N)/, mese_small2()));
+### End Script
+### End Box
+
+### Box Oneri euro/kW/mese BTA4-5-6
+### Mode LAYOUT
+### Page 14
+### Rect 0.029556650246305438 0.39323843416370113 0.9347290640394089 0.22241992882562278
+### Script
+tie(oneri_bta4_potenza, oneri_bta5_potenza, oneri_bta6_potenza)
+  = captures_num(@, format(/$0 \N \N \N \u20ac\s*(\N) \N \N \N \u20ac\s*(\N) \N \N \N \u20ac\s*(\N)/, mese_small2()));
+### End Script
+### End Box
+
+### Box Oneri euro/kW/mese MTA
+### Mode LAYOUT
+### Page 14
+### Rect 0.029556650246305438 0.6156583629893239 0.9347290640394089 0.22241992882562278
+### Script
+tie(oneri_mta1_potenza, oneri_mta2_potenza, oneri_mta3_potenza)
+  = captures_num(@, format(/$0 \N \N \N \u20ac\s*(\N) \N \N \N \u20ac\s*(\N) \N \N \N \u20ac\s*(\N)/, mese_small2()));
+### End Script
+### End Box
+
+### Box Oneri euro/kWh BTA1-2-3
+### Page 15
+### Rect 0.03571428571428571 0.1619217081850534 0.9322660098522167 0.22064056939501778
+### Script
+tie(oneri_bta1_variabile, oneri_bta2_variabile, oneri_bta3_variabile)
+  = captures_num(@, format(/$0 \N \N \N \u20ac\s*(\N) \N \N \N \u20ac\s*(\N) \N \N \N \u20ac\s*(\N)/, mese_small2()));
+### End Script
+### End Box
+
+### Box Oneri euro/kWh BTA4-5-6
+### Page 15
+### Rect 0.03325123152709358 0.3896797153024911 0.9322660098522167 0.22064056939501778
+### Script
+tie(oneri_bta4_variabile, oneri_bta5_variabile, oneri_bta6_variabile)
+  = captures_num(@, format(/$0 \N \N \N \u20ac\s*(\N) \N \N \N \u20ac\s*(\N) \N \N \N \u20ac\s*(\N)/, mese_small2()));
+### End Script
+### End Box
+
+### Box Oneri euro/kWh MTA
+### Page 15
+### Rect 0.03694581280788173 0.6192170818505339 0.9322660098522167 0.22064056939501778
+### Script
+tie(oneri_mta1_variabile, oneri_mta2_variabile, oneri_mta3_variabile)
+  = captures_num(@, format(/$0 \N \N \N \u20ac\s*(\N) \N \N \N \u20ac\s*(\N) \N \N \N \u20ac\s*(\N)/, mese_small2()));
+### End Script
+### End Box
+
+### Box Oneri euro/mese dom
+### Mode LAYOUT
+### Page 16
+### Rect 0.23645320197044334 0.2580071174377224 0.5283251231527093 0.22597864768683273
+### Script
+oneri_dom_fissa = search_num(@, format(/$0 \N \N \N \N \u20ac\s*(\N)/, mese_small2()));
+### End Script
+### End Box
+
+### Box Oneri euro/kwh dom
+### Page 16
+### Rect 0.3485221674876848 0.5587188612099644 0.3041871921182266 0.24199288256227758
+### Script
+oneri_dom_variabile = search_num(@, format(/$0 \N \N (\N)/, mese_small2()));
+### End Script
+### End Box
+
+### Box Oneri euro/kwh ricarica
+### Mode LAYOUT
+### Page 17
+### Rect 0.3300492610837438 0.2597864768683275 0.3423645320197045 0.22597864768683273
+### Script
+oneri_ricarica_variabile = search_num(@, format(/$0 \N \N \u20ac\s*(\N)/, mese_small2()));
+### End Script
+### End Box
+
+### Box Oneri euro/kwh IP
+### Mode LAYOUT
+### Page 17
+### Rect 0.24014778325123148 0.5587188612099645 0.5233990147783252 0.22597864768683273
+### Script
+tie(oneri_ip_bt_variabile, oneri_ip_mt_variabile)
+  = captures_num(@, format(/$0 \N \N \u20ac\s*(\N) \N \N \u20ac\s*(\N)/, mese_small2()));
+### End Script
+### End Box
+
+### Box Trasporto euro/kwh BTA
+### Mode LAYOUT
+### Page 18
+### Rect 0.12931034482758622 0.30071174377224197 0.7266009852216749 0.21530249110320288
+### Script
+tie(trasporto_bta15_variabile, trasporto_bta6_variabile)
+  = captures_num(@,format(/$0 \N \N \N \N (\N) \N \N \N \N (\N)/, mese_small2()));
+### End Script
+### End Box
+
+### Box Trasporto euro/kwh MTA
+### Mode LAYOUT
+### Page 18
+### Rect 0.018472906403940864 0.5747330960854091 0.9593596059113301 0.21530249110320288
+### Script
+tie(trasporto_mta1_variabile, trasporto_mta2_variabile, trasporto_mta3_variabile)
+  = captures_num(@,format(/$0 \N \N \N \N (\N) \N \N \N \N (\N) \N \N \N \N (\N)/, mese_small2()));
+### End Script
+### End Box
+
+### Box Trasporto euro/kw/mese
+### Mode LAYOUT
+### Page 19
+### Rect 0.19950738916256158 0.27402135231316727 0.5948275862068965 0.17971530249110318
+### Script
+tie(trasporto_bta1_potenza, trasporto_bta2_potenza, trasporto_bta345_potenza, trasporto_bta6_potenza)
+  = captures_num(@,format(/$0 \N \u20ac\s*(\N) \N \u20ac\s*(\N) \N \u20ac\s*(\N) \N \u20ac\s*(\N)/, mese_small2()));
+### End Script
+### End Box
+
+### Box Trasporto euro/kw/mese
+### Mode LAYOUT
+### Page 19
+### Rect 0.26724137931034475 0.5177935943060499 0.4667487684729065 0.17971530249110318
+### Script
+tie(trasporto_mta1_potenza, trasporto_mta2_potenza, trasporto_mta3_potenza)
+  = captures_num(@,format(/$0 \N \u20ac\s*(\N) \N \u20ac\s*(\N) \N \u20ac\s*(\N)/, mese_small2()));
+### End Script
+### End Box
+
+### Box Trasporto euro/pod/mese BTA
+### Mode LAYOUT
+### Page 20
+### Rect 0.009852216748768461 0.2597864768683274 0.9667487684729064 0.1832740213523132
+### Script
+tie(trasporto_bta12_fissa, trasporto_bta3_fissa, trasporto_bta45_fissa, trasporto_bta6_fissa)
+  = captures_num(@, format(/$0 \N \N \N \u20ac\s*(\N) \N \N \N \u20ac\s*(\N) \N \N \N \u20ac\s*(\N) \N \N \N \u20ac\s*(\N)/, mese_small2()))
+### End Script
+### End Box
+
+### Box Trasporto euro/pod/mese MTA
+### Mode LAYOUT
+### Page 20
+### Rect 0.06896551724137928 0.5195729537366548 0.8608374384236452 0.1832740213523132
+### Script
+tie(trasporto_mta1_fissa, trasporto_mta2_fissa, trasporto_mta3_fissa)
+  = captures_num(@, format(/$0 \N \N \N \u20ac\s*(\N) \N \N \N \u20ac\s*(\N) \N \N \N \u20ac\s*(\N)/, mese_small2()))
+### End Script
+### End Box
+
+### Box Trasporto euro/kwh ricarica
+### Mode LAYOUT
+### Page 21
+### Rect 0.23645320197044334 0.18861209964412812 0.5036945812807883 0.2295373665480427
+### Script
+trasporto_ricarica_variabile = search_num(@, format(/$0 \N \N \N \N (\N)/, mese_small2()));
+### End Script
+### End Box
+
+### Box Trasporto euro/kwh IP BT
+### Mode LAYOUT
+### Page 21
+### Rect 0.23768472906403937 0.4252669039145907 0.5036945812807883 0.2295373665480427
+### Script
+trasporto_ip_bt_variabile = search_num(@, format(/$0 \N \N \N \N (\N)/, mese_small2()));
+### End Script
+### End Box
+
+### Box Trasporto euro/kwh IP MT
+### Mode LAYOUT
+### Page 21
+### Rect 0.2389162561576354 0.6601423487544484 0.5036945812807883 0.2295373665480427
+### Script
+trasporto_ip_mt_variabile = search_num(@, format(/$0 \N \N \N \N (\N)/, mese_small2()));
+### End Script
+### End Box
+
+### Box Trasporto euro/kwh Domestici
+### Page 22
+### Rect 0.02320887991927346 0.35276967930029157 0.3299697275479314 0.2434402332361516
+### Script
+trasporto_dom_variabile = search_num(@, format(/$0 \N \N \N (\N)/, mese_small2()));
+### End Script
+### End Box
+
+### Box Trasporto euro/pod/mese Domestici
+### Page 22
+### Rect 0.3955600403632694 0.35276967930029157 0.24016145307769932 0.2434402332361516
+### Script
+trasporto_dom_fissa = search_num(@, format(/$0 \N \u20ac\s*(\N)/, mese_small2()));
+### End Script
+### End Box
+
+### Box Trasporto euro/pod/mese Domestici
+### Page 22
+### Rect 0.6649848637739656 0.34985422740524785 0.26538849646821394 0.24344023323615155
+### Script
+trasporto_dom_potenza = search_num(@, format(/$0 \N \N (\N)/, mese_small2()));
+### End Script
+### End Box
+
+### Box Accise
+### Page 24
+### Rect 0.08251231527093596 0.16370106761565836 0.5615763546798029 0.6672597864768683
+### Script
+tie(accise_soglia1, accise_soglia2, accise_soglia3)
+  = captures_num(@, format(/$0 \u20ac\s*(\N) \u20ac\s*(\N) \u20ac\s*(\N)/, mese_big()));
+### End Script
+### End Box
+
+### Box Corrispettivi Reattiva
+### Page 23
+### Rect 0.15539858728557013 0.15160349854227406 0.6024217961654894 0.619533527696793
+### Script
+tie(reattiva_inf75_bt, reattiva_sup75_bt, reattiva_inf75_mt, reattiva_sup75_mt)
+  = captures_num(@, format(/$0 \u20ac\s*(\N) \u20ac\s*(\N) \u20ac\s*(\N) \u20ac\s*(\N)/, mese_big()));
+### End Script
+### End Box
+
+### Box Prossimo mese
+### Flags NOREAD
+### Page 1
+### Rect 0.8102926337033299 0.6895043731778425 0.042381432896064664 0.06559766763848396
+### Script
+if (global calc_mese < global num_mesi) {
+  nexttable();
+  goto loop;
+}
+### End Script
+### End Box
