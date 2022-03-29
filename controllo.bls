@@ -20,7 +20,8 @@ foreach(enumerate(foreach(split(readfile("errors.lst"),"\n")) if(!isempty(trim(@
 p+$page_controllo;
 ### End Spacers
 ### Script
-     if(contains(@,"Axpo Italia SpA")) import "axpo/controllo";
+     if(contains(@,"Con REMO Navighi")) import "remo";
+else if(contains(@,"Axpo Italia SpA")) import "axpo/controllo";
 else if(contains(@,"ITALPOWER ENERGIA")) import "italpower/controllo";
 else if(contains(@,"Sorgenia S.p.A")) import "sorgenia/controllo";
 else if(contains(@,"Servizio Elettrico Nazionale SpA")) import "enel/sen";

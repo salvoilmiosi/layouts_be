@@ -3,7 +3,7 @@
 ### Language it_IT
 
 ### Box Cerca Dettaglio
-### Flags TRIM 
+### Flags TRIM
 ### Page 4
 ### Rect 0.04516129032258064 0.08893956670467502 0.2596774193548387 0.037628278221208664
 ### Goto Label cerca_dettaglio
@@ -46,7 +46,7 @@ if(ate()) {
 ### End Box
 
 ### Box Nome Fornitore
-### Flags NOREAD 
+### Flags NOREAD
 ### Page 1
 ### Rect 0.038709678 0.050171036 0.33225808 0.07639681
 ### Goto Label nome_fornitore
@@ -123,7 +123,7 @@ data_scadenza=search_date(@,"%d %B %Y");
 p+$next_page;
 ### End Spacers
 ### Script
-indirizzo_fornitura=totitle(singleline(search(@,/Le stiamo fornendo energia elettrica in \u2022 ([^]+?\d{5}.+)\n/)));
+indirizzo_fornitura=totitle(singleline(search(@,/Le stiamo fornendo energia elettrica in \u2022 ([^]+?) Condizioni contrattuali/)));
 ### End Script
 ### End Box
 
@@ -142,7 +142,7 @@ potenza=repeated(search_num(@,/Potenza impegnata: (\N) kW/), 3);
 
 ### Box Energia Attiva Rilevata / Reattiva
 ### Mode LAYOUT
-### Flags PAGE 
+### Flags PAGE
 ### Page 3
 ### Rect 0.048387095 0.6624857 0.89870286 0.055942718
 ### Spacers
@@ -187,7 +187,7 @@ with(between(@,"RIEPILOGO LETTURE E CONSUMI","CONSUMI FATTURATI")) {
 ### End Box
 
 ### Box Parsing Dettaglio
-### Flags NOREAD 
+### Flags NOREAD
 ### Page 4
 ### Rect 0.22715053909677418 0.027588217240592926 0.04543010606451612 0.03170482722919042
 ### Script
@@ -300,7 +300,7 @@ with($dettaglio) {
 ### End Box
 
 ### Box Prossima Pagina
-### Flags TRIM 
+### Flags TRIM
 ### Page 4
 ### Rect 0.05161290322580646 0.14481185860889398 0.18870967741935485 0.030786773090079815
 ### Spacers

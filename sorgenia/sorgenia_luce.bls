@@ -20,7 +20,7 @@ if(!(ate() || contains(@,"INFORMAZIONI PER I CLIENTI SORGENIA"))) {
 ### End Box
 
 ### Box Nome Fornitore
-### Flags NOREAD 
+### Flags NOREAD
 ### Page 1
 ### Rect 0.061290324 0.04104903 0.36129034 0.08323831
 ### Goto Label nome_fornitore
@@ -39,7 +39,7 @@ numero_cliente=search(@,/CODICE CLIENTE (.+)\n/);
 ### End Box
 
 ### Box Ragione sociale
-### Flags TRIM 
+### Flags TRIM
 ### Page 1
 ### Rect 0.076612905 0.15037057 0.38810483 0.02850627
 ### Script
@@ -72,6 +72,7 @@ indirizzo_fornitura=totitle(singleline(search(@,/\ndi ([^]+?\d{5}.+)/)));
 ### Rect 0.07358871 0.4846066 0.31149194 0.023517672
 ### Script
 $mese_inizio=search_date(@,"%B %Y");
+if(!$mese_inizio) error("Sorgenia: Periodo Mancante", global ERRORE_PERIODO_INVALIDO);
 $mese_fine=search_date(@,"%B %Y",/\D\/(\D)/);
 if($mese_fine) {
   if($mese_fine < $mese_inizio) {
@@ -108,7 +109,7 @@ potenza=repeated(search_num(@,/Potenza impegnata: (\N)/), 3);
 ### End Box
 
 ### Box Parsing Dettaglio
-### Flags NOREAD 
+### Flags NOREAD
 ### Page 2
 ### Rect 0.26032954 0.030786771 0.057603687 0.04479557
 ### Script
